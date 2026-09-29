@@ -373,8 +373,8 @@ dps_results: {
 dps_results: {
  key: "TestShadowPriest-AllItems-EverlookPathcarver-274759"
  value: {
-  dps: 347.41083
-  tps: 247.15627
+  dps: 347.22917
+  tps: 247.0291
  }
 }
 dps_results: {
