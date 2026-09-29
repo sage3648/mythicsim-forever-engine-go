@@ -7,6 +7,7 @@ import (
 	"github.com/wowsims/forever/sim/core"
 	"github.com/wowsims/forever/sim/core/buffs"
 	"github.com/wowsims/forever/sim/core/proto"
+	"github.com/wowsims/forever/sim/core/stats"
 )
 
 const (
@@ -263,12 +264,11 @@ func (shaman *Shaman) RegisterFlametongueImbue(procMask core.ProcMask) {
 		}
 
 		flameTongueSpell := shaman.newFlametongueImbueSpell(weapon)
-		aura := shaman.makeFTProcTriggerAura(itemSlot, triggerProcMask, flameTongueSpell)
-		if itemSlot == proto.ItemSlot_ItemSlotMainHand {
-			aura.NewExclusiveEffect(buffs.WindfuryTotemCategory, false, core.ExclusiveEffect{
-				Priority: shaman.WindfuryAPBonus * 2, // Need to be higher than Windfury Totem priority
-			})
-		}
+		// Not in Windfury Totem's exclusive category. Classic's totem enchanted the main-hand weapon,
+		// so any main-hand imbue displaced it; Forever's is a party aura that names no weapon, and
+		// the beta describes only Windfury Weapon as disabling it ("When applied to mainhand,
+		// disables any benefit you personally benefit from Windfury Totem").
+		shaman.makeFTProcTriggerAura(itemSlot, triggerProcMask, flameTongueSpell)
 	}
 
 	shaman.setupItemSwapImbue(proto.ShamanImbue_FlametongueWeapon, flametongueEnchantID)
@@ -333,4 +333,54 @@ func (shaman *Shaman) RegisterFrostbrandImbue(procMask core.ProcMask) {
 	})
 
 	shaman.RegisterOnItemSwapWithImbue(frostbrandEnchantID, &procMask, aura)
+}
+
+var rockbiterImbue = spellData.RockbiterWeaponTriggered.Highest()
+
+// Rockbiter Weapon (rank 7, cast as 16316) is not a proc. The client's imbue passive 16313 is a
+// permanent aura, and the tooltip reads "increasing melee attack power by 653 and allowing melee
+// attacks to cause additional threat when using that weapon". Elemental Weapons raises the effect
+// (spell mod class mask SpellMaskRockbiterWeapon, effect 1), which acts here on the attack power
+// value itself since nothing casts a Rockbiter spell.
+//
+// One aura serves both hands: the passive is a single spell, so a second Rockbiter weapon does not
+// add the attack power twice. The threat half is left out, since nothing here models threat for
+// a DPS spec, and the 5 minute imbue duration is not modelled for any imbue.
+func (shaman *Shaman) RegisterRockbiterImbue(procMask core.ProcMask) {
+	if procMask == core.ProcMaskUnknown && !shaman.ItemSwap.IsEnabled() {
+		return
+	}
+
+	imbued := false
+	mH := shaman.MainHand()
+	if mH != nil && shaman.SelfBuffs.ImbueMH == proto.ShamanImbue_RockbiterWeapon {
+		mH.TempEnchant = rockbiterEnchantID
+		if shaman.ItemSwap.IsEnabled() {
+			shaman.ItemSwap.AddTempEnchant(rockbiterEnchantID, proto.ItemSlot_ItemSlotMainHand, false)
+		}
+		imbued = true
+	}
+	oH := shaman.OffHand()
+	if oH != nil && shaman.SelfBuffs.ImbueOH == proto.ShamanImbue_RockbiterWeapon {
+		oH.TempEnchant = rockbiterEnchantID
+		if shaman.ItemSwap.IsEnabled() {
+			shaman.ItemSwap.AddTempEnchant(rockbiterEnchantID, proto.ItemSlot_ItemSlotOffHand, false)
+		}
+		imbued = true
+	}
+
+	shaman.setupItemSwapImbue(proto.ShamanImbue_RockbiterWeapon, rockbiterEnchantID)
+
+	if !imbued {
+		return
+	}
+
+	attackPower := rockbiterImbue.EffectN(1).Average(core.CharacterLevel) *
+		(1 + spellData.ElementalWeapons.EffectAt(1).FractionAt(shaman.Talents.ElementalWeapons))
+	core.MakePermanent(shaman.NewTemporaryStatsAura(
+		"Rockbiter Weapon",
+		core.ActionID{SpellID: rockbiterImbue.ID},
+		stats.Stats{stats.AttackPower: attackPower},
+		core.NeverExpires,
+	).Aura)
 }
