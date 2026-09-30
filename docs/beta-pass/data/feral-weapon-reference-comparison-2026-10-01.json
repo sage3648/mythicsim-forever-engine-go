@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "feral-druid",
+    "weaponId": 12783,
+    "iterations": 10000,
+    "before": 511.3250480207129,
+    "candidate": 486.38477603424514,
+    "delta": -24.940271986467792,
+    "deltaPct": -4.877576814006868
+  },
+  {
+    "slug": "feral-bear-druid",
+    "weaponId": 11921,
+    "iterations": 10000,
+    "before": 404.9557630021691,
+    "candidate": 392.3096433173239,
+    "delta": -12.64611968484519,
+    "deltaPct": -3.122839786521925
+  }
+]

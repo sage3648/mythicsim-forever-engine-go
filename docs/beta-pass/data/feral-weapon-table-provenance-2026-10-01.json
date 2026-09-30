@@ -1,0 +1,12 @@
+[
+  {
+    "table": "ItemDamageOneHand",
+    "identicalBetween70009And70124": true,
+    "sha256": "591fd04d419f2cf878e614bec4c37aed120f00291c82b0c54799a24afbce6f7f"
+  },
+  {
+    "table": "ItemDamageTwoHand",
+    "identicalBetween70009And70124": true,
+    "sha256": "36061d34a6a15fc594be9a69afa0e5f29d1e4892fe88e593e2fac67539ff3f44"
+  }
+]
