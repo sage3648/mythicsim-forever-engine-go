@@ -23,6 +23,7 @@ type Weapon struct {
 	SpellSchool          SpellSchool
 	MinRange             float64
 	MaxRange             float64
+	feralSwingTimeMS     int32
 }
 
 func (weapon *Weapon) DPS() float64 {
@@ -147,14 +148,23 @@ func (weapon *Weapon) AverageDamage() float64 {
 }
 
 func (weapon *Weapon) CalculateWeaponDamage(sim *Simulation, attackPower float64) float64 {
+	if weapon.feralSwingTimeMS != 0 {
+		return weapon.BaseDamage(sim) + FeralWeaponAttackPowerDamage(attackPower, weapon.feralSwingTimeMS)
+	}
 	return weapon.BaseDamage(sim) + (weapon.SwingSpeed*attackPower)/weapon.AttackPowerPerDPS
 }
 
 func (weapon *Weapon) CalculateAverageWeaponDamage(attackPower float64) float64 {
+	if weapon.feralSwingTimeMS != 0 {
+		return weapon.AverageDamage() + FeralWeaponAttackPowerDamage(attackPower, weapon.feralSwingTimeMS)
+	}
 	return weapon.AverageDamage() + (weapon.SwingSpeed*attackPower)/weapon.AttackPowerPerDPS
 }
 
 func (weapon *Weapon) CalculateNormalizedWeaponDamage(sim *Simulation, attackPower float64) float64 {
+	if weapon.feralSwingTimeMS != 0 {
+		return weapon.CalculateWeaponDamage(sim, attackPower)
+	}
 	return weapon.BaseDamage(sim) + (weapon.NormalizedSwingSpeed*attackPower)/weapon.AttackPowerPerDPS
 }
 

@@ -49,28 +49,13 @@ func (druid *Druid) ClearForm(sim *core.Simulation) {
 	druid.SetCurrentPowerBar(core.ManaBar)
 }
 
-// The paw is a fixed weapon at level 60: gear reaches it through Feral Attack Power, not through
-// the equipped weapon's damage, so neither form reads the weapon's swing.
+// Form weapons use the equipped item's unrounded table DPS and the form's speed.
 func (druid *Druid) GetCatWeapon() core.Weapon {
-	return core.Weapon{
-		BaseDamageMin:        43.84,
-		BaseDamageMax:        65.76,
-		SwingSpeed:           1.0,
-		NormalizedSwingSpeed: 1.0,
-		AttackPowerPerDPS:    core.DefaultAttackPowerPerDPS,
-		MaxRange:             core.MaxMeleeRange,
-	}
+	return druid.formWeapon(1000)
 }
 
 func (druid *Druid) GetBearWeapon() core.Weapon {
-	return core.Weapon{
-		BaseDamageMin:        109,
-		BaseDamageMax:        165,
-		SwingSpeed:           2.5,
-		NormalizedSwingSpeed: 2.5,
-		AttackPowerPerDPS:    core.DefaultAttackPowerPerDPS,
-		MaxRange:             core.MaxMeleeRange,
-	}
+	return druid.formWeapon(2500)
 }
 
 // The stats both animal forms grant: Predatory Strikes' attack power off level and Sharpened Claws'
@@ -100,8 +85,6 @@ func (druid *Druid) RegisterCatFormAura() {
 		hotwDep = druid.NewDynamicMultiplyStat(stats.Strength, heartOfTheWildFormMultiplier(druid.Talents.HeartOfTheWild))
 	}
 
-	clawWeapon := druid.GetCatWeapon()
-
 	druid.CatFormAura = druid.RegisterAura(core.Aura{
 		Label:      "Cat Form",
 		ActionID:   actionID,
@@ -125,7 +108,7 @@ func (druid *Druid) RegisterCatFormAura() {
 			}
 
 			if !druid.Env.MeasuringStats {
-				druid.AutoAttacks.SetMH(clawWeapon)
+				druid.AutoAttacks.SetMH(druid.GetCatWeapon())
 				druid.AutoAttacks.EnableAutoSwing(sim)
 				druid.UpdateManaRegenRates()
 			}
@@ -256,8 +239,6 @@ func (druid *Druid) RegisterBearFormAura() {
 		hotwDep = druid.NewDynamicMultiplyStat(stats.Stamina, heartOfTheWildBearStaminaMultiplier(druid.Talents.HeartOfTheWild))
 	}
 
-	clawWeapon := druid.GetBearWeapon()
-
 	druid.BearFormAura = druid.RegisterAura(core.Aura{
 		Label:      "Bear Form",
 		ActionID:   actionID,
@@ -288,7 +269,7 @@ func (druid *Druid) RegisterBearFormAura() {
 				if sim.CurrentTime > 0 {
 					druid.restoreHealthFraction(sim, healthFrac, healthMetrics)
 				}
-				druid.AutoAttacks.SetMH(clawWeapon)
+				druid.AutoAttacks.SetMH(druid.GetBearWeapon())
 				druid.AutoAttacks.EnableAutoSwing(sim)
 				druid.UpdateManaRegenRates()
 			}
