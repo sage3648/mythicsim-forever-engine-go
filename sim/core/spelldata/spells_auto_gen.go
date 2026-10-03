@@ -5602,6 +5602,10 @@ var generatedSpells = []Spell{
 		Effects: []Effect{
 			{ID: 684839, SpellID: 9512, Type: dbcenums.E_ENERGIZE, BasePoints: 100, SpellLevel: 60, PvpMult: 1, Misc: 3, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
 		}},
+	{ID: 9515, Name: "Summon Tracking Hound", School: 1, Attr: [17]uint32{15: 0x2000}, SpellLevel: 30, MaxLevel: 60, DurationMs: 180000,
+		Effects: []Effect{
+			{ID: 686963, SpellID: 9515, Type: dbcenums.E_SUMMON, BasePoints: 1, SpellLevel: 30, MaxLevel: 60, PvpMult: 1, Misc: 6867, Misc2: 6698, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{32, 0}},
+		}},
 	{ID: 9578, Name: "Fade", Rank: "Rank 2", School: 32, Attr: [17]uint32{0: 0x50000, 1: 0x400, 2: 0x80000, 15: 0x2000}, SpellLevel: 20, BaseLevel: 20, MaxLevel: 30, DurationMs: 10000, CategoryCooldownMs: 30000, GCDMs: 1500, Category: 82, StartRecoveryCategory: 133, DefenseType: 1, DispelType: 1, PreventionType: 1, ClassFlags: core.ClassFlags{Family: 6, Mask: [4]uint32{0: 16384}}, InterruptFlags: 8, StanceMask: 0x8000000, Labels: []int16{18},
 		Effects: []Effect{
 			{ID: 687052, SpellID: 9578, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_MOD_TOTAL_THREAT, BasePoints: -775, PPL: -3, SpellLevel: 20, MaxLevel: 30, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
@@ -31886,6 +31890,10 @@ var generatedSpells = []Spell{
 		Effects: []Effect{
 			{ID: 1314164, SpellID: 1293483, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_MOD_STUN, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{6, 0}},
 		}},
+	{ID: 1293501, Name: "Summon Tracking Hound", School: 1, Attr: [17]uint32{0: 0x140, 1: 0x10000000, 15: 0x2000}, SpellLevel: 60,
+		Effects: []Effect{
+			{ID: 1314188, SpellID: 1293501, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_DUMMY, SpellLevel: 60, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
 	{ID: 1293525, Name: "Summon Hawk", Rank: "Rank 2", School: 1, Speed: 35, Attr: [17]uint32{0: 0x10, 2: 0x20000, 3: 0x40000, 15: 0x2000}, SpellLevel: 36, BaseLevel: 36, CastTimeMs: -1000000, MaxRange: 35, CategoryCooldownMs: 6000, GCDMs: 1500, Category: 1173, StartRecoveryCategory: 133, DefenseType: 3, PreventionType: 2, ClassFlags: core.ClassFlags{Family: 9, Mask: [4]uint32{2: 8192}}, Labels: []int16{23}, RefIDs: []int32{1293248},
 		Effects: []Effect{
 			{ID: 1314233, SpellID: 1293525, Type: dbcenums.E_SCHOOL_DAMAGE, BasePoints: 47, SpellLevel: 36, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{6, 0}},
@@ -31967,6 +31975,11 @@ var generatedSpells = []Spell{
 	{ID: 1293701, Name: "Painwalker Buckler", School: 2, Attr: [17]uint32{0: 0x1c0, 1: 0x400, 15: 0x2000}, SpellLevel: 60, ProcChance: 17, ProcFlags: [2]uint32{0: 0x222a8}, RefIDs: []int32{1293700},
 		Effects: []Effect{
 			{ID: 1314608, SpellID: 1293701, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_PROC_TRIGGER_SPELL, BasePoints: 12, SpellLevel: 60, PvpMult: 1, TriggerID: 1293700, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
+	{ID: 1293714, Name: "Spellsever", School: 1, Speed: 40, Attr: [17]uint32{0: 0x40000, 3: 0x10000, 4: 0x800000, 10: 0x4, 15: 0x2000}, SpellLevel: 6, DurationMs: 5000, MaxRange: 100, DefenseType: 3,
+		Effects: []Effect{
+			{ID: 1314642, SpellID: 1293714, Type: dbcenums.E_SCHOOL_DAMAGE, BasePoints: 36, SpellLevel: 6, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{6, 0}},
+			{ID: 1314643, SpellID: 1293714, Index: 1, Type: dbcenums.E_INTERRUPT_CAST, SpellLevel: 6, PvpMult: 1, ChainAmp: 1, Mechanic: 26, Target: [2]dbcenums.ImplicitTarget{6, 0}},
 		}},
 	{ID: 1293733, Name: "Scarlet Guardian", School: 2, Attr: [17]uint32{0: 0x40000, 8: 0x1000, 15: 0x2000}, DurationMs: 10000, MaxRange: 100, DefenseType: 1, DispelType: 1,
 		Effects: []Effect{

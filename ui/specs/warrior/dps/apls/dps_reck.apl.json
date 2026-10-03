@@ -551,6 +551,32 @@
     {
       "action": {
         "condition": {
+          "cmp": {
+            "op": "OpLt",
+            "lhs": {
+              "spellCastTime": {
+                "spellId": {
+                  "spellId": 11605
+                }
+              }
+            },
+            "rhs": {
+              "const": {
+                "val": "1.5s"
+              }
+            }
+          }
+        },
+        "castSpell": {
+          "spellId": {
+            "spellId": 11605
+          }
+        }
+      }
+    },
+    {
+      "action": {
+        "condition": {
           "and": {
             "vals": [
               {

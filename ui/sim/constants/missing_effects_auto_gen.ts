@@ -304,6 +304,12 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		]
 	],
 	[
+		3456, // Dog Whistle
+		[
+			"", // 1293501 - https://www.wowhead.com/forever/spell=1293501
+		]
+	],
+	[
 		3475, // Cloak of Flames
 		[
 			"Deals 5 Fire damage to anyone who strikes you with a melee attack.", // 21142 - https://www.wowhead.com/forever/spell=21142
@@ -4532,6 +4538,12 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		274256, // Premier Lamellar Gauntlets
 		[
 			"Increases the critical strike chance of your Flash of Light by 2%. ", // 1293544 - https://www.wowhead.com/forever/spell=1293544
+		]
+	],
+	[
+		274293, // Spellsever Crossbow
+		[
+			"Launch a magic severing bolt at the target, dealing 36 Physical damage and interrupting the spell being cast for 5s.", // 1293714 - https://www.wowhead.com/forever/spell=1293714
 		]
 	],
 	[

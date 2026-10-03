@@ -192,7 +192,7 @@
 	"16257": {
 		"ability": "Flurry",
 		"file": "sim/shaman/talents_enhancement.go",
-		"note": "The buff the sim applies at every rank (3 swings, 15 sec); its own 10% is a placeholder and the attack speed comes from the beta client's talent curve, 5/10/15/20/25% (Classic: 10% to 30%). The other ranks' buff ids are gone from the client.",
+		"note": "The buff the sim applies at every rank (3 swings, 15 sec); its own 10% is a placeholder and the attack speed comes from the beta client's talent curve, 5/10/15/20/25% (Classic: 10% to 30%). The other ranks' buff ids are gone from the client. Beta log 2701 (foreverlogs.gg, 2026-10-02) bears this out: swings under the buff ran 15% faster for two 19-point Enhancement shamans (Tide, Lietus: 102 swings in 25 fights) and 10% for an 18-point one (Thundrax: 33 in 10), the most points each total allows next to Stormstrike, so the server grants a per-point amount, not the buff's flat 10%.",
 		"source": "forever",
 		"tooltip": "Increases your attack speed by 5/10/15/20/25% for your next 3 swings."
 	},

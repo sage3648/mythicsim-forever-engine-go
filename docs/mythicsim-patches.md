@@ -1,9 +1,9 @@
 # MythicSim downstream patches
 
-MythicSim runs this engine from its fork (`sage3648/mythicsim-forever-engine`, branch
-`codex/forever-frostfire-omen`). The branch is ElliotWood/Forever master, which is built on the
+MythicSim runs this engine from its fork (`sage3648/mythicsim-forever-engine-go`, branch
+`mythicsim/upstream-sync-20261003`). The branch is ElliotWood/Forever master, which is built on the
 official wowsims/forever, plus the patches below. The first base was `442076902` (Merge
-wowsims/forever master ea5412873). The current base is `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
+wowsims/forever master ea5412873). The current base is `f764984d8b` (2026-10-03, client 1.60.1.70205); the 2026-10-03 sync merged #613 to #641 ("Upstream sync 2026-10-03, #613 to #641" at the end of this file). The base before it was `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
 
 Keep the set small. Each patch exists because MythicSim needs something upstream does not do
 yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an upstream version.
@@ -1494,3 +1494,38 @@ Tests cover equal-strength suppression, resuming after the winner expires, itera
 prepull time, lazy expiration and unequal concurrent result weights.
 
 Drop this when upstream exports equivalent per-effect uptime metrics.
+
+## Upstream sync 2026-10-03, #613 to #641
+
+Merged ElliotWood/Forever `f764984d8b` (55 commits, 27 of them data or changelog) into the
+patch 75 release `f43215d07e`. No patch is dropped. This supersedes the earlier attempt on
+`codex/forever-upstream-oct03` (#613 to #624 onto patch 74), whose two resolutions are reused.
+
+Behaviour adopted: Whirlwind strikes with both weapons, and Raging Blows also cuts its Rage
+cost (#613); Booming Voice takes 5% a point off the shouts (#614); Piercing Ice gives Frostfire
+Bolt's DoT a flat 2% (#615); an APL aura the character lacks reads as absent (#622) and a strict
+sequence with an unknown step is dropped (#625); Mutilate's hand strikes stop re-rolling miss,
+dodge and parry (#632); Slam is cast when Improved Slam makes it fast (#629); client
+1.60.1.70205 item data. Optional rotations: destruction_conflag, forever_flameshock, dps_battle,
+dps_dance, Ghostly Strike rogue variants, Smite with Mind Blast and Shadow Word: Death; Auto
+picks the warrior stance rotations (#641).
+
+Resolutions:
+
+- `sim/warrior/talents_arms.go`: both sides made Spearing Strike require Battle Stance (#626);
+  kept ours, which also records the 70170 weapon change.
+- `simple_vael.apl.json`: took upstream's guarded Shifting Power (1322605). Both sides removed
+  Tiger's Fury.
+- `db.json`: `scripts/forever-merge-db.py` with the merged planner. Mantle of Woe (7750) takes
+  upstream's quality 3 stats with the planner's 38 armor and 50 bonus armor; planner armor was
+  re-applied to 54 items, including Vile Protector (7747, 1051 to 1078 armor).
+- `frostfire_bolt_test.go`: checks the hit (1.14) and DoT (1.10) multipliers separately,
+  since #615 moved Piercing Ice's DoT share off the additive multiplier.
+
+Goldens regenerated for Marksmanship, Survival, Assassination, Affliction, Destruction, Arms,
+Fury and both Protection specs. Each moved the same way as upstream's own goldens over the
+range (Survival median +11.6% here, +10.8% upstream; Assassination +3.9% both; Fury -0.3% both).
+Arms (+6.0% vs +7.4%) and Destruction (+3.6% vs +5.3%) move about 1 to 1.5% less on average
+because our Warrior and Warlock patches change the baseline; every row moves the same
+direction except naked Destruction, where our default rotation keeps Conflagrate. Protection
+Paladin and Warrior move only on the Vile Protector item row (armor). Whole suite green.

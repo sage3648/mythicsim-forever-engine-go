@@ -328,7 +328,10 @@ func (rogue *Rogue) newMutilateHitSpell(isMH bool) *core.Spell {
 				spell.DamageMultiplier *= 1 + poisonBonus
 			}
 
-			spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
+			// The parent cast already rolled miss/dodge/parry: every hit rank carries the client's
+			// No Attack Miss/Dodge/Parry attributes (Attributes_7 0x3800000), so a hand can only be
+			// blocked or crit, as for Stormstrike.
+			spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeSpecialBlockAndCrit)
 			spell.DamageMultiplier = oldMultiplier
 		},
 	})

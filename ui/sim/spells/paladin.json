@@ -72,7 +72,7 @@
 	"1311074": {
 		"ability": "Sanctified Judgement",
 		"file": "sim/paladin/talents_retribution.go",
-		"note": "Forever's own talent id, which the sim's Sanctified Judgement mana metrics carry and Classic's database does not. Beta client 1.60.1.70009 curves: 33/66/100% chance to return 20/40/60% of the judged seal's mana cost.",
+		"note": "Forever's own talent id, which the sim's Sanctified Judgement mana metrics carry and Classic's database does not. Beta client 1.60.1.70009 curves: 33/66/100% chance to return 20/40/60% of the judged seal's mana cost. The beta's combat logs bear out the chance and rank 2's return: Inco (report 2695, 21 Retribution points) got the return (1311077) on 26 of 46 Judgements, a rank 2 rate, and it was exactly 40%: 24 for Seal of Fury rank 2 (60 mana) and 26 for Seal of Command rank 1 (65). Cheeya (report 2701, 20 points) got it on all 70, so rank 3, but for 43 from both Seal of Command rank 1 and Seal of the Crusader rank 3 (65 mana each; 42 eleven times, likely near full mana), about two thirds where 60% gives 39. The sim keeps 60%: one paladin, talents unread, nothing in the client or Cheeya's gear explains the extra; a second rank 3 paladin settles it.",
 		"source": "forever",
 		"tooltip": "Gives your Judgement ability a 33% chance per talent point to return 20% per talent point of the Mana cost of the judged seal."
 	},

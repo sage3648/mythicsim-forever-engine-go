@@ -106,7 +106,9 @@ func TestArena(t *testing.T) {
 		Race:        proto.Race_RaceHuman,
 		SpecOptions: DefaultOptions,
 		Role:        arenalib.Melee,
-		// Poisons are a rogue ability, not something on the vendor list.
-		ClassImbues: arenalib.ClassImbues{OffHand: 26891}, // Instant Poison
+		// Poisons are a rogue ability, not something on the vendor list. Deadly rather than Instant:
+		// Mutilate's 20% only counts against Deadly or Wound Poison, and Deadly out-damages Instant
+		// for every build on launch gear (+2.4..+5.0%).
+		ClassImbues: arenalib.ClassImbues{OffHand: 27186}, // Deadly Poison
 	})
 }

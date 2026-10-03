@@ -35,7 +35,7 @@
 	"12319": {
 		"ability": "Flurry",
 		"file": "sim/warrior/talents_fury.go",
-		"note": "Client 1.60.1.70009: the talent 12319's curve reads 5/10/15/20/25% attack speed for 3 swings, Classic's values, but the buff it triggers (12966) now carries a flat 30%. The sim applies the curve; the proc trigger is 12319 and the buff 12966.",
+		"note": "Client 1.60.1.70009: the talent 12319's curve reads 5/10/15/20/25% attack speed for 3 swings, but the buff it triggers (12966) now carries a flat 30%. The sim applies the curve; the proc trigger is 12319 and the buff 12966. The shaman's Flurry has the same split (that curve, a flat 10% buff), and beta log 2701 timed it at 10% and 15% on shamans with different point totals, so the server reads the talent there, not the buff.",
 		"source": "assumed",
 		"tooltip": "Passive\nIncreases your attack speed by 5% per point for your next 3 swings after dealing a melee critical strike. Lasts 15 sec.",
 		"assumptions": [
@@ -86,7 +86,7 @@
 	"12966": {
 		"ability": "Flurry",
 		"file": "sim/warrior/talents_fury.go",
-		"note": "The buff, client 1.60.1.70009: 15 sec, 3 charges and a flat 30% attack speed where Era's rank 1 buff is 10%. The sim applies the talent's 5% a point instead (12319).",
+		"note": "The buff, client 1.60.1.70009: 15 sec, 3 charges and a flat 30% attack speed where Era's rank 1 buff is 10%. The sim applies the talent's 5% a point instead (12319), as the shaman's twin buff was timed doing on beta log 2701.",
 		"source": "assumed",
 		"tooltip": "Passive\nIncreases your attack speed by 5% per point for your next 3 swings after dealing a melee critical strike. Lasts 15 sec.",
 		"assumptions": [
@@ -103,7 +103,7 @@
 	"1310222": {
 		"ability": "Spearing Strike",
 		"file": "sim/warrior/talents_arms.go",
-		"note": "Client 1.60.1.70009: a new Arms talent with no Classic spell. 15 Rage, 20 sec cooldown, 40% normalized weapon damage and another 80% against Giants and Dragonkin.",
+		"note": "Client 1.60.1.70009: a new Arms talent with no Classic spell. 15 Rage, 20 sec cooldown, 40% normalized weapon damage and another 80% against Giants and Dragonkin. Battle Stance only (client 1.60.1.70178 SpellShapeshift), so the default Berserker Stance rotation no longer casts it.",
 		"source": "forever",
 		"tooltip": "15 Rage\nMelee Range\nInstant\n20 sec cooldown\nA brutal attack that deals 40% weapon damage. Deals an additional 80% weapon damage against Giants, Dragonkin, and mounted targets. Mounted targets are dismounted."
 	},
@@ -131,7 +131,7 @@
 	"1680": {
 		"ability": "Whirlwind",
 		"file": "sim/warrior/whirlwind.go",
-		"note": "Base Whirlwind is untouched (25 Rage, 10 sec cooldown, up to 4 targets, Berserker Stance); the same id with tag 2 is the off-hand swing that Forever's Raging Blows talent adds, which is the talent's text and not this one's.",
+		"note": "25 Rage, 10 sec cooldown, up to 4 targets, Berserker Stance as in Classic. Hotfix 112347 (build 70170) rewrote its text to \"weapon damage from both melee weapons\": the off-hand swing, the same id with tag 2, is now Whirlwind's own for a dual-wielding warrior, where it used to come from Raging Blows. Raging Blows now takes 3 Rage off Whirlwind and Cleave instead.",
 		"source": "classic"
 	},
 	"1719": {
@@ -149,7 +149,7 @@
 	"20569": {
 		"ability": "Cleave",
 		"file": "sim/warrior/heroic_strike_cleave.go",
-		"note": "Client 1.60.1.70009: 50 bonus damage and 20 Rage as in Classic Era; the Rage discounts come from Forever's Improved Cleave and Raging Blows.",
+		"note": "Client 1.60.1.70009: 50 bonus damage and 20 Rage as in Classic Era; build 70170 dropped Improved Cleave, so the Rage discount is Raging Blows' 3 (shared with Whirlwind).",
 		"source": "classic"
 	},
 	"20662": {

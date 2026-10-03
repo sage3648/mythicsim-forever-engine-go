@@ -760,6 +760,20 @@ func RegisterAllProcs() {
 	//       This can be ignored if the effect has already been implemented.
 	//       With next db run the item will be removed if implemented.
 	//
+	// https://www.wowhead.com/forever/spell=1293501
+	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
+	//	Callback:           core.CallbackEmpty,
+	//	ProcMask:           core.ProcMaskUnknown,
+	//	Outcome:            core.OutcomeEmpty,
+	//	RequireDamageDealt: false
+	// }, []shared.ItemVariant{
+	//	{ItemID: 3456, ItemName: "Dog Whistle"},
+	// })
+
+	// TODO: Manual implementation required
+	//       This can be ignored if the effect has already been implemented.
+	//       With next db run the item will be removed if implemented.
+	//
 	// Deals 5 Fire damage to anyone who strikes you with a melee attack.
 	// https://www.wowhead.com/forever/spell=21142
 	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
@@ -8526,6 +8540,20 @@ func RegisterAllProcs() {
 	//	RequireDamageDealt: false
 	// }, []shared.ItemVariant{
 	//	{ItemID: 274256, ItemName: "Premier Lamellar Gauntlets"},
+	// })
+
+	// TODO: Manual implementation required
+	//       This can be ignored if the effect has already been implemented.
+	//       With next db run the item will be removed if implemented.
+	//
+	// Launch a magic severing bolt at the target, dealing 36 Physical damage and interrupting the spell being
+	// cast for 5s.
+	// https://www.wowhead.com/forever/spell=1293714
+	// unsupported: states no rate
+	// trigger 1293714 (0%, core.CallbackEmpty, core.ProcMaskUnknown)
+	// shared.NewSpellDataDamageProc(shared.SpellDataProc{TriggerSpellID: 1293714, BuffSpellID: 1293714, IsWeaponProc: true},
+	//	[]shared.ItemVariant{
+	//	{ItemID: 274293, ItemName: "Spellsever Crossbow"},
 	// })
 
 	// TODO: Manual implementation required

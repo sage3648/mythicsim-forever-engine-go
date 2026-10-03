@@ -34,7 +34,7 @@
 	"1241584": {
 		"ability": "Mutilate",
 		"file": "sim/rogue/talents_assassination.go",
-		"note": "Beta client 1.60.1.70009: four ranks (1310707, 399956, 1241582, 1241584) adding 23/33/48/67 to each hand's weapon damage before the 75%, and the sim casts rank 4, which strikes for 75% of weapon damage plus 50. 60 Energy, 20% against poisoned targets and a dagger in both hands are confirmed. The demo's flat 13 is gone.",
+		"note": "Beta client 1.60.1.70009: four ranks (1310707, 399956, 1241582, 1241584) adding 23/33/48/67 to each hand's weapon damage before the 75%, and the sim casts rank 4, which strikes for 75% of weapon damage plus 50. 60 Energy, 20% against poisoned targets and a dagger in both hands are confirmed. The demo's flat 13 is gone. Only the cast rolls miss, dodge and parry: the hand strikes carry the client's No Attack Miss/Dodge/Parry attributes, and beta logs agree (foreverlogs 2701/2702, Salty, level 30: the cast was missed, dodged or parried 16 times in 162, the strikes 0 times in 280, the off-hand strike averaging 0.59 of the main hand's, as the sim's 0.60).",
 		"source": "forever",
 		"tooltip": "60 Energy\nMelee Range\nInstant\nInstantly attacks with both weapons for 75% weapon damage plus an additional 50 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 combo points.\nRequires Daggers"
 	},

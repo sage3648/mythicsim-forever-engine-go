@@ -149,6 +149,19 @@
 				},
 				"castSpell": { "spellId": { "spellId": 1310786 } }
 			}
+		},
+		{
+			"action": {
+				"condition": {
+					"and": {
+						"vals": [
+							{ "cmp": { "op": "OpGt", "lhs": { "autoTimeToNext": { "autoType": "RangedAuto" } }, "rhs": { "const": { "val": "0.5s" } } } },
+							{ "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } }
+						]
+					}
+				},
+				"castSpell": { "spellId": { "spellId": 14287 } }
+			}
 		}
 	]
 }
