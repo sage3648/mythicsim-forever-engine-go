@@ -79,11 +79,12 @@
 	"1293527": {
 		"ability": "Summon Hawk",
 		"assumptions": [
-			"The hawk is a guardian whose swings the client does not describe; the assault is modelled as the rank's dive bomb base damage every 3 sec. Its scaling aura (1293586, Hunter Guardian Hawk Pet Scaling 01) passes on the hunter's haste, damage done and crit but no attack power, so the swings themselves should not grow with ranged attack power.",
-			"Two hawks at once, the client's cap; a cast past it replaces the hawk closest to leaving, which the client does not specify."
+			"The hawk is a guardian whose swings the client does not describe; the assault is modelled as the rank's dive bomb base damage every 3 sec, without an attack power term. Guardian stat inheritance and the follow-up damage formula remain unverified; the scaling-aura interpretation previously recorded here has not been validated against game measurements.",
+			"Two hawks at once, the client's cap; a cast past it replaces the hawk closest to leaving, which the client does not specify.",
+			"Guardian hit, expertise, crit and positioning still use the owner-based approximation. Base attack damage, individual swing speed and guardian-level scaling have not been measured. Source: https://foreverlogs.gg/reports/2701/encounters/damage-done?source=30826&spells=-1&view=events"
 		],
 		"file": "sim/hunter/summon_hawk.go",
-		"note": "Client 70009: rank 4 (level 60), the only rank the sim casts. Dive bomb, cost, the 6 sec cooldown shared with Arcane Shot and the 18 sec hawk (1293248) come from the client.",
+		"note": "Client 70009: rank 4 (level 60), the only rank the sim casts. Dive bomb, cost, the 6 sec cooldown shared with Arcane Shot and the 18 sec hawk (1293248) come from the client. Forever Logs report 2701 records guardian auto-attacks that miss, are dodged, are parried and crit. The assault now rolls the existing melee special table without a dual-wield penalty. This confirms the possible outcomes, not their exact rates or level-60 damage.",
 		"source": "assumed",
 		"tooltip": "190 Mana\n35 yd range\nInstant\n6 sec cooldown\nCommand a hawk to dive-bomb your targeted enemy, dealing 108 plus 5% of ranged attack power Physical damage and continuing its assault for 18 sec. Only 2 hawks can be active at once. Summon Hawk shares its cooldown with Arcane Shot."
 	},
