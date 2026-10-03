@@ -1494,3 +1494,28 @@ Tests cover equal-strength suppression, resuming after the winner expires, itera
 prepull time, lazy expiration and unequal concurrent result weights.
 
 Drop this when upstream exports equivalent per-effect uptime metrics.
+
+## 76. `hunter: Hawk follow-up attacks roll melee avoidance`
+
+Forever Logs report 2701 records Trapz's Hawk auto-attacks missing, being dodged,
+being parried and critically hitting Saltspine. The previous follow-up outcome
+was `OutcomeTickPhysicalCrit`, which could only hit or crit. Follow-up attacks
+now use the existing melee special hit/crit table, without the Hunter's
+dual-wield miss penalty or an assumed guardian glancing multiplier. The initial
+dive remains always-hit from the client attribute.
+
+Sources: [damage breakdown](https://foreverlogs.gg/reports/2701/encounters/damage-done?source=30826)
+and [attack events](https://foreverlogs.gg/reports/2701/encounters/damage-done?source=30826&spells=-1&view=events).
+The first event page records a dodge at 00:08.172, an 18-damage crit at 00:09.062,
+a miss at 00:15.932 and a parry at 00:34.782, all against Saltspine.
+
+This is an incremental correction to the existing scheduled attack model.
+Guardian damage, three-second attack interval, owner-based hit/expertise/crit
+and position remain approximations, not fitted results. The displayed
+low-level damage cannot establish a level-60 formula. The merged Hawk names
+also cannot establish an individual guardian's base interval without GUIDs and
+attack-speed buffs. Do not calibrate damage to the displayed average of seven.
+
+`TestSummonHawkTwoHawks` checks both positions: two active Hawks attack and crit,
+follow-ups can miss and be dodged, parries occur only in front, and the dive
+never misses, dodges, parries or blocks.

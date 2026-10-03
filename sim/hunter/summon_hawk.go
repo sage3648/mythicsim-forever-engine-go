@@ -14,9 +14,13 @@ import (
 // attack power, the mana cost, a 6 sec cooldown and the 18 sec hawk (1293248), and caps the hawks
 // out at once at its third effect, 2. The hawk that stays is a guardian whose swings the client does
 // not describe, so each hawk's assault is modelled as the rank's dive bomb base damage every 3 sec,
-// a melee hit that can crit. Every dive bomb rank carries the client's always-hit attribute, so it
-// never misses, and is never dodged or parried, and always leaves a hawk. A cast past the cap
-// replaces the hawk closest to leaving.
+// a melee hit that can crit. Beta report 2701 records Hawk auto-attacks missing, being dodged and
+// being parried. Use the existing melee special table for these outcomes, without importing the
+// Hunter's dual-wield miss penalty or assuming guardian glancing damage. Guardian stat inheritance,
+// damage, speed and exact outcome rates remain unverified.
+// Source: https://foreverlogs.gg/reports/2701/encounters/damage-done?source=30826&spells=-1&view=events
+// Every dive bomb rank carries the client's always-hit attribute, so it never misses, is never
+// dodged or parried, and always leaves a hawk. A cast past the cap replaces the hawk closest to leaving.
 func (hunter *Hunter) registerSummonHawkSpell(timer *core.Timer) {
 	if !hunter.Talents.SummonHawk {
 		return
@@ -51,7 +55,7 @@ func (hunter *Hunter) registerSummonHawkSpell(timer *core.Timer) {
 					dot.Snapshot(target, baseDamage)
 				},
 				OnTick: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
-					dot.CalcAndDealPeriodicSnapshotDamage(sim, target, dot.Spell.OutcomeTickPhysicalCrit)
+					dot.CalcAndDealPeriodicSnapshotDamage(sim, target, dot.Spell.OutcomeMeleeSpecialHitAndCrit)
 				},
 			},
 		})
