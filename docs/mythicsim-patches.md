@@ -1568,3 +1568,81 @@ strict sequences and nested sequences with unsupported, constant-false and missi
 conditions. Constant-true controls still cast Arcane Power, and the fallback Frostbolt still runs.
 
 Drop this patch when upstream removes nested cooldowns from pruned APL actions.
+
+## 78. `core: state a class changes outside an aura's lifecycle is reset by the unit`
+
+The sim resets every spell and aura in place between iterations. Some class state lives in closures
+or aura fields and was cleared by the wrong owner:
+
+- **Slice and Dice and Venom durations leaked between iterations.** Each cast writes the
+  combo-point duration onto the aura and nothing restored it, so an aura activated without the
+  cast (an APL Activate Aura) used the previous iteration's last duration. A unit reset effect now
+  restores the default. No preset activates either aura directly, so no result moved.
+- **The Maul and Heroic Strike/Cleave queue flags** were cleared only by the queue aura's OnReset.
+  An iteration that ends inside the queue's realism delay leaves the flag set without activating
+  the aura. Today's full reset always runs that OnReset, so this is not a live bug, but any reset
+  that skips untouched auras would leave queuing dead for the rest of the run. The flags are now
+  cleared by a unit reset effect, which always runs.
+
+Validation: `TestSliceAndDiceDurationResetsBetweenIterations` in `sim/rogue`. Unpatched, the next
+iteration starts Slice and Dice at 13.05 s (the 1 combo point cast) instead of the default 21 s. No
+suite golden moves.
+
+Drop this when upstream resets these through the unit.
+
+## 79. `core: the end of an iteration skips spells and auras it did not use`
+
+Between iterations the engine folds every registered spell's metrics into the run totals and expires
+every active aura. Most registered spells (every rank of every ability) do nothing in a given
+iteration, and expiring auras rescanned the whole aura list from the top after each one.
+
+- **Spell metrics.** A split's first fold creates its action entry, so an unused spell still
+  reports a row of zeros, and caches it; later folds skip the map lookup and skip any target whose
+  metrics are all zero. Adding zero leaves every total exactly as it was, and the non-zero
+  additions keep their order, so every result is bit-identical.
+- **Aura expiry.** The pass still deactivates auras in list order, but starts over only when a
+  deactivation activated another aura on the unit (counted by `auraTracker.activations`). When
+  nothing was activated, every aura before the current one is still inactive, so the order of
+  deactivations is the same as before.
+
+Measured single-threaded at 20,000 iterations on the 2026-10-03 sync, six alternating runs each:
+the Ret request in `sims/ret` went from a median 2,946 to 2,997 iterations a second (+1.7%, faster in
+four of six pairs) and the Shadow request in `sims/shadow` from 8,402 to 8,622 (+2.6%, five of six).
+An earlier round on the 2026-10-02 base read +5.9% and +2.3%, so call it 2 to 3%. Paladins register
+the most (about 165 spells and 107 auras against 50 to 110 objects for other specs), but did not
+gain measurably more. DPS matched to six decimals in every run, and no suite golden moves.
+
+Drop this when upstream folds iteration metrics selectively.
+
+## 81. `core: a rotation checks a spell's timers before its conditions and cost`
+
+Numbered after #80 (the Agony fix, PR #24), which is on a separate branch.
+
+A rotation looks for something to do on every global cooldown and, while nothing is ready, a
+reaction time apart. Each look asks every priority item whether it can run, and most of the answers
+are no because the spell is on cooldown. The engine found that out last:
+
+- **The cast checks** (`Spell.CanQueue`, `Spell.CanCast`) ran `CanCompleteCast` first (the unit and
+  target checks, form and stance requirements, the spell's cast conditions and its cost) and only
+  then compared the GCD and cooldown timers. The timers now come first, through one helper,
+  `Spell.timersBlockQueue`. The mana cost check also opens and closes out-of-mana stretches, so these
+  now count only spells that are otherwise ready: a spell on cooldown that could not be afforded no
+  longer counts as out of mana. DPS is unaffected.
+- **A cast action whose spell has a cooldown** checks those timers before its condition
+  (`APLAction.IsReady`), so a long cooldown costs two comparisons a look instead of its condition.
+  Conditions only read state (an audit of every value getter found only local accumulators and the
+  variable cache, which memoises within a look), so skipping one changes nothing. Spells without a
+  cooldown are not gated: they are usually ready, and gating them paid the timer checks twice, which
+  cost Assassination and Subtlety 4 to 6%.
+- **The default Retribution preset** dropped "Judgement can be cast" from the Judgement cast, the
+  same check the cast makes. The rankings page uses the generated rotation, so this only changes the
+  spec page's default.
+
+Measured single-threaded on the 25 builds the DPS rankings page simulates (exported from its own
+`buildRaid` with the launch gear, consumables and rotations, each run alone with the page's raid and
+party buffs, 3000 iterations, three alternating rounds): +7.9% over all 25 by total time, from +19%
+(Protection Paladin) through +10 to +16% for the hunters, Fury and Retribution, to about -1% for
+Assassination and Subtlety, which ten paired rounds put at -1.0% +-0.9% and -2.3% +-2.1%. DPS matched
+to six decimals for every build, and no suite golden moves.
+
+Drop this when upstream orders its cast checks this way.
