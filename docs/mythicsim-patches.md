@@ -1568,3 +1568,144 @@ strict sequences and nested sequences with unsupported, constant-false and missi
 conditions. Constant-true controls still cast Arcane Power, and the fallback Frostbolt still runs.
 
 Drop this patch when upstream removes nested cooldowns from pruned APL actions.
+
+## 78. `core: state a class changes outside an aura's lifecycle is reset by the unit`
+
+The sim resets every spell and aura in place between iterations. Some class state lives in closures
+or aura fields and was cleared by the wrong owner:
+
+- **Slice and Dice and Venom durations leaked between iterations.** Each cast writes the
+  combo-point duration onto the aura and nothing restored it, so an aura activated without the
+  cast (an APL Activate Aura) used the previous iteration's last duration. A unit reset effect now
+  restores the default. No preset activates either aura directly, so no result moved.
+- **The Maul and Heroic Strike/Cleave queue flags** were cleared only by the queue aura's OnReset.
+  An iteration that ends inside the queue's realism delay leaves the flag set without activating
+  the aura. Today's full reset always runs that OnReset, so this is not a live bug, but any reset
+  that skips untouched auras would leave queuing dead for the rest of the run. The flags are now
+  cleared by a unit reset effect, which always runs.
+
+Validation: `TestSliceAndDiceDurationResetsBetweenIterations` in `sim/rogue`. Unpatched, the next
+iteration starts Slice and Dice at 13.05 s (the 1 combo point cast) instead of the default 21 s. No
+suite golden moves.
+
+Drop this when upstream resets these through the unit.
+
+## 79. `core: the end of an iteration skips spells and auras it did not use`
+
+Between iterations the engine folds every registered spell's metrics into the run totals and expires
+every active aura. Most registered spells (every rank of every ability) do nothing in a given
+iteration, and expiring auras rescanned the whole aura list from the top after each one.
+
+- **Spell metrics.** A split's first fold creates its action entry, so an unused spell still
+  reports a row of zeros, and caches it; later folds skip the map lookup and skip any target whose
+  metrics are all zero. Adding zero leaves every total exactly as it was, and the non-zero
+  additions keep their order, so every result is bit-identical.
+- **Aura expiry.** The pass still deactivates auras in list order, but starts over only when a
+  deactivation activated another aura on the unit (counted by `auraTracker.activations`). When
+  nothing was activated, every aura before the current one is still inactive, so the order of
+  deactivations is the same as before.
+
+Measured single-threaded at 20,000 iterations on the 2026-10-03 sync, six alternating runs each:
+the Ret request in `sims/ret` went from a median 2,946 to 2,997 iterations a second (+1.7%, faster in
+four of six pairs) and the Shadow request in `sims/shadow` from 8,402 to 8,622 (+2.6%, five of six).
+An earlier round on the 2026-10-02 base read +5.9% and +2.3%, so call it 2 to 3%. Paladins register
+the most (about 165 spells and 107 auras against 50 to 110 objects for other specs), but did not
+gain measurably more. DPS matched to six decimals in every run, and no suite golden moves.
+
+Drop this when upstream folds iteration metrics selectively.
+
+## 81. `core: a rotation checks a spell's timers before its conditions and cost`
+
+Numbered after #80 (the Agony fix, PR #24), which is on a separate branch.
+
+A rotation looks for something to do on every global cooldown and, while nothing is ready, a
+reaction time apart. Each look asks every priority item whether it can run, and most of the answers
+are no because the spell is on cooldown. The engine found that out last:
+
+- **The cast checks** (`Spell.CanQueue`, `Spell.CanCast`) ran `CanCompleteCast` first (the unit and
+  target checks, form and stance requirements, the spell's cast conditions and its cost) and only
+  then compared the GCD and cooldown timers. The timers now come first, through one helper,
+  `Spell.timersBlockQueue`. The mana cost check also opens and closes out-of-mana stretches, so these
+  now count only spells that are otherwise ready: a spell on cooldown that could not be afforded no
+  longer counts as out of mana. DPS is unaffected.
+- **A cast action whose spell has a cooldown** checks those timers before its condition
+  (`APLAction.IsReady`), so a long cooldown costs two comparisons a look instead of its condition.
+  Conditions only read state (an audit of every value getter found only local accumulators and the
+  variable cache, which memoises within a look), so skipping one changes nothing. Spells without a
+  cooldown are not gated: they are usually ready, and gating them paid the timer checks twice, which
+  cost Assassination and Subtlety 4 to 6%.
+- **The default Retribution preset** dropped "Judgement can be cast" from the Judgement cast, the
+  same check the cast makes. The rankings page uses the generated rotation, so this only changes the
+  spec page's default.
+
+Measured single-threaded on the 25 builds the DPS rankings page simulates (exported from its own
+`buildRaid` with the launch gear, consumables and rotations, each run alone with the page's raid and
+party buffs, 3000 iterations, three alternating rounds): +7.9% over all 25 by total time, from +19%
+(Protection Paladin) through +10 to +16% for the hunters, Fury and Retribution, to about -1% for
+Assassination and Subtlety, which ten paired rounds put at -1.0% +-0.9% and -2.3% +-2.1%. DPS matched
+to six decimals for every build, and no suite golden moves.
+
+Drop this when upstream orders its cast checks this way.
+
+## 82. `core: a rotation compiles each item's checks into the order its first iteration found cheapest`
+
+Builds on #81.
+
+#81 asks a cooldown spell's timers before its condition, the best order for a rotation turned away
+mostly by cooldowns. Other rotations are turned away by something else: a rogue mostly by energy, a
+Fury warrior by its own conditions. No one order suits every spec, and a fixed second gate for
+energy, rage and focus cost Fury 8%. So each rotation now finds its own order:
+
+- **The first iteration counts.** Each cast item with a cooldown or an energy, rage or focus cost
+  asks its timers, its cost and its condition independently (`APLAction.countingReady`) and counts
+  which say no. Its answer is the plain check's: blocked timers or cost mean the cast check would
+  fail too, and the cast check runs only when all three pass.
+- **The second iteration compiles.** `APLRotation.reset` turns each item's counts into a function
+  that asks the checks in the order with the lowest expected cost, treating them as independent and
+  pricing each roughly (a timer comparison 1, a cost check 2, a condition 1 per value in its tree,
+  the cast check 8). The cast check always comes last. `APLAction.IsReady` then only calls that
+  function, with no counters and no branches on which checks to ask.
+- **Mana is left out.** The mana cost check also opens and closes out-of-mana stretches, so it stays
+  in the cast check; `Spell.cannotAffordNonMana` reads energy, rage and focus only. Every other
+  check only reads (audited in #81), so the order changes only how quickly "not ready" is found.
+
+Measured as in #81 (the 25 rankings builds, 3000 iterations, five alternating rounds): +11.1% over
+all 25 by total time against the code before #81, where #81 alone measures +6.9%, so +3.9% over #81.
+The builds that gain most were the slowest: ten paired rounds against #81 put Subtlety at +26%,
+Combat +16% and Feral +11%. For mana builds, the compiled order is #81's, and the extra call costs
+within noise: ten paired rounds put Arcane, Shadow, Stormcaller and DS/Ruin Pandemic between -1.6%
+and +0.8%. DPS matched #81 to six decimals for every build, and no suite golden moves.
+
+Drop this when upstream orders a rotation's checks itself.
+
+## 83. `core: conditions that depend only on the fight's time keep their answer until it can change`
+
+Builds on #82.
+
+Cooldowns are often held for the end of a fight by a condition such as "Remaining Time <= 30s OR
+Remaining Time >= 140s". It gives the same answer for minutes at a time, but a rotation waiting for
+rage asks it on every look. A warrior looks about 850 times a fight and finds nothing to do on about
+90% of those looks, so these conditions were a large share of Fury's and Arms' time.
+
+- **The cache.** A comparison of the remaining or current time with a constant can change its
+  answer only at the one time where the two are equal. A condition, or any part of one, built only
+  from such comparisons, constants, And, Or and Not therefore keeps its answer until the next of
+  those times. `APLRotation.cacheTimeOnlyConditions` wraps each largest such part in an
+  `aplValueTimeCache`, which asks it as before and reuses the answer until then. The caches reset
+  each iteration, since the fight's length can vary. In a fight that ends at a health target and
+  estimates its remaining time from damage done, remaining time is not a function of time alone, so
+  those comparisons are never cached.
+- **Constant operands.** An And drops constant true operands and an Or drops constant false ones,
+  as in "Sunder stacks < 1 AND true".
+- **Untouched rotations stay as built.** A condition with no time-only part keeps its nodes and
+  operand slices, so the rotations of specs that do not use these conditions run exactly as before.
+
+Each skipped condition node saves about 4 ns, calibrated from Fury and Arms. Over the 25 rankings
+builds, counting the nodes each skips per fight predicts the gain: about 16% for Fury, 13% for Arms,
+1.5 to 2% for the four warlock builds, under 0.2% for Enhancement, the rogues, Shadow and Fire, and
+nothing for the rest. Ten paired rounds against #82 measured Fury +18.1% and Arms +12.8%, the
+warlocks +0.6 to +2.8%, and every other build within this machine's noise (the eight builds the cache
+cannot touch spread from -3.0% to +5.7%). DPS matched #82 to six decimals for every build, and no
+suite golden moves.
+
+Drop this when upstream caches time-only conditions itself.
