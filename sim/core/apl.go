@@ -46,6 +46,9 @@ type APLRotation struct {
 	// Used to override MCD restrictions within sequences.
 	inSequence bool
 
+	// Whether each action's readiness check has been compiled from the first iteration's counts.
+	readyCompiled bool
+
 	// Validation warnings that occur during proto parsing.
 	// We return these back to the user for display in the UI.
 	curValidations          []*proto.APLValidation
@@ -304,6 +307,8 @@ func (unit *Unit) newAPLRotation(config *proto.APLRotation) *APLRotation {
 		}
 	}
 
+	rotation.prepareReadyChecks()
+
 	return rotation
 }
 
@@ -394,6 +399,7 @@ func (rot *APLRotation) reset(sim *Simulation) {
 	rot.interruptChannelIf = nil
 	rot.allowChannelRecastOnInterrupt = false
 	rot.evalGeneration++ // Invalidate any variable caches from previous iteration or initialization
+	rot.compileReadyChecks()
 	for _, action := range rot.allAPLActions() {
 		action.impl.Reset(sim)
 	}

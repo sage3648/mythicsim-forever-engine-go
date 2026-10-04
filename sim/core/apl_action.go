@@ -7,8 +7,17 @@ import (
 )
 
 type APLAction struct {
+	// ready captures condition and impl when the rotation is built, so neither may change after
+	// newAPLRotation returns.
 	condition APLValue
 	impl      APLActionImpl
+
+	// Whether this action can run now: its condition, its action, and for a cast any cheaper checks
+	// worth asking first, in the order compiled for this rotation; see apl_action_ready.go.
+	ready func(*Simulation) bool
+
+	// What this action counted in the first iteration, until its check is compiled.
+	counts *aplReadyCounts
 }
 
 func (action *APLAction) Finalize(rot *APLRotation) {
@@ -24,7 +33,7 @@ func (action *APLAction) Finalize(rot *APLRotation) {
 }
 
 func (action *APLAction) IsReady(sim *Simulation) bool {
-	return (action.condition == nil || action.condition.GetBool(sim)) && action.impl.IsReady(sim)
+	return action.ready(sim)
 }
 
 func (action *APLAction) Execute(sim *Simulation) {
