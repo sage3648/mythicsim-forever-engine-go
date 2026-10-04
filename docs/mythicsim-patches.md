@@ -1529,3 +1529,23 @@ Arms (+6.0% vs +7.4%) and Destruction (+3.6% vs +5.3%) move about 1 to 1.5% less
 because our Warrior and Warlock patches change the baseline; every row moves the same
 direction except naked Destruction, where our default rotation keeps Conflagrate. Protection
 Paladin and Warrior move only on the Vile Protector item row (armor). Whole suite green.
+
+## 84. `druid: a Dense stone counts in cat and bear form`
+
+Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), and
+`registerStaticImbue` adds a Dense Sharpening Stone's or Dense Weightstone's +8 to the humanoid
+weapon only, which the form then replaces. A main-hand Dense stone therefore did nothing in cat or
+bear form. `formWeapon` now adds the stone's flat damage to the weapon before rescaling it to the
+form's swing, the same as a permanent weapon-damage enchant: +8 on the 3.5 second Smite's Mighty
+Hammer is +2.29 a cat swing and +5.71 a bear swing, and on the 2.9 second Headmaster's Charge
+about +2.8 a cat swing. The Elemental Sharpening Stone is a stat and is unchanged.
+
+Unverified: Forever may instead add the full +8 to each paw hit. MythicSim's Feral reference
+(Headmaster's Charge, 20,000 iterations) gains +1.0% DPS from a Dense Weightstone with this
+scaling, +2.8% with the full +8, and +1.7% from an Elemental Sharpening Stone. A character sheet
+in cat form before and after applying a stone tells the two apart.
+
+`TestFormPawCarriesADenseStone` checks both stones in both forms. Feral goldens are unchanged:
+the test suite assumes no Dense stone.
+
+Drop this when upstream applies weapon imbues to the form weapon.

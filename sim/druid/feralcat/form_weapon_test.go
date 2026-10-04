@@ -66,3 +66,50 @@ func TestFormPawCarriesTheEquippedWeaponDPS(t *testing.T) {
 		t.Errorf("unarmed paw %.2f DPS, want the unarmed fist", dps(unarmed))
 	}
 }
+
+// A Dense stone's flat damage is part of the weapon the paw is rescaled from: +8 on the 3.5 s
+// Smite's Mighty Hammer adds 8/3.5 to each cat swing and 8*2.5/3.5 to each bear swing. Before,
+// the form dropped it.
+func TestFormPawCarriesADenseStone(t *testing.T) {
+	paw := func(t *testing.T, imbue int32) (core.Weapon, core.Weapon) {
+		t.Helper()
+		items := make([]*proto.ItemSpec, proto.ItemSlot_ItemSlotRanged+1)
+		for i := range items {
+			items[i] = &proto.ItemSpec{}
+		}
+		items[proto.ItemSlot_ItemSlotMainHand] = &proto.ItemSpec{Id: 7230}
+		sim := core.NewSim(&proto.RaidSimRequest{
+			SimOptions: &proto.SimOptions{RandomSeed: 1},
+			Raid: &proto.Raid{Parties: []*proto.Party{{Buffs: &proto.PartyBuffs{}, Players: []*proto.Player{{
+				Name: "Cat", Class: proto.Class_ClassDruid, Race: proto.Race_RaceNightElf, TalentsString: DefaultTalents,
+				Equipment: &proto.EquipmentSpec{Items: items}, Buffs: &proto.IndividualBuffs{}, Spec: DefaultSpecOptions,
+				Consumables: &proto.ConsumesSpec{MhImbueId: imbue},
+				Rotation:    &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
+			}}}}},
+			Encounter: core.MakeSingleTargetEncounter(0),
+		}, simsignals.CreateSignals())
+		sim.Reset()
+		cat := sim.Raid.Parties[0].Players[0].(druid.DruidAgent).GetDruid()
+		return cat.GetCatWeapon(), cat.GetBearWeapon()
+	}
+	plainCat, plainBear := paw(t, 0)
+	for _, imbue := range []int32{16622, 16138} { // Dense Weightstone, Dense Sharpening Stone
+		cat, bear := paw(t, imbue)
+		for _, row := range []struct {
+			form        string
+			plain, with core.Weapon
+			want        float64
+		}{{"Cat", plainCat, cat, 8 / 3.5}, {"Bear", plainBear, bear, 8 * 2.5 / 3.5}} {
+			if got := row.with.BaseDamageMin - row.plain.BaseDamageMin; math.Abs(got-row.want) > 1e-9 {
+				t.Errorf("imbue %d: %s paw minimum +%.4f, want +%.4f", imbue, row.form, got, row.want)
+			}
+			if got := row.with.BaseDamageMax - row.plain.BaseDamageMax; math.Abs(got-row.want) > 1e-9 {
+				t.Errorf("imbue %d: %s paw maximum +%.4f, want +%.4f", imbue, row.form, got, row.want)
+			}
+		}
+	}
+	// The crit stone adds no weapon damage.
+	if cat, _ := paw(t, 18262); cat.BaseDamageMin != plainCat.BaseDamageMin {
+		t.Errorf("Elemental Sharpening Stone moved the paw to %.4f from %.4f", cat.BaseDamageMin, plainCat.BaseDamageMin)
+	}
+}
