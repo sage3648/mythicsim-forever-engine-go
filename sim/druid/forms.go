@@ -52,27 +52,32 @@ func (druid *Druid) ClearForm(sim *core.Simulation) {
 // Forever: "While Shapeshifted, the Druid's melee auto attack DPS while in Bear Form, Cat Form, or
 // Dire Bear Form is now the same as the DPS of the Druid's equipped weapon. But the speed of attack
 // is changed to 1.0 or 2.5 seconds, depending on the form. Abilities that deal weapon damage
-// likewise use these damage values." (Druid class deep dive, 30 September 2026.) The equipped main
-// hand's range, weapon damage enchant and bonus DPS are rescaled to the form's swing, keeping its
-// DPS and spread. Nothing equipped is the unarmed fist.
+// likewise use these damage values." (Druid class deep dive, 30 September 2026.) The equipped
+// weapon's damage range and bonus DPS are rescaled to the form's swing, so the paw keeps the
+// weapon's DPS and its spread. With nothing equipped the paw is the unarmed fist.
 //
-// A main-hand Dense Sharpening Stone or Dense Weightstone is not rescaled: its flat damage lands in
-// full on every paw hit (patch 84). Hameru's beta character sheet (Discord, 5 October 2026) shows
-// Heavyhammer (73 to 110, 3.30 s) as a 46 to 58 paw at 1.00 s, and 49 to 61 with a +3 Weighted
-// buff. registerStaticImbue adds the stone to the humanoid weapon only, which the form replaces.
+// Flat weapon damage, a weapon-damage enchant's (+9 Superior Impact) or a Dense Sharpening Stone's
+// or Dense Weightstone's +8, is added after the rescale, in full on every paw hit. Hameru's beta
+// character sheet (MythicSim Discord, 5 October 2026): Heavyhammer, 73 to 110 at 3.3 s, reads 46 to
+// 58 on the 1.0 s cat paw and 49 to 61 with a +3 weightstone; Hameru reports a +5 enchant adds 5. The
+// client stores stones and these enchants as the same enchantment kind (SpellItemEnchantment
+// effect 2, "Weighted +8" and "Weapon Damage +9" alike), which the server adds to the hand's damage
+// as one flat amount. registerStaticImbue adds the stone to the humanoid weapon only, which the
+// form replaces, so before this the stone did nothing in form and the enchant was scaled down.
 func (druid *Druid) formWeapon(swingSpeed float64) core.Weapon {
 	weapon := druid.WeaponFromMainHand()
 	scale := 1.0
 	if weapon.SwingSpeed > 0 {
 		scale = swingSpeed / weapon.SwingSpeed
 	}
-	stone := 0.0
-	if druid.GetMHWeapon() != nil {
-		stone = druid.MHImbueFlatWeaponDamage()
+	enchant, flat := 0.0, 0.0
+	if item := druid.GetMHWeapon(); item != nil {
+		enchant = item.Enchant.WeaponDamage
+		flat = enchant + druid.MHImbueFlatWeaponDamage()
 	}
 	return core.Weapon{
-		BaseDamageMin:        weapon.BaseDamageMin*scale + stone,
-		BaseDamageMax:        weapon.BaseDamageMax*scale + stone,
+		BaseDamageMin:        (weapon.BaseDamageMin-enchant)*scale + flat,
+		BaseDamageMax:        (weapon.BaseDamageMax-enchant)*scale + flat,
 		SwingSpeed:           swingSpeed,
 		NormalizedSwingSpeed: swingSpeed,
 		AttackPowerPerDPS:    core.DefaultAttackPowerPerDPS,

@@ -1532,29 +1532,43 @@ Paladin and Warrior move only on the Vile Protector item row (armor). Whole suit
 
 ## 84. `druid: a Dense stone counts in cat and bear form`
 
-Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), and
-`registerStaticImbue` adds a Dense Sharpening Stone's or Dense Weightstone's +8 to the humanoid
-weapon only, which the form then replaces. A main-hand Dense stone therefore did nothing in cat or
-bear form. `formWeapon` now adds the stone's flat damage to the paw after the weapon is rescaled to
-the form's swing, so the full +8 lands on every cat and bear paw hit. The Elemental Sharpening Stone
-is a stat and is unchanged.
+Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), rescaling its damage range
+to the form's 1.0 or 2.5 second swing. Flat weapon damage is not rescaled: it lands in full on
+every paw hit. Hameru's beta character sheet (MythicSim Discord, 5 October 2026) shows Heavyhammer
+(73 to 110 at 3.3 s) in cat form at 46 to 58, and 49 to 61 with a +3 weightstone, so the stone
+adds +3 per paw hit rather than 3 x 1.0 / 3.3. Hameru also reports a +5 weapon-damage enchant adds 5.
+The client stores both as the same enchantment kind (SpellItemEnchantment effect 2: "Weighted +8",
+"Sharpened +8" and "Weapon Damage +9" alike), and the server adds that kind to the hand's damage as
+one flat amount, so stones and weapon-damage enchants are treated the same.
 
-Evidence: Hameru's beta character sheet (MythicSim Discord #general, 5 October 2026 06:10).
-Heavyhammer (73 to 110, 3.30 s) in cat form shows a 46 to 58 main hand at 1.00 s; with a +3
-Weighted buff it reads 49 to 61. The weapon's range is rescaled (73 x 1.0 / 3.3 = 22.1, plus 339 AP
-/ 14 = 24.2, gives 46) and the stone's +3 is added after. The first version of this patch scaled the
-stone with the weapon, which under-counted it by the weapon's speed (3.3x on Heavyhammer). On the
-Feral reference the flat stone was estimated at +2.8% DPS, ahead of the Elemental Sharpening Stone
-(+1.7%).
+Before this, `registerStaticImbue` added a Dense Sharpening Stone's or Dense Weightstone's +8 to the
+humanoid weapon only, which the form replaces, so the stone did nothing in form; and
+`newWeaponFromItem` folded `Enchant.WeaponDamage` into the range that `formWeapon` rescales, so +9
+Superior Impact gave a cat on a 2.9 second staff about +3.1 a swing. `formWeapon` now rescales the
+weapon's own range and bonus DPS, then adds the enchant's and the stone's flat damage. Crusader,
++25 Agility and the Elemental Sharpening Stone are not weapon damage and are unchanged.
 
-Not settled: Hameru also reports a +5 weapon enchant giving its full value, which would make
-weapon-damage enchants flat in form too. `formWeapon` still rescales them; change both together if
-a cat sheet before and after an enchant confirms it.
+MythicSim's references, board seed, 10,000 iterations, empty trinkets, default length (300 s in
+brackets):
 
-`TestFormPawCarriesADenseStone` checks both stones in both forms (+8 each). Feral goldens are
-unchanged: the test suite assumes no Dense stone.
+| Main hand | Before | After |
+| --- | ---: | ---: |
+| Cat, Crusader, Elemental stone | 599.92 (563.43) | 599.92 (563.43) |
+| Cat, +9 Superior Impact, Elemental stone | 594.51 (557.02) | 606.76 (568.53) |
+| Cat, Crusader, Dense Weightstone | 590.16 (553.70) | 606.50 (569.07) |
+| Cat, +9 Superior Impact, Dense Weightstone | 584.75 (547.43) | 613.15 (574.12) |
+| Bear, Crusader, Elemental stone | 432.80 (435.85) | 432.80 (435.85) |
+| Bear, +9 Superior Impact, Elemental stone | 425.74 (427.82) | 426.36 (428.43) |
+| Bear, Crusader, Dense Weightstone | 422.68 (425.57) | 429.87 (432.73) |
 
-Drop this when upstream applies weapon imbues to the form weapon.
+In cat form +9 weapon damage now beats Crusader and a Dense stone beats the Elemental one; the
+bear's 2.5 second swing keeps Crusader and the Elemental stone ahead.
+
+`TestFormPawCarriesFlatWeaponDamage` checks both Dense stones, Superior Impact and the two together
+in both forms, and that Crusader and the Elemental Sharpening Stone add no weapon damage. Feral
+goldens are unchanged: the suite carries no weapon-damage enchant or Dense stone.
+
+Drop this when upstream adds flat weapon damage to the form weapon after the rescale.
 
 ## 76. `hunter: Hawk follow-up attacks roll melee avoidance`
 
@@ -1584,7 +1598,7 @@ never misses, dodges, parries or blocks.
 ## Upstream sync 2026-10-05, #642 to #676
 
 Merged ElliotWood/Forever `67f14b04a5` (69 commits, 35 of them data, changelog or leaderboard) into
-the 2026-10-03 sync `e5c9ba5ea3` together with patch 84 (reworked to a flat stone, above) and patch
+the 2026-10-03 sync `e5c9ba5ea3` together with patch 84 (flat stone and weapon-damage enchant damage on every paw hit, above) and patch
 76 (Hawk follow-up outcomes). This supersedes the unreleased `e5c9ba5ea3` pin.
 
 Behaviour adopted: Arcane Concentration skips triggered spells and Blizzard rolls on its cast
