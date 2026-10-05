@@ -79,8 +79,8 @@ func (bear *GuardianDruid) ApplyTalents() {
 	bear.Druid.ApplyTalents()
 }
 
-// Windfury Totem is kept: Forever's totem is a party aura rather than a weapon
-// enchant, so it procs in Bear Form. See the Cat's AddPartyBuffs.
+// Windfury Totem stays: Forever's 8515 is a party proc aura, not a weapon
+// enchant, so a bear procs it (client 1.60.1.70205).
 func (bear *GuardianDruid) AddPartyBuffs(partyBuffs *proto.PartyBuffs) {
 	if bear.Talents.LeaderOfThePack {
 		partyBuffs.LeaderOfThePack = true

@@ -239,7 +239,7 @@
 	"9867": {
 		"ability": "Ravage",
 		"file": "sim/druid/ravage.go",
-		"note": "Client 70009: rank 4 deals 350% weapon damage plus 98 (343 after the multiplier) for 60 Energy, from Prowl and behind the target, as in Classic Era. Berserk's crit bonus names it; Savage Fury does not.",
+		"note": "Client 70009: rank 4 deals 350% weapon damage plus 98 (343 after the multiplier) for 60 Energy, from Prowl and behind the target, as in Classic Era. It cannot be dodged, parried or blocked (Attributes[0] 0x200000 on every rank), only missed. Berserk's crit bonus names it; Savage Fury does not.",
 		"source": "classic"
 	},
 	"9875": {

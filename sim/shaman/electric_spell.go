@@ -68,7 +68,6 @@ func (shaman *Shaman) newElectricSpellConfig(config ShamSpellConfig) core.SpellC
 		spell.Cast.DefaultCast.Cost = 0
 		spell.Cast.ModifyCast = nil
 		spell.MetricSplits = 0
-		spell.DamageMultiplier *= 0.5
 		spell.ThreatMultiplier = 0
 	}
 

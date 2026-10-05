@@ -54,7 +54,9 @@ func (mage *Mage) registerFlamestrike(rankConfig *spelldata.Spell) {
 			TickLength:       tickLength,
 			BonusCoefficient: tick.Coeff(),
 			OnTick: func(sim *core.Simulation, _ *core.Unit, dot *core.Dot) {
-				dot.Spell.CalcAndDealPeriodicAoeDamage(sim, tick.Average(core.CharacterLevel), dot.OutcomeTickMagicHit)
+				// The area tick row (1279990) carries no Cannot Crit bit, and beta logs show the ticks crit
+				// (foreverlogs 2668: 16 of 276).
+				dot.Spell.CalcAndDealPeriodicAoeDamage(sim, tick.Average(core.CharacterLevel), dot.Spell.OutcomeTickMagicHitAndCrit)
 			},
 		},
 

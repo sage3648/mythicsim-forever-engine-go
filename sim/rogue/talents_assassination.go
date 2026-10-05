@@ -236,7 +236,9 @@ func (rogue *Rogue) registerMutilate() {
 		SpellSchool:    mutilateRank.SpellSchool(),
 		DefenseType:    mutilateRank.DefenseTypeCore(),
 		ProcMask:       core.ProcMaskMeleeMHSpecial,
-		Flags:          core.SpellFlagMeleeMetrics | core.SpellFlagAPL,
+		// The cast deals no damage (1241584 has no damage effect); its two hand strikes do, and they
+		// are what poisons and on-hit effects roll on. Without this every Mutilate rolled a third time.
+		Flags:          core.SpellFlagMeleeMetrics | core.SpellFlagAPL | core.SpellFlagNoOnDamageDealt,
 		ClassSpellMask: RogueSpellMutilate,
 		MaxRange:       core.MaxMeleeRange,
 
@@ -262,8 +264,9 @@ func (rogue *Rogue) registerMutilate() {
 			result := spell.CalcOutcome(sim, target, spell.OutcomeMeleeSpecialHit) // Miss/Dodge/Parry/Hit
 			if result.Landed() {
 				rogue.AddComboPoints(sim, mutilateComboPoints(), spell.ComboPointMetrics())
-				rogue.MutilateOH.Cast(sim, target)
+				// Main hand first, as the client orders them (1310706 is effect 1, 1310705 effect 2).
 				rogue.MutilateMH.Cast(sim, target)
+				rogue.MutilateOH.Cast(sim, target)
 			} else {
 				spell.IssueRefund(sim)
 			}

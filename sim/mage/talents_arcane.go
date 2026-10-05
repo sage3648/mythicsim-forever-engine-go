@@ -134,10 +134,15 @@ func (mage *Mage) registerArcaneConcentration() {
 	// Forever states a flat SpellAuraOptions.ProcChance of 100 on the talent spell and puts the
 	// real per-rank chance on the effect, so ProcChanceAt would read 100% at every rank. 11213's
 	// ProcCategoryRecovery holds it to one proc a second.
+	//
+	// Spells another spell triggers do not proc it: Arcane Missiles' missiles and Blizzard's ticks.
+	// Blizzard rolls once per enemy when cast instead. Beta log 2706 (Jamal, 18 Arcane, level 26):
+	// 70 procs on 246 Arcane Explosions (722 targets hit, 11% a target), 12 on 37 Blizzard casts,
+	// 0 on 642 Blizzard tick hits (62 if they rolled) and 0 on 32 missiles.
 	mage.MakeProcTriggerAura(core.ProcTrigger{
-		Name:               "Arcane Concentration",
-		Callback:           core.CallbackOnSpellHitDealt,
-		ClassSpellMask:     MageSpellsAllDamaging,
+		Name:           "Arcane Concentration",
+		Callback:       core.CallbackOnSpellHitDealt,
+		ClassSpellMask: MageSpellsAllDamaging &^ MageSpellArcaneMissilesTick,
 		Outcome:            core.OutcomeLanded,
 		ProcChance:         spellData.ArcaneConcentration.EffectAt(1).FractionAt(mage.Talents.ArcaneConcentration),
 		ICD:                spellData.ArcaneConcentration.Highest().ICD(),
@@ -206,19 +211,24 @@ func (mage *Mage) registerArcaneMeditation() {
 	mage.PseudoStats.SpiritRegenRateCasting += spellData.ArcaneMeditation.FractionAt(mage.Talents.ArcaneMeditation)
 }
 
-// Casting Arcane Blast (40%), Fireball, Frostbolt or Frostfire Bolt (20%) can make the next Arcane Missiles free and
-// fire its missiles every 0.5 sec instead of every second: the same count in half the channel.
-// The generated tables have no Missile Barrage rows, so 44404 and the chances are carried over from
-// our Forever sim.
+// Arcane Blast landing (40%), or Fireball, Frostbolt or Frostfire Bolt (20%), can make the next Arcane
+// Missiles free and fire its missiles every 0.5 sec instead of every second: the same count in half
+// the channel. 400588 procs on a landed harmful spell (ProcFlags 0x10000), so a miss can't, and a bolt
+// procs when it arrives. Its trigger effect holds Arcane Blast's 40; the tooltip's 20 for the bolts
+// is half of it, which the row doesn't state. The buff (400589) holds the duration, cost and tick
+// changes. 44404 stays the aura id because saved rotations key on it.
 func (mage *Mage) registerMissileBarrage() {
 	if !mage.Talents.MissileBarrage {
 		return
 	}
 
+	buff := spellData.MissileBarrageTriggered.Highest()
+	arcaneBlastChance := spellData.MissileBarrage.Highest().Effect(dbcenums.A_PROC_TRIGGER_SPELL, 0).Average(core.CharacterLevel) / 100
+
 	mage.MissileBarrageAura = mage.RegisterAura(core.Aura{
 		Label:    "Missile Barrage",
 		ActionID: core.ActionID{SpellID: 44404},
-		Duration: time.Second * 15,
+		Duration: buff.Duration(),
 		OnCastComplete: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell) {
 			if spell.Matches(MageSpellArcaneMissilesCast) {
 				aura.Deactivate(sim)
@@ -226,32 +236,30 @@ func (mage *Mage) registerMissileBarrage() {
 		},
 	}).AttachSpellMod(core.SpellModConfig{
 		ClassMask:  MageSpellArcaneMissilesCast,
-		FloatValue: -1,
+		FloatValue: buff.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_COST)).Average(core.CharacterLevel) / 100,
 		Kind:       core.SpellMod_PowerCost_Pct_Add,
 	}).AttachSpellMod(core.SpellModConfig{
 		ClassMask: MageSpellArcaneMissilesCast,
-		TimeValue: -time.Millisecond * 500,
+		TimeValue: time.Duration(buff.Effect(dbcenums.A_ADD_FLAT_MODIFIER, int32(dbcenums.SPELLMOD_ACTIVATION_TIME)).Average(core.CharacterLevel)) * time.Millisecond,
 		Kind:      core.SpellMod_DotTickLength_Flat,
 	})
 
-	core.MakePermanent(mage.RegisterAura(core.Aura{
-		Label: "Missile Barrage Trigger",
-		OnCastComplete: func(_ *core.Aura, sim *core.Simulation, spell *core.Spell) {
-			procChance := 0.0
-			switch {
-			case spell.Matches(MageSpellArcaneBlast):
-				procChance = .40
-			case spell.Matches(MageSpellFireball | MageSpellFrostbolt | MageSpellFrostfireBolt):
-				procChance = .20
-			default:
-				return
+	mage.MakeProcTriggerAura(core.ProcTrigger{
+		Name:               "Missile Barrage Trigger",
+		Callback:           core.CallbackOnSpellHitDealt,
+		ClassSpellMask:     MageSpellArcaneBlast | MageSpellFireball | MageSpellFrostbolt | MageSpellFrostfireBolt,
+		Outcome:            core.OutcomeLanded,
+		TriggerImmediately: true,
+		Handler: func(sim *core.Simulation, spell *core.Spell, _ *core.SpellResult) {
+			procChance := arcaneBlastChance
+			if !spell.Matches(MageSpellArcaneBlast) {
+				procChance /= 2
 			}
-
 			if sim.Proc(procChance, "Missile Barrage") {
 				mage.MissileBarrageAura.Activate(sim)
 			}
 		},
-	}))
+	})
 }
 
 func (mage *Mage) registerArcaneMind() {

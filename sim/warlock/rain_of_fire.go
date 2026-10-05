@@ -5,9 +5,9 @@ import (
 	"github.com/wowsims/forever/sim/core/dbcenums"
 )
 
-// Forever's Rain of Fire is an area trigger, like its Blizzard: an 8 second channel whose periodic
-// dummy casts a Fire damage spell (1282385 at rank 4) on every enemy in the area every 2 seconds.
-// The damage spell is a direct hit, so it rolls crit unless the client marks it as unable to.
+// Forever's Rain of Fire is an area trigger, like Blizzard: an 8 s channel whose periodic dummy casts a
+// direct Fire hit (1282385 at rank 4) on every enemy in the area every 2 seconds. Beta log 2695 (Rumble,
+// rank 1) has exactly that: no damage on the cast, then 4 ticks 2 s apart on up to 5 targets, ticks crit.
 func (warlock *Warlock) registerRainOfFire() {
 	rank := spellData.RainOfFire.Highest()
 	tickSpell := spellData.RainOfFireTriggered.Rank(rank.RankNumber())
@@ -15,12 +15,13 @@ func (warlock *Warlock) registerRainOfFire() {
 	tickLength := rank.Effect(dbcenums.A_PERIODIC_DUMMY, 0).Period()
 	actionID := core.ActionID{SpellID: rank.ID}
 
+	// The tick rows lack Not a Proc (1.60.1.70205), so only listeners that can proc from procs hear them.
 	tickCast := warlock.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: tickSpell.ID},
 		SpellSchool:    tickSpell.SpellSchool(),
 		DefenseType:    tickSpell.DefenseTypeCore(),
 		ProcMask:       core.ProcMaskSpellDamage,
-		Flags:          core.SpellFlagNoOnCastComplete,
+		Flags:          core.SpellFlagNoOnCastComplete | core.SpellFlagProc,
 		ClassSpellMask: WarlockSpellRainOfFire,
 
 		DamageMultiplierAdditive: 1,
@@ -29,11 +30,8 @@ func (warlock *Warlock) registerRainOfFire() {
 		ThreatMultiplier:         1,
 
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, spell *core.Spell) {
-			outcome := spell.OutcomeMagicHitAndCrit
-			if tickSpell.CannotCrit() {
-				outcome = spell.OutcomeMagicHit
-			}
-			spell.CalcAndDealAoeDamage(sim, tick.Average(core.CharacterLevel), outcome)
+			// No Cannot Crit on the tick rows; log 2695 crits at 1.5x (44 -> 66).
+			spell.CalcAndDealAoeDamage(sim, tick.Average(core.CharacterLevel), spell.OutcomeMagicHitAndCrit)
 		},
 	})
 
@@ -65,6 +63,10 @@ func (warlock *Warlock) registerRainOfFire() {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, spell *core.Spell) {
+			// The cast's own E_DUMMY lands on every enemy in the 8 yd area, as Blizzard's does.
+			for _, aoeTarget := range sim.Encounter.ActiveTargetUnits {
+				spell.CalcAndDealOutcome(sim, aoeTarget, spell.OutcomeMagicHitNoHitCounter)
+			}
 			spell.AOEDot().Apply(sim)
 		},
 	})

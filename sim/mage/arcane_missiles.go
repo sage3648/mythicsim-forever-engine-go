@@ -62,12 +62,6 @@ func (mage *Mage) registerArcaneMissilesRank(arcaneMissilesRank *spelldata.Spell
 		Dot: core.DotConfig{
 			Aura: core.Aura{
 				Label: fmt.Sprintf("ArcaneMissiles-%d", arcaneMissilesRank.RankNumber()),
-				OnExpire: func(aura *core.Aura, sim *core.Simulation) {
-					// The channel holds the Arcane Blast stacks until the last missile is out.
-					if mage.ArcaneBlastAura != nil {
-						mage.ArcaneBlastAura.Deactivate(sim)
-					}
-				},
 			},
 			NumberOfTicks: numTicks,
 			TickLength:    tickLength,
@@ -77,6 +71,11 @@ func (mage *Mage) registerArcaneMissilesRank(arcaneMissilesRank *spelldata.Spell
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
+			// The channel spends the Arcane Blast stacks as it starts: beta log 2689 (Icykiss) shows
+			// 400573 removed 0.3 s into both Arcane Missiles, before the first missile.
+			if mage.ArcaneBlastAura != nil {
+				mage.ArcaneBlastAura.Deactivate(sim)
+			}
 			spell.Dot(target).Apply(sim)
 		},
 	})

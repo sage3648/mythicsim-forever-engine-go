@@ -86,6 +86,8 @@
 1293539 an outcome the proc mask has no bit for
 1293670 ProcTypeMask TAKE_HELPFUL_SPELL; ProcTypeMask bit 31
 1293980 states no rate
+1294055 states no rate
+1294064 states no rate
 1294255 states no rate
 1294530 states no rate
 1297085 states no rate

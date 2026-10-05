@@ -86,6 +86,21 @@ func warriorSuite(gear core.GearSetCombo, talents string, otherTalents []core.Ta
 	}
 }
 
+// The arena pulls at 0 rage, as a real pull does (rage decays out of combat); Bloodrage still goes
+// at 0 s. The UI default of 50 opened every arena row with two free Heroic Strikes (+0.2..+0.6%).
+var arenaOptions = &proto.Player_DpsWarrior{
+	DpsWarrior: &proto.DpsWarrior{
+		Options: &proto.DpsWarrior_Options{
+			ClassOptions: &proto.WarriorOptions{
+				StartingRage:   0,
+				QueueDelay:     250,
+				UseBattleShout: true,
+				DefaultStance:  proto.WarriorStance_WarriorStanceBerserker,
+			},
+		},
+	},
+}
+
 var DefaultOptions = &proto.Player_DpsWarrior{
 	DpsWarrior: &proto.DpsWarrior{
 		Options: &proto.DpsWarrior_Options{
@@ -112,7 +127,7 @@ func TestArena(t *testing.T) {
 		UI:          "warrior/dps",
 		Class:       proto.Class_ClassWarrior,
 		Race:        proto.Race_RaceOrc,
-		SpecOptions: DefaultOptions,
+		SpecOptions: arenaOptions,
 		Role:        arenalib.Melee,
 	})
 }

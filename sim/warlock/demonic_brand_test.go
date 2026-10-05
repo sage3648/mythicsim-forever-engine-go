@@ -90,11 +90,19 @@ func TestDemonicBrandPetHits(t *testing.T) {
 				attack.CalcAndDealDamage(sim, target, 1, attack.OutcomeAlwaysHit)
 			}
 			metrics := brand.SpellMetrics[target.UnitIndex]
-			if metrics.Hits != 6 || metrics.Misses != 0 || metrics.Crits != 0 {
-				t.Fatalf("Brand outcomes = %+v, want six hits, no misses or crits", metrics)
+			if metrics.Hits+metrics.Crits != 6 || metrics.Misses != 0 {
+				t.Fatalf("Brand outcomes = %+v, want six landed hits and no misses", metrics)
 			}
 			if aura.IsActive() || pet.DemonicBrandAura.IsActive() {
 				t.Fatal("spent Brand still active")
+			}
+			// The rows carry no Cannot Crit (upstream #648), so the hit crits on the pet's spell crit.
+			pet.AddStatDynamic(sim, stats.SpellCritPercent, 100)
+			brandApply(sim, w, target)
+			crits := metrics.Crits
+			attack.CalcAndDealDamage(sim, target, 1, attack.OutcomeAlwaysHit)
+			if brand.SpellMetrics[target.UnitIndex].Crits != crits+1 {
+				t.Fatal("Brand hit did not crit at 100% spell crit")
 			}
 		})
 	}

@@ -210,12 +210,6 @@
 		"source": "forever",
 		"tooltip": "Imbue the Shaman's weapon with frost. Each hit has a chance of causing 169 additional Frost damage and slowing the target's movement speed by 25% for 8 sec. Lasts 1 hour."
 	},
-	"25505": {
-		"ability": "Windfury Weapon",
-		"file": "sim/shaman/weapon_imbues.go",
-		"note": "Not a Forever spell id: the Burning Crusade Windfury Attack id, kept as the imbue's label and absent from the beta client. Beta client 1.60.1.70009: every rank's enchant (283/284/525/1669) equips 439431, which rolls 20% on landed melee autos and abilities (ProcTypeMask 20) with a 1.5 sec ProcCategoryRecovery and casts rank 4's 16361: +333 melee attack power for 1.5 sec (SpellDuration 65) and 3 charges spent by landed auto attacks (ProcTypeMask 4), plus 2 extra attacks (SPELL_EFFECT_ADD_EXTRA_ATTACKS). The sim swings the main hand twice as ordinary white attacks (glancing, white hit table, timer reset, the third charge lifts the next swing if it lands within 1.5 sec), not two special hits. An off-hand proc swings the off hand twice; the client may give main-hand attacks there, unmeasured.",
-		"source": "classic"
-	},
 	"26121": {
 		"ability": "Stormcaller's Wrath",
 		"file": "sim/shaman/item_sets.go",
@@ -280,6 +274,19 @@
 		"note": "Beta client 1.60.1.70009 425336: 30% melee haste, 25 sec, 3 min cooldown. Build 70009 dropped the 30% cast speed it carried (#441).",
 		"source": "forever",
 		"tooltip": "Instant\n3 min cooldown\nIncreases your melee attack speed by 30% for 25 sec."
+	},
+	"439440": {
+		"ability": "Windfury Weapon",
+		"file": "sim/shaman/weapon_imbues.go",
+		"note": "Beta client 1.60.1.70205: every rank's enchant (283/284/525/1669) equips 439431, a dummy aura that rolls 20% on landed melee autos and abilities (ProcTypeMask 20) with a 1.5 sec ProcCategoryRecovery; it triggers nothing in the client, so the server scripts the attack. Beta log 2708 (foreverlogs.gg, 2026-10-03, Toma, 22 Enhancement, level 30, Corpsemaker 3.8 speed) shows what it does: all 62 procs (46 off autos, 16 off Stormstrike) are two hits of this spell, a SPELL_EFFECT_WEAPON_DAMAGE special attack, in the same instant as the hit that procced them; they miss, dodge and parry on their own (20 of 121) and their crits proc Flurry. The next auto still lands one weapon speed after the last one (0.2 to 3 sec after a Stormstrike proc), so the swing timer is untouched, and no 16361 buff is ever applied, so there is no third, lifted swing. The sim strikes twice with the proc's weapon (439441, Attributes[3] 0x1000000, for the off hand) and adds the rank's attack power to them, 333 at 60 (16361; Wowhead's 433 is its level 68 print). At level 30 the strikes averaged 9% above Stormstrike's on the same mobs, about 67 attack power; rank 1's 46 fits within the log's unknown buffs.",
+		"source": "forever",
+		"tooltip": "Imbue the Shaman's weapon with wind. Each hit has a 20% chance of granting you 2 extra attacks with 333 extra melee attack power. When applied to main hand, disables any benefit you personally receive from Windfury Totem. Lasts for 60 minutes."
+	},
+	"439441": {
+		"ability": "Windfury Weapon (off hand)",
+		"file": "sim/shaman/weapon_imbues.go",
+		"note": "The off-hand twin of 439440 (same SPELL_EFFECT_WEAPON_DAMAGE, Attributes[3] 0x1000000 requires an off-hand weapon), struck twice when an off-hand hit procs the imbue. No beta log has an off-hand Windfury proc yet.",
+		"source": "forever"
 	},
 	"1238300": {
 		"ability": "Lava Burst",

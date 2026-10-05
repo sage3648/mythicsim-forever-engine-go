@@ -32101,9 +32101,25 @@ var generatedSpells = []Spell{
 		Effects: []Effect{
 			{ID: 1315203, SpellID: 1294053, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_DUMMY, SpellLevel: 60, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
 		}},
+	{ID: 1294055, Name: "White Obsidian", School: 1, Attr: [17]uint32{0: 0x1c0, 15: 0x2000}, SpellLevel: 1, ProcChance: 100, ProcFlags: [2]uint32{0: 0x40}, ICDMs: 10, RefIDs: []int32{1294058}, ProcChanceSource: ProcChancePPM,
+		Effects: []Effect{
+			{ID: 1315206, SpellID: 1294055, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_PROC_TRIGGER_SPELL, SpellLevel: 1, PvpMult: 1, TriggerID: 1294058, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
+	{ID: 1294058, Name: "White Obsidian", School: 1, Attr: [17]uint32{15: 0x2000}, SpellLevel: 60, DurationMs: 10000, ProcChance: 100, ProcCharges: 1, ProcFlags: [2]uint32{1: 0x4}, ProcChanceSource: ProcChanceAlways,
+		Effects: []Effect{
+			{ID: 1315209, SpellID: 1294058, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_MOD_POWER_COST_SCHOOL, BasePoints: -24, SpellLevel: 60, PvpMult: 1, Misc: 126, Misc2: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
 	{ID: 1294063, Name: "Defender of the Barkskin", School: 1, Attr: [17]uint32{15: 0x2000}, SpellLevel: 60, DurationMs: 20000, CategoryCooldownMs: 60000, Category: 1, ProcHint: core.ProcHintHeals,
 		Effects: []Effect{
 			{ID: 1315216, SpellID: 1294063, Type: dbcenums.E_SUMMON, BasePoints: 1, SpellLevel: 60, PvpMult: 1, Amplitude: 99999, RadiusMax: 3, Misc: 265155, Misc2: 6853, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{32, 0}},
+		}},
+	{ID: 1294064, Name: "Rock Sentinel", School: 1, Attr: [17]uint32{0: 0x1c0, 15: 0x2000}, SpellLevel: 1, ProcChance: 100, ProcFlags: [2]uint32{0: 0x4000}, RefIDs: []int32{1294065}, ProcChanceSource: ProcChancePPM, ProcHint: core.ProcHintHeals | core.ProcHintPureHeal,
+		Effects: []Effect{
+			{ID: 1315219, SpellID: 1294064, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_PROC_TRIGGER_SPELL, SpellLevel: 1, PvpMult: 1, TriggerID: 1294065, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
+	{ID: 1294065, Name: "Rock Sentinel", School: 1, Attr: [17]uint32{3: 0x40000000, 15: 0x2000}, SpellLevel: 1, DurationMs: 10000, MaxRange: 100,
+		Effects: []Effect{
+			{ID: 1315220, SpellID: 1294065, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_MOD_RESISTANCE, BasePoints: 300, SpellLevel: 1, PvpMult: 1, Misc: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{21, 0}},
 		}},
 	{ID: 1294070, Name: "Wisdom of the Timbermaw", School: 1, Attr: [17]uint32{0: 0x20000000, 1: 0x420, 2: 0x4000, 3: 0x440000, 8: 0x1000, 15: 0x2000}, SpellLevel: 60, DurationMs: 15000,
 		Effects: []Effect{
@@ -34070,6 +34086,10 @@ var generatedSpells = []Spell{
 	{ID: 1317483, Name: "Goblin Bomb Dispenser", School: 1, Attr: [17]uint32{0: 0x1c0, 2: 0x4, 15: 0x2000}, SpellLevel: 60, MaxRange: 50000,
 		Effects: []Effect{
 			{ID: 1350542, SpellID: 1317483, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_DUMMY, SpellLevel: 60, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
+		}},
+	{ID: 1317486, Name: "Swamp Speed", School: 1, Attr: [17]uint32{0: 0x9800100, 1: 0x20, 2: 0x84001, 3: 0x100000, 5: 0x60008, 6: 0x1000, 8: 0x20, 9: 0x800, 10: 0x400000, 11: 0x4000000, 13: 0x2, 14: 0x10, 15: 0x2000}, DurationMs: -1, RequiredAreas: 9338,
+		Effects: []Effect{
+			{ID: 1350544, SpellID: 1317486, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_MOD_SPEED_ALWAYS, BasePoints: 3, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{1, 0}},
 		}},
 	{ID: 1317740, Name: "Smotts' Compass", School: 1, Attr: [17]uint32{0: 0x8048110, 2: 0x4, 15: 0x2000}, SpellLevel: 1,
 		Effects: []Effect{

@@ -112,4 +112,9 @@ func TestDarkSacrificeTicksBasePlusSpirit(t *testing.T) {
 	if got := priest.CurrentMana(); !core.WithinToleranceFloat64(want, got, 1e-6) {
 		t.Errorf("Dark Sacrifice restored %.1f mana, want %.1f", got, want)
 	}
+	// Every rank is flagged No Threat (Attributes[1] 0x400), so the mana adds none.
+	sim.Cleanup()
+	if got := priest.GetSpell(core.ActionID{OtherID: proto.OtherAction_OtherActionManaGain}).SpellMetrics[0].TotalThreat; got != 0 {
+		t.Errorf("Dark Sacrifice's mana added %.1f threat, want 0", got)
+	}
 }

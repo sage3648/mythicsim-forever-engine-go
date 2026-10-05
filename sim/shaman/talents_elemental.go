@@ -105,7 +105,7 @@ func (shaman *Shaman) applyElementalDevastation() {
 	})
 	shaman.MakeProcTriggerAura(core.ProcTrigger{
 		Name:             "Elemental Devastation Trigger",
-		CanProcFromProcs: true, // 29179/29180/30160 carry the bit.
+		CanProcFromProcs: spellData.ElementalDevastation.Highest().CanProcFromProcs(), // Forever's 30160 lacks the bit (Era's 29179/29180 carry it): overload crits don't count.
 		Callback:         core.CallbackOnSpellHitDealt,
 		ProcMask:         core.ProcMaskSpellDamage,
 		Outcome:          core.OutcomeCrit,

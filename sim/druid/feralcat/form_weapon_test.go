@@ -67,9 +67,8 @@ func TestFormPawCarriesTheEquippedWeaponDPS(t *testing.T) {
 	}
 }
 
-// A Dense stone's flat damage is part of the weapon the paw is rescaled from: +8 on the 3.5 s
-// Smite's Mighty Hammer adds 8/3.5 to each cat swing and 8*2.5/3.5 to each bear swing. Before,
-// the form dropped it.
+// A Dense stone's flat damage is not rescaled with the weapon: its +8 lands in full on every cat and
+// bear paw hit (Hameru's beta character sheet, 5 October 2026). Before, the form dropped it.
 func TestFormPawCarriesADenseStone(t *testing.T) {
 	paw := func(t *testing.T, imbue int32) (core.Weapon, core.Weapon) {
 		t.Helper()
@@ -99,7 +98,7 @@ func TestFormPawCarriesADenseStone(t *testing.T) {
 			form        string
 			plain, with core.Weapon
 			want        float64
-		}{{"Cat", plainCat, cat, 8 / 3.5}, {"Bear", plainBear, bear, 8 * 2.5 / 3.5}} {
+		}{{"Cat", plainCat, cat, 8}, {"Bear", plainBear, bear, 8}} {
 			if got := row.with.BaseDamageMin - row.plain.BaseDamageMin; math.Abs(got-row.want) > 1e-9 {
 				t.Errorf("imbue %d: %s paw minimum +%.4f, want +%.4f", imbue, row.form, got, row.want)
 			}

@@ -5,7 +5,6 @@ import (
 
 	"github.com/wowsims/forever/sim/core"
 	"github.com/wowsims/forever/sim/core/dbcenums"
-	"github.com/wowsims/forever/sim/core/proto"
 	"github.com/wowsims/forever/sim/core/stats"
 )
 
@@ -67,10 +66,10 @@ func (warrior *Warrior) registerUnbridledWrath() {
 		RequireDamageDealt: true,
 		Outcome:            core.OutcomeLanded,
 		Callback:           core.CallbackOnSpellHitDealt,
+		// Hotfix 112347 rewrote 12322's text to drop "increased to 2 Rage for two-handed weapons":
+		// every weapon gets 12964's 1 rage.
 		Handler: func(sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			// The tooltip of 12322 doubles the rage for a two-handed weapon.
-			twoHanded := warrior.GetMainHandType() == proto.HandType_HandTypeTwoHand
-			warrior.AddRage(sim, unbridledWrathRage*core.TernaryFloat64(twoHanded, 2, 1), rageMetrics)
+			warrior.AddRage(sim, unbridledWrathRage, rageMetrics)
 		},
 	})
 }

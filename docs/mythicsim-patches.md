@@ -1,9 +1,9 @@
 # MythicSim downstream patches
 
 MythicSim runs this engine from its fork (`sage3648/mythicsim-forever-engine-go`, branch
-`mythicsim/upstream-sync-20261003`). The branch is ElliotWood/Forever master, which is built on the
+`mythicsim/upstream-sync-20261005`). The branch is ElliotWood/Forever master, which is built on the
 official wowsims/forever, plus the patches below. The first base was `442076902` (Merge
-wowsims/forever master ea5412873). The current base is `f764984d8b` (2026-10-03, client 1.60.1.70205); the 2026-10-03 sync merged #613 to #641 ("Upstream sync 2026-10-03, #613 to #641" at the end of this file). The base before it was `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
+wowsims/forever master ea5412873). The current base is `67f14b04a5` (2026-10-04, client 1.60.1.70205); the 2026-10-05 sync merged #642 to #676 and dropped patches 13, 18, 19, 20, 22, 23, 27, 30 and 31, which upstream now carries ("Upstream sync 2026-10-05, #642 to #676" at the end of this file). The base before it was `f764984d8b` (2026-10-03), merged by "Upstream sync 2026-10-03, #613 to #641", and before that `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
 
 Keep the set small. Each patch exists because MythicSim needs something upstream does not do
 yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an upstream version.
@@ -300,7 +300,7 @@ Drop this patch when upstream checks DefenseType at the crit roll, rejects an
 unset snapshot multiplier and a cooldown Duration without a Timer, and decodes the
 planner stats without assuming every value is a number.
 
-## 13. Windfury Totem procs in Cat and Bear Form
+## 13. Windfury Totem procs in Cat and Bear Form (dropped, upstream #669)
 
 Classic's Windfury Totem enchanted the held weapon: the totem's periodic aura
 (8515) cast 8514, which applied temporary enchant 1783. A shapeshifted druid does
@@ -372,7 +372,7 @@ Human without the talent (100), with Boundless Rage 3/3 (130) and a Gnome with i
 
 Drop this patch when upstream logs the rage bar's maximum.
 
-## 16. Faerie Fire and Curse of Recklessness share their armor reduction
+## 16. Faerie Fire and Curse of Recklessness share their armor reduction (narrowed, upstream #671)
 
 In client 1.60.1.70009 both take 505 armor (9907 and 11717), and Wowhead's Forever
 class guides state they no longer stack. The client rows carry nothing that says so,
@@ -417,7 +417,7 @@ goldens move.
 
 Drop this patch when upstream models a hard cast resetting the swing timer.
 
-## 18. Windfury Totem leaves the main-hand stone or oil alone
+## 18. Windfury Totem leaves the main-hand stone or oil alone (dropped, upstream #665)
 
 Classic's Windfury Totem enchanted the held weapon, so `applyConsumeEffects` skipped
 a main-hand stone or oil whenever the party had the totem. Forever's totem is a party
@@ -433,7 +433,7 @@ totem.
 Drop this patch when upstream stops displacing the main-hand imbue under Windfury
 Totem.
 
-## 19. Rockbiter Weapon
+## 19. Rockbiter Weapon (dropped, upstream #673)
 
 `ShamanImbue_RockbiterWeapon` was in the proto and the talent code named it, but nothing
 registered it, so choosing it simmed the same as no imbue. Client 1.60.1.70009 defines
@@ -458,7 +458,7 @@ on the unpatched source. No suite golden moves, since none imbues Rockbiter.
 
 Drop this patch when upstream registers Rockbiter Weapon.
 
-## 20. Flametongue Weapon keeps Windfury Totem's procs
+## 20. Flametongue Weapon keeps Windfury Totem's procs (dropped, upstream #674)
 
 `RegisterFlametongueImbue` put a main-hand Flametongue Weapon in Windfury Totem's exclusive category at a
 higher priority, copied from Classic, where the totem enchanted the main-hand weapon and any main-hand imbue
@@ -503,7 +503,7 @@ does not.
 Drop this patch when upstream models the aura, and compare the demon's stats before switching.
 The numbers are Sage's and the beta testers' readings, not client data.
 
-## 22. Dots tick on the caster's current stats
+## 22. Dots tick on the caster's current stats (dropped, upstream #668)
 
 A dot built by `Dot.Snapshot` stored the caster's spell power share and whole attacker damage multiplier
 when it landed, and every tick dealt those stored numbers. Forever's dots do not snapshot: the beta log of a
@@ -547,7 +547,7 @@ Deep Wounds have no attack power share to read.
 
 Drop this patch when upstream's dots tick on current stats the same way.
 
-## 23. Rain of Fire
+## 23. Rain of Fire (dropped, upstream #672)
 
 Rain of Fire had client data (`spellData.RainOfFire`, 5740 to 11678, and Forever's
 `RainOfFireTriggered`, 1282380 to 1282385) and a class mask (`WarlockSpellRainOfFire`, already in the
@@ -640,7 +640,7 @@ the queue tags already.
 
 Drop this patch when upstream resolves untagged casts of queued abilities.
 
-## 27. Feral forms swing the equipped weapon's DPS
+## 27. Feral forms swing the equipped weapon's DPS (dropped, upstream #670)
 
 Forever's Druid class deep dive (worldofwarcraft.blizzard.com/en-us/news/24301515, 30 September
 2026): "While Shapeshifted, the Druid's melee auto attack DPS ... in Bear Form, Cat Form, or Dire
@@ -699,7 +699,7 @@ were all clean text merges:
 - **Drop it when** upstream has an equivalent option. Point the worker's fields
   (`worker/cmd/refresh-forever-races`) at upstream's names first.
 
-## 30. One air totem per party
+## 30. One air totem per party (dropped, upstream #675)
 
 Redfall and Kerani (Discord, 2 October 2026) found a Windfury Totem from the party buffs and a Grace of Air
 the rotation casts both up in one Enhancement sim. The engine had no air totem rule beyond the shaman's own
@@ -745,7 +745,7 @@ totem per party (the `fcea407ab9` commit already built the melee and ranged pres
   while the suite's party carries Windfury Totem and the suite wields no weapon, so it used to hold both.
 - **Drop it when** upstream makes the air totems exclusive. Keep the uptime clamp either way.
 
-## 31. Windfury Weapon's extra attacks have their own row
+## 31. Windfury Weapon's extra attacks have their own row (dropped, superseded by upstream #644)
 
 Kerani could not see Windfury Weapon proc: with the imbue the sim report had no "Melee (extra attack)" row, which
 the party's Windfury Totem has. The imbue did proc (8.5 to 9.9 times a fight on Redfall's build and the reference, the
@@ -1535,18 +1535,24 @@ Paladin and Warrior move only on the Vile Protector item row (armor). Whole suit
 Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), and
 `registerStaticImbue` adds a Dense Sharpening Stone's or Dense Weightstone's +8 to the humanoid
 weapon only, which the form then replaces. A main-hand Dense stone therefore did nothing in cat or
-bear form. `formWeapon` now adds the stone's flat damage to the weapon before rescaling it to the
-form's swing, the same as a permanent weapon-damage enchant: +8 on the 3.5 second Smite's Mighty
-Hammer is +2.29 a cat swing and +5.71 a bear swing, and on the 2.9 second Headmaster's Charge
-about +2.8 a cat swing. The Elemental Sharpening Stone is a stat and is unchanged.
+bear form. `formWeapon` now adds the stone's flat damage to the paw after the weapon is rescaled to
+the form's swing, so the full +8 lands on every cat and bear paw hit. The Elemental Sharpening Stone
+is a stat and is unchanged.
 
-Unverified: Forever may instead add the full +8 to each paw hit. MythicSim's Feral reference
-(Headmaster's Charge, 20,000 iterations) gains +1.0% DPS from a Dense Weightstone with this
-scaling, +2.8% with the full +8, and +1.7% from an Elemental Sharpening Stone. A character sheet
-in cat form before and after applying a stone tells the two apart.
+Evidence: Hameru's beta character sheet (MythicSim Discord #general, 5 October 2026 06:10).
+Heavyhammer (73 to 110, 3.30 s) in cat form shows a 46 to 58 main hand at 1.00 s; with a +3
+Weighted buff it reads 49 to 61. The weapon's range is rescaled (73 x 1.0 / 3.3 = 22.1, plus 339 AP
+/ 14 = 24.2, gives 46) and the stone's +3 is added after. The first version of this patch scaled the
+stone with the weapon, which under-counted it by the weapon's speed (3.3x on Heavyhammer). On the
+Feral reference the flat stone was estimated at +2.8% DPS, ahead of the Elemental Sharpening Stone
+(+1.7%).
 
-`TestFormPawCarriesADenseStone` checks both stones in both forms. Feral goldens are unchanged:
-the test suite assumes no Dense stone.
+Not settled: Hameru also reports a +5 weapon enchant giving its full value, which would make
+weapon-damage enchants flat in form too. `formWeapon` still rescales them; change both together if
+a cat sheet before and after an enchant confirms it.
+
+`TestFormPawCarriesADenseStone` checks both stones in both forms (+8 each). Feral goldens are
+unchanged: the test suite assumes no Dense stone.
 
 Drop this when upstream applies weapon imbues to the form weapon.
 
@@ -1574,3 +1580,64 @@ attack-speed buffs. Do not calibrate damage to the displayed average of seven.
 `TestSummonHawkTwoHawks` checks both positions: two active Hawks attack and crit,
 follow-ups can miss and be dodged, parries occur only in front, and the dive
 never misses, dodges, parries or blocks.
+
+## Upstream sync 2026-10-05, #642 to #676
+
+Merged ElliotWood/Forever `67f14b04a5` (69 commits, 35 of them data, changelog or leaderboard) into
+the 2026-10-03 sync `e5c9ba5ea3` together with patch 84 (reworked to a flat stone, above) and patch
+76 (Hawk follow-up outcomes). This supersedes the unreleased `e5c9ba5ea3` pin.
+
+Behaviour adopted: Arcane Concentration skips triggered spells and Blizzard rolls on its cast
+(#643); Windfury Weapon is two 439440 special hits with the rank's attack power and no swing reset
+(#644, beta log 2708); Deep Wounds ignores caster damage modifiers (#645); Ignite, Elemental
+Devastation and Flurry read Can Proc From Procs from the client (#646); Blizzard ticks no longer
+stack Winter's Chill (#647); the Demonic Brand hit cannot miss and can crit (#648); trap burns,
+Scorpid Poison and Volley ticks can crit (#650); Ravage cannot be dodged (#651); Life Tap, Dark
+Sacrifice and Charge make no threat (#652, #653); Hack and Slash, Furor and Improved Sayaad read the
+effects their tooltips name (#654, #655: the Succubus' Lash of Pain bonus read Seduction's
+duration); Presence of Mind and Combustion share a cooldown (#656); traps read their own cooldown
+categories (#657); per-tree mage launch sets (#658); Lightning Overload reads its own rows (#659);
+the mage, rogue and warrior audits (#660, #665, #667: Blizzard and Flamestrike ticks crit, Thistle
+Tea restores a flat 100, Hemorrhage's Rupture bonus is a damage-taken effect read per tick); Arcane
+Missiles spends Arcane Blast stacks as it starts (#661); Missile Barrage rolls on a landed hit.
+
+Patches upstream now carries, dropped here:
+
+| Patch | Upstream | Notes |
+|---|---|---|
+| 13 Windfury Totem in Cat and Bear | #669 | Same code and test. #676 also shows the checkbox. |
+| 18 stone or oil under Windfury Totem | #665 | Same rule. |
+| 19 Rockbiter Weapon | #673 | Upstream's also applies Spirit Weapons' threat half. |
+| 20 Flametongue keeps Windfury Totem | #674 | Same; our Flametongue Totem disable (patch 72) stays on top. Upstream's `TestOnlyWindfuryWeaponDisplacesWindfuryTotem` replaces ours. |
+| 22 dots read stats at the tick | #668 | Same `dot_test.go`. Our unset-multiplier guard (patch 12) and `sim/dot_rules_test.go` stay; Deep Wounds is now pinned to ignore a mid-dot multiplier (#645). |
+| 23 Rain of Fire | #672 | Upstream's adds the tick proc flag and the cast's dummy on every enemy. |
+| 27 form weapon DPS | #670 | Our zero-speed guard (patch 33) and patch 84 stay in `formWeapon`. |
+| 30 one air totem | #675 | Upstream joins the same category with the same priorities; `sim/core/buffs/air_totem.go` is gone. Our extra cases moved to `air_totem_cases_test.go` and count Windfury Weapon procs from 439440 hits. Upstream's uptime clamp is equivalent to ours. |
+| 31 Windfury Weapon row | superseded by #644 | The procs are now their own 439440 spell, so the white-swing row and its test are gone. |
+
+Kept against upstream:
+
+- **16 Faerie Fire and Curse of Recklessness**: upstream (#671) puts both in one single-aura
+  category. Ours shares the category per stat, so only the armor competes and the curse keeps its
+  other effects; `armor_reduction_test.go` is ours and checks that.
+- **Demonic Brand**: our target-scoped charges stay; the hit takes #648's `OutcomeMagicCrit`.
+  `TestDemonicBrandPetHits` now expects six landed hits (hits or crits) and a crit at 100% pet spell
+  crit. Upstream's pet-aura `TestDemonicBrandImpSpendsWithFirebolt` does not apply to the
+  target-scoped brand and is not taken.
+- **Rupture**: upstream's (#665) replaces our snapshot-time Hemorrhage multiplier; keeping both
+  would count it twice.
+
+`db.json`: `scripts/forever-merge-db.py` from base `f764984d8b`, 12 new upstream items, planner
+armor re-applied to 9. Emissary Cuffs (9455) and Ebony Boneclub (10571) were field conflicts where
+both sides moved the same stat index; upstream's refreshed value (6, with its new item level) is
+taken.
+
+Goldens: every movement is upstream's for a commit new to the fork. Arcane -0.28% (#643 -1.17%,
+#660 +0.90%), Fire +5.60%, Frost +0.61%, Arms -1.75% (#645, #667), Fury -0.08%, Assassination
+-1.07% (#665 -1.02%), Subtlety +1.49% (#665 +1.31%; the rest is the per-tick Hemorrhage against
+our old snapshot one), Enhancement weapon rows +2.4 to +4.2% (#644, within 0.1% of upstream's on
+each row), Survival Melee +1.05% (trap crits and categories). Feral Cat moves +0.57% (Short naked
++1.4%), all from Ravage no longer being dodged (#651): with that one flag removed the golden is
+unchanged; our rotation opens with Ravage, upstream's barely uses it. Specs whose upstream goldens
+moved for patches the fork already had (Feral -22%, hunters -5 to -6% from #670 and #671) do not
+move here. Whole suite green.

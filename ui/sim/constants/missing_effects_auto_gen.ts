@@ -4553,6 +4553,18 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		]
 	],
 	[
+		274425, // White Obsidian Wand
+		[
+			"Chance on hit to reduce the mana cost of your next spell cast within 10s by 24.", // 1294058 - https://www.wowhead.com/forever/spell=1294058
+		]
+	],
+	[
+		274430, // Rock Sentinel Slicer
+		[
+			"While in combat, your healing spells have a chance to grant an ally 300 armor for 10s.", // 1294065 - https://www.wowhead.com/forever/spell=1294065
+		]
+	],
+	[
 		274747, // Soggy Boots
 		[
 			"", // 1295267 - https://www.wowhead.com/forever/spell=1295267
@@ -4761,6 +4773,12 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		284699, // Still Water Band
 		[
 			"Underwater breath lasts 50% longer than normal.", // 1316928 - https://www.wowhead.com/forever/spell=1316928
+		]
+	],
+	[
+		285089, // Swamp Roamer's Band
+		[
+			"Increases movement speed by 3% in Dustwallow Marsh and Swamp of Sorrows.", // 1317486 - https://www.wowhead.com/forever/spell=1317486
 		]
 	],
 	[

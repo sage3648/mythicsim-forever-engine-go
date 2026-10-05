@@ -9,75 +9,52 @@ import (
 	"github.com/wowsims/forever/sim/core/stats"
 )
 
-// Rockbiter Weapon rank 7 is a permanent +653 melee attack power aura (client 16313), not a proc.
-// It stacks with Windfury Totem, since it is not in the totem's category, and a second Rockbiter
-// weapon does not add it twice.
+// Rockbiter Weapon rank 7 is a standing +653 melee attack power aura (client 16313), not a proc, and a
+// second Rockbiter weapon does not add it twice. Spirit Weapons' -30% threat becomes +30% under it.
 func TestRockbiterWeaponAddsAttackPower(t *testing.T) {
-	attackPower := func(mh, oh proto.ShamanImbue, totem bool) float64 {
+	character := func(mh, oh proto.ShamanImbue, talents string) *core.Character {
 		player := &proto.Player{
-			Name: "Shaman", Class: proto.Class_ClassShaman, Race: proto.Race_RaceOrc,
-			Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{{Id: 12784}}},
-			Buffs:     &proto.IndividualBuffs{}, Consumables: &proto.ConsumesSpec{},
-			Spec: &proto.Player_EnhancementShaman{EnhancementShaman: &proto.EnhancementShaman{
-				Options: &proto.EnhancementShaman_Options{
-					ClassOptions: &proto.ShamanOptions{ImbueMh: mh},
-					ImbueOh:      oh,
-				},
+			Name: "enh", Class: proto.Class_ClassShaman, Race: proto.Race_RaceOrc, TalentsString: talents,
+			Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{
+				{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+				{Id: 17182}, // Sulfuras, Hand of Ragnaros
 			}},
-			Rotation: core.APLRotationFromJsonString(`{"type":"TypeAPL","priorityList":[]}`),
+			Spec: &proto.Player_EnhancementShaman{EnhancementShaman: &proto.EnhancementShaman{Options: &proto.EnhancementShaman_Options{
+				ClassOptions: &proto.ShamanOptions{ImbueMh: mh},
+				ImbueOh:      oh,
+			}}},
+			Rotation: &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
 		}
 		sim := core.NewSim(&proto.RaidSimRequest{
 			SimOptions: &proto.SimOptions{RandomSeed: 1},
-			Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{WindfuryTotem: totem}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+			Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
 			Encounter:  core.MakeSingleTargetEncounter(0),
 		}, simsignals.CreateSignals())
 		sim.Reset()
-		return sim.Raid.Parties[0].Players[0].GetCharacter().GetStat(stats.AttackPower)
+		return sim.Raid.Parties[0].Players[0].GetCharacter()
 	}
 	const none, rockbiter = proto.ShamanImbue_NoImbue, proto.ShamanImbue_RockbiterWeapon
-	base := attackPower(none, none, false)
-	if got := attackPower(rockbiter, none, false) - base; got < 652.99 || got > 653.01 {
-		t.Errorf("Rockbiter main hand adds %v attack power, want 653", got)
-	}
-	// Forever shamans cannot dual wield, so the two-hander leaves the off-hand imbue without a weapon.
-	if got := attackPower(rockbiter, rockbiter, false) - base; got < 652.99 || got > 653.01 {
-		t.Errorf("Rockbiter in both hands adds %v attack power, want 653", got)
-	}
-	if got := attackPower(proto.ShamanImbue_WindfuryWeapon, none, false) - base; got != 0 {
-		t.Errorf("Windfury Weapon adds %v standing attack power, want 0", got)
-	}
-}
-
-// Forever's Windfury Totem is a party aura, and only Windfury Weapon in the main hand is described as
-// disabling it. Flametongue, Frostbrand and Rockbiter Weapon leave the totem's procs running.
-func TestOnlyWindfuryWeaponDisplacesWindfuryTotem(t *testing.T) {
-	totemProcs := func(mh proto.ShamanImbue) bool {
-		player := &proto.Player{
-			Name: "Shaman", Class: proto.Class_ClassShaman, Race: proto.Race_RaceOrc,
-			Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{{Id: 12784}}},
-			Buffs:     &proto.IndividualBuffs{}, Consumables: &proto.ConsumesSpec{},
-			Spec: &proto.Player_EnhancementShaman{EnhancementShaman: &proto.EnhancementShaman{
-				Options: &proto.EnhancementShaman_Options{ClassOptions: &proto.ShamanOptions{ImbueMh: mh}},
-			}},
-			Rotation: core.APLRotationFromJsonString(`{"type":"TypeAPL","priorityList":[]}`),
-		}
-		sim := core.NewSim(&proto.RaidSimRequest{
-			SimOptions: &proto.SimOptions{RandomSeed: 1},
-			Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{WindfuryTotem: true}, &proto.RaidBuffs{}, &proto.Debuffs{}),
-			Encounter:  core.MakeSingleTargetEncounter(0),
-		}, simsignals.CreateSignals())
-		sim.Reset()
-		return sim.Raid.Parties[0].Players[0].GetCharacter().GetAura("Windfury Totem Trigger").IsActive()
-	}
-	for imbue, want := range map[proto.ShamanImbue]bool{
-		proto.ShamanImbue_NoImbue:           true,
-		proto.ShamanImbue_FlametongueWeapon: true,
-		proto.ShamanImbue_FrostbrandWeapon:  true,
-		proto.ShamanImbue_RockbiterWeapon:   true,
-		proto.ShamanImbue_WindfuryWeapon:    false,
+	base := character(none, none, "").GetStat(stats.AttackPower)
+	for _, c := range []struct {
+		name   string
+		mh, oh proto.ShamanImbue
+		want   float64
+	}{
+		{"main hand", rockbiter, none, 653},
+		{"both hands", rockbiter, rockbiter, 653},
+		{"Windfury Weapon", proto.ShamanImbue_WindfuryWeapon, none, 0},
 	} {
-		if got := totemProcs(imbue); got != want {
-			t.Errorf("main hand %v: the party's Windfury Totem procs = %v, want %v", imbue, got, want)
+		if got := character(c.mh, c.oh, "").GetStat(stats.AttackPower) - base; got < c.want-0.01 || got > c.want+0.01 {
+			t.Errorf("%s adds %.2f attack power, want %v", c.name, got, c.want)
 		}
+	}
+
+	// DefaultTalents has 3/3 Elemental Weapons (+20%) and Spirit Weapons (x0.7 threat, x1.86 under Rockbiter).
+	plain, imbued := character(none, none, DefaultTalents), character(rockbiter, none, DefaultTalents)
+	if got := imbued.GetStat(stats.AttackPower) - plain.GetStat(stats.AttackPower); got < 783.59 || got > 783.61 {
+		t.Errorf("Rockbiter with Elemental Weapons adds %.2f attack power, want 783.6", got)
+	}
+	if got := imbued.PseudoStats.ThreatMultiplier / plain.PseudoStats.ThreatMultiplier; got < 1.859 || got > 1.861 {
+		t.Errorf("Spirit Weapons under Rockbiter: threat x%.3f of without, want x1.86", got)
 	}
 }

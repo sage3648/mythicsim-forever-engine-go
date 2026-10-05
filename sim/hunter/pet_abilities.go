@@ -222,8 +222,9 @@ func (hp *HunterPet) newScorpidPoison() *core.Spell {
 				}
 				dot.SnapshotBaseDamage += baseDamageTick
 			},
+			// 24587 carries Periodic Can Crit: the ticks roll the pet's melee crit.
 			OnTick: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
-				dot.CalcAndDealPeriodicSnapshotDamage(sim, target, dot.OutcomeTick)
+				dot.CalcAndDealPeriodicSnapshotDamage(sim, target, spellData.ScorpidPoisonTriggered.Rank(4).TickOutcomeHitRolled(dot))
 			},
 		},
 

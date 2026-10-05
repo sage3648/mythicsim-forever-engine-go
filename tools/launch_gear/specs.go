@@ -336,10 +336,20 @@ var specs = map[string]spec{
 			stats.Intellect: 0.02, stats.AttackPower: 1, stats.RangedAttackPower: 1, stats.MeleeHitRating: 3.29 / core.PhysicalHitRatingPerHitPercent, stats.MeleeCritRating: 4.45 / core.PhysicalCritRatingPerCritPercent,
 			stats.SpellDamage: 0.03, stats.MP5: 0.05}),
 	},
-	"mage": {
-		class: proto.Class_ClassMage, dir: "mage/dps", twoHand: true,
-		weights: w(map[stats.Stat]float64{stats.Intellect: 0.49, stats.SpellDamage: 1, stats.ArcaneDamage: 1,
-			stats.FireDamage: 1, stats.FrostDamage: 1, stats.SpellHitRating: 18.59 / core.SpellHitRatingPerHitPercent, stats.SpellCritRating: 13.91 / core.SpellCritRatingPerCritPercent, stats.SpellHasteRating: 6.85 / core.SpellHasteRatingPerHastePercent, stats.MP5: 0.11}),
+
+	// One set per mage tree: a +Fire item is worth nothing to a Frost mage, and one shared set
+	// that counted every school as spell power dressed all three in each other's gear.
+	"mage_frost": {
+		class: proto.Class_ClassMage, dir: "mage/dps", set: "frost_launch", twoHand: true,
+		weights: w(map[stats.Stat]float64{stats.Intellect: 0.49, stats.SpellDamage: 1, stats.FrostDamage: 1, stats.SpellHitRating: 18.59 / core.SpellHitRatingPerHitPercent, stats.SpellCritRating: 13.91 / core.SpellCritRatingPerCritPercent, stats.SpellHasteRating: 6.85 / core.SpellHasteRatingPerHastePercent, stats.MP5: 0.11}),
+	},
+	"mage_fire": {
+		class: proto.Class_ClassMage, dir: "mage/dps", set: "fire_launch", twoHand: true,
+		weights: w(map[stats.Stat]float64{stats.Intellect: 0.49, stats.SpellDamage: 1, stats.FireDamage: 1, stats.SpellHitRating: 18.59 / core.SpellHitRatingPerHitPercent, stats.SpellCritRating: 13.91 / core.SpellCritRatingPerCritPercent, stats.SpellHasteRating: 6.85 / core.SpellHasteRatingPerHastePercent, stats.MP5: 0.11}),
+	},
+	"mage_arcane": {
+		class: proto.Class_ClassMage, dir: "mage/dps", set: "arcane_launch", twoHand: true,
+		weights: w(map[stats.Stat]float64{stats.Intellect: 0.49, stats.SpellDamage: 1, stats.ArcaneDamage: 1, stats.SpellHitRating: 18.59 / core.SpellHitRatingPerHitPercent, stats.SpellCritRating: 13.91 / core.SpellCritRatingPerCritPercent, stats.SpellHasteRating: 6.85 / core.SpellHasteRatingPerHastePercent, stats.MP5: 0.11}),
 	},
 	"warlock": {
 		class: proto.Class_ClassWarlock, dir: "warlock/dps", twoHand: true,

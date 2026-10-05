@@ -121,7 +121,7 @@ func (mage *Mage) registerIgnite() {
 
 	mage.MakeProcTriggerAura(core.ProcTrigger{
 		Name:               "Ignite Talent",
-		CanProcFromProcs:   true, // 11119 carries the bit.
+		CanProcFromProcs:   spellData.Ignite.Highest().CanProcFromProcs(), // Forever's 11119 lacks the bit (Era's ranks carry it).
 		Callback:           core.CallbackOnSpellHitDealt,
 		ProcMask:           core.ProcMaskSpellDamage,
 		Outcome:            core.OutcomeCrit,
@@ -266,7 +266,7 @@ func (mage *Mage) registerMasterOfElements() {
 		ICD:                spellData.MasterOfElements.Highest().ICD(),
 		TriggerImmediately: true,
 		ExtraCondition: func(_ *core.Simulation, spell *core.Spell, _ *core.SpellResult) bool {
-			return spell.SpellSchool.Matches(core.SpellSchoolFire|core.SpellSchoolFrost) && spell.Cost != nil && spell.CurCast.Cost > 0
+			return spell.SpellSchool.Matches(core.SpellSchoolFire|core.SpellSchoolFrost) && spell.Cost != nil && spell.Cost.BaseCost > 0
 		},
 		Handler: func(sim *core.Simulation, spell *core.Spell, _ *core.SpellResult) {
 			mage.AddMana(sim, float64(spell.Cost.BaseCost)*refundCoeff, manaMetrics)

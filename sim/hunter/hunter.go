@@ -267,7 +267,6 @@ func (hunter *Hunter) RegisterSpells() {
 	// Hunters, 12 September).
 	multiShotTimer := hunter.NewTimer()
 	arcaneShotTimer := hunter.NewTimer()
-	trapTimer := hunter.NewTimer()
 
 	hunter.registerAspects()
 	hunter.registerArcaneShotSpell(arcaneShotTimer)
@@ -284,9 +283,9 @@ func (hunter *Hunter) RegisterSpells() {
 	hunter.registerWingClipSpell()
 	hunter.registerStriderKickSpell()
 
-	hunter.registerExplosiveTrapSpell(trapTimer)
-	hunter.registerImmolationTrapSpell(trapTimer)
-	hunter.registerFreezingTrapSpell(trapTimer)
+	hunter.registerExplosiveTrapSpell()
+	hunter.registerImmolationTrapSpell()
+	hunter.registerFreezingTrapSpell()
 
 	hunter.registerRapidFireCD()
 }

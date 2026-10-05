@@ -263,6 +263,10 @@ func NewWarrior(character *core.Character, options *proto.WarriorOptions, talent
 }
 
 func (warrior *Warrior) CastNormalizedSweepingStrikesAttack(results core.SpellResultSlice, sim *core.Simulation) {
+	// With one target the "additional nearby opponent" wraps around to the same one.
+	if warrior.Env.ActiveTargetCount() < 2 {
+		return
+	}
 	if warrior.SweepingStrikesAura != nil && warrior.SweepingStrikesAura.IsActive() {
 		for _, result := range results {
 			if result.Landed() {

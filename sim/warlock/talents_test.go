@@ -168,3 +168,43 @@ func TestSearingPainRollsItsRow(t *testing.T) {
 		t.Errorf("Searing Pain non-crits dealt only %v; it should roll its row's spread", seen)
 	}
 }
+
+// Life Tap's mana adds no threat: every rank is flagged No Threat in the client (Attributes[1] 0x400),
+// while an ordinary mana gain still adds half its amount.
+func TestLifeTapAddsNoThreat(t *testing.T) {
+	player := core.WithSpec(&proto.Player{
+		Race:        proto.Race_RaceOrc,
+		Class:       proto.Class_ClassWarlock,
+		Equipment:   &proto.EquipmentSpec{},
+		Consumables: &proto.ConsumesSpec{},
+		Rotation:    &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
+	}, &proto.Player_Warlock{Warlock: &proto.Warlock{Options: &proto.Warlock_Options{ClassOptions: &proto.WarlockOptions{
+		Summon: proto.WarlockOptions_NoSummon,
+	}}}})
+	sim := core.NewSim(&proto.RaidSimRequest{
+		SimOptions: &proto.SimOptions{RandomSeed: 1},
+		Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+		Encounter:  core.MakeSingleTargetEncounter(0),
+	}, simsignals.CreateSignals())
+	sim.Reset()
+
+	warlock := sim.Raid.Parties[0].Players[0].(WarlockAgent).GetWarlock()
+	threat := func() float64 {
+		return warlock.GetSpell(core.ActionID{OtherID: proto.OtherAction_OtherActionManaGain}).SpellMetrics[0].TotalThreat
+	}
+	warlock.SpendMana(sim, warlock.CurrentMana(), warlock.NewManaMetrics(core.ActionID{OtherID: proto.OtherAction_OtherActionNone}))
+	warlock.LifeTap.SkipCastAndApplyEffects(sim, warlock.CurrentTarget)
+	if warlock.CurrentMana() <= 0 {
+		t.Fatal("Life Tap restored no mana")
+	}
+	sim.Cleanup()
+	if got := threat(); got != 0 {
+		t.Errorf("Life Tap's mana added %.1f threat, want 0", got)
+	}
+
+	warlock.AddMana(sim, 100, warlock.NewManaMetrics(core.ActionID{SpellID: 20268}))
+	sim.Cleanup()
+	if got := threat(); got != 50 {
+		t.Errorf("an ordinary 100 mana gain added %.1f threat, want 50", got)
+	}
+}

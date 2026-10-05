@@ -52,28 +52,27 @@ func (druid *Druid) ClearForm(sim *core.Simulation) {
 // Forever: "While Shapeshifted, the Druid's melee auto attack DPS while in Bear Form, Cat Form, or
 // Dire Bear Form is now the same as the DPS of the Druid's equipped weapon. But the speed of attack
 // is changed to 1.0 or 2.5 seconds, depending on the form. Abilities that deal weapon damage
-// likewise use these damage values." (Druid class deep dive, 30 September 2026.) The equipped
-// weapon's damage range, weapon-damage enchants and bonus DPS are rescaled to the form's swing, so
-// the paw keeps the weapon's DPS and its spread. With nothing equipped the paw is the unarmed fist.
+// likewise use these damage values." (Druid class deep dive, 30 September 2026.) The equipped main
+// hand's range, weapon damage enchant and bonus DPS are rescaled to the form's swing, keeping its
+// DPS and spread. Nothing equipped is the unarmed fist.
 //
-// A main-hand Dense Sharpening Stone or Dense Weightstone adds its flat damage to the weapon before
-// the rescale, so it counts as part of the weapon's DPS like a permanent weapon-damage enchant:
-// +8 on a 2.9 second staff is about +2.8 a cat swing. registerStaticImbue adds the flat damage to
-// the humanoid weapon only, which the form replaces, so without this the stone did nothing in form.
-// Whether Forever's server scales it the same way is unverified.
+// A main-hand Dense Sharpening Stone or Dense Weightstone is not rescaled: its flat damage lands in
+// full on every paw hit (patch 84). Hameru's beta character sheet (Discord, 5 October 2026) shows
+// Heavyhammer (73 to 110, 3.30 s) as a 46 to 58 paw at 1.00 s, and 49 to 61 with a +3 Weighted
+// buff. registerStaticImbue adds the stone to the humanoid weapon only, which the form replaces.
 func (druid *Druid) formWeapon(swingSpeed float64) core.Weapon {
 	weapon := druid.WeaponFromMainHand()
 	scale := 1.0
 	if weapon.SwingSpeed > 0 {
 		scale = swingSpeed / weapon.SwingSpeed
 	}
-	flat := 0.0
+	stone := 0.0
 	if druid.GetMHWeapon() != nil {
-		flat = druid.MHImbueFlatWeaponDamage()
+		stone = druid.MHImbueFlatWeaponDamage()
 	}
 	return core.Weapon{
-		BaseDamageMin:        (weapon.BaseDamageMin + flat) * scale,
-		BaseDamageMax:        (weapon.BaseDamageMax + flat) * scale,
+		BaseDamageMin:        weapon.BaseDamageMin*scale + stone,
+		BaseDamageMax:        weapon.BaseDamageMax*scale + stone,
 		SwingSpeed:           swingSpeed,
 		NormalizedSwingSpeed: swingSpeed,
 		AttackPowerPerDPS:    core.DefaultAttackPowerPerDPS,
@@ -116,8 +115,6 @@ func (druid *Druid) RegisterCatFormAura() {
 		hotwDep = druid.NewDynamicMultiplyStat(stats.Strength, heartOfTheWildFormMultiplier(druid.Talents.HeartOfTheWild))
 	}
 
-	clawWeapon := druid.GetCatWeapon()
-
 	druid.CatFormAura = druid.RegisterAura(core.Aura{
 		Label:      "Cat Form",
 		ActionID:   actionID,
@@ -141,7 +138,7 @@ func (druid *Druid) RegisterCatFormAura() {
 			}
 
 			if !druid.Env.MeasuringStats {
-				druid.AutoAttacks.SetMH(clawWeapon)
+				druid.AutoAttacks.SetMH(druid.GetCatWeapon())
 				druid.AutoAttacks.EnableAutoSwing(sim)
 				druid.UpdateManaRegenRates()
 			}
@@ -237,8 +234,8 @@ func (druid *Druid) furorShiftEnergy(sim *core.Simulation) float64 {
 		return 0
 	}
 
-	// Client 17056 eff 1 (20-100): "up to a maximum of m2 Energy" caps the whole refund, so 3/5 tops out at 60.
-	m2 := spellData.Furor.EffectAt(1).ValueAt(druid.Talents.Furor)
+	// Client 17056 eff 1 (EffectAt(2), 20-100; eff 0 is the bear rage chance): "up to a maximum of m2 Energy" caps the whole refund, so 3/5 tops out at 60.
+	m2 := spellData.Furor.EffectAt(2).ValueAt(druid.Talents.Furor)
 	carryOver := druid.lastCatFormEnergy * m2 / 100
 	outOfForm := 0.0
 	if druid.lastCatFormExitAt > 0 {
@@ -265,8 +262,6 @@ func (druid *Druid) RegisterBearFormAura() {
 	if druid.Talents.HeartOfTheWild > 0 {
 		hotwDep = druid.NewDynamicMultiplyStat(stats.Stamina, heartOfTheWildBearStaminaMultiplier(druid.Talents.HeartOfTheWild))
 	}
-
-	clawWeapon := druid.GetBearWeapon()
 
 	druid.BearFormAura = druid.RegisterAura(core.Aura{
 		Label:      "Bear Form",
@@ -298,7 +293,7 @@ func (druid *Druid) RegisterBearFormAura() {
 				if sim.CurrentTime > 0 {
 					druid.restoreHealthFraction(sim, healthFrac, healthMetrics)
 				}
-				druid.AutoAttacks.SetMH(clawWeapon)
+				druid.AutoAttacks.SetMH(druid.GetBearWeapon())
 				druid.AutoAttacks.EnableAutoSwing(sim)
 				druid.UpdateManaRegenRates()
 			}

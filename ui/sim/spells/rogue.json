@@ -76,10 +76,9 @@
 	},
 	"13960": {
 		"ability": "Hack and Slash",
-		"assumptions": ["A rogue holding two qualifying weapon types gets both halves of the talent"],
 		"file": "sim/rogue/talents_combat.go",
-		"note": "Hack and Slash folds Classic's four weapon specialization talents into one. The sim reads its three curves from the beta client (13960: 1-5% extra attack, 3-15% armor ignored, 1-5% crit), and the extra attack's 200 ms internal cooldown from the same row (its proc cooldown). The extra attack is a plain main-hand swing.",
-		"source": "assumed",
+		"note": "Hack and Slash folds Classic's four weapon specialization talents into one. The sim reads its three curves from the beta client (13960: 1-5% extra attack, 3-15% armor ignored, 1-5% crit), and the extra attack's 200 ms internal cooldown from the same row (its proc cooldown). The extra attack is a plain main-hand swing. Two qualifying weapons get both halves, each on its own hand, as a beta log shows (foreverlogs 2710, Apoc, level 30 Combat, sword main hand and fist off hand): off-hand autos crit 30.5% (223 of 731) against the main hand's 25.1% (125 of 499), the fist's 5% on the off hand alone, and 33 of the 36 extra attacks land at the same millisecond as a main-hand hit (autos, Sinister Strike, Eviscerate, Kick); the other 3 sit next to swings of both hands. Had off-hand hits triggered it at the main hand's rate (33 from about 990 landed hits), there would be about 24 more.",
+		"source": "forever",
 		"tooltip": "Talent, 5 ranks\nGives your melee weapon attacks a benefit depending on the weapon.\nAxe/Sword: your successful melee attacks have a 1% chance per rank to trigger an extra attack on the target.\nDagger/Fist: increases your critical strike chance by 1% per rank.\nMace: your attacks ignore 3% of your target's armor per rank."
 	},
 	"13976": {

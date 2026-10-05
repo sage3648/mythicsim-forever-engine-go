@@ -106,9 +106,11 @@ func TestArena(t *testing.T) {
 		Race:        proto.Race_RaceHuman,
 		SpecOptions: DefaultOptions,
 		Role:        arenalib.Melee,
-		// Poisons are a rogue ability, not something on the vendor list. Deadly rather than Instant:
-		// Mutilate's 20% only counts against Deadly or Wound Poison, and Deadly out-damages Instant
-		// for every build on launch gear (+2.4..+5.0%).
-		ClassImbues: arenalib.ClassImbues{OffHand: 27186}, // Deadly Poison
+		// Poisons are a rogue ability, not something on the vendor list. Deadly rather than Instant in
+		// the off hand: Mutilate's 20% only counts against Deadly or Wound Poison, and Deadly
+		// out-damages Instant for every build on launch gear (+2.4..+5.0%). Instant in the main hand,
+		// which was bare: Forever's Windfury Totem no longer occupies it (#550), and Instant beats an
+		// Elemental Sharpening Stone there for every build (+3.2..+4.1% vs +1.7..+1.9%).
+		ClassImbues: arenalib.ClassImbues{MainHand: 26891, OffHand: 27186}, // Instant, Deadly Poison
 	})
 }

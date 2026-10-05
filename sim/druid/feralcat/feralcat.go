@@ -71,11 +71,8 @@ func (cat *FeralDruid) AddRaidBuffs(raidBuffs *proto.RaidBuffs) {
 }
 
 // AddPartyBuffs auto-applies Leader of the Pack from the druid's own talent.
-//
-// Windfury Totem is kept. In Classic the totem enchanted the held weapon, which
-// a shapeshifted druid does not swing, so the Classic sim stripped it. Forever's
-// totem (8515) is a party aura that procs 8516 off melee autos and specials, with
-// no weapon involved, so it procs in Cat Form too.
+// Windfury Totem stays: Forever's 8515 is a party proc aura, not a weapon
+// enchant, so a cat procs it (client 1.60.1.70205).
 func (cat *FeralDruid) AddPartyBuffs(partyBuffs *proto.PartyBuffs) {
 	if cat.Talents.LeaderOfThePack {
 		partyBuffs.LeaderOfThePack = true

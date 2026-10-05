@@ -7,9 +7,9 @@ import (
 	"github.com/wowsims/forever/sim/core/proto"
 )
 
-// A gearless Warlock channelling nothing but Rain of Fire against three targets: every channel
-// ticks four times, each tick hits every target, and a tick deals the client's 221 Fire damage
-// before resistances and crits.
+// Ported from MythicSim patch 23 (sage3648). A gearless Warlock channelling nothing but Rain of Fire
+// against three targets: every channel ticks four times, each tick hits every target, and a tick deals
+// the client's 221 Fire damage before resistances and crits.
 func TestRainOfFireRainsOnEveryTarget(t *testing.T) {
 	const channel, tick, targets, iterations = 11678, 1282385, 3, 20
 	player := core.WithSpec(&proto.Player{

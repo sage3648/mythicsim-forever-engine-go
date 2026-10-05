@@ -72,7 +72,7 @@
 	"1277328": {
 		"ability": "Dark Sacrifice",
 		"file": "sim/priest/dark_sacrifice.go",
-		"note": "New in Forever: five ranks (1277324-1277328, trained 20 to 60), free, 10 min cooldown. Beta client 1.60.1.70009 gives the base (rank 5: 320 every 3 sec, five ticks); the Spirit share is from a beta combat log (foreverlogs report 40, rank 1, Spirit 72: 94.4 mana a tick = 80 + Spirit / 5). The health cost is not modelled; the cooldown manager casts it once the whole gain fits.",
+		"note": "New in Forever: five ranks (1277324-1277328, trained 20 to 60), free, 10 min cooldown. Beta client 1.60.1.70009 gives the base (rank 5: 320 every 3 sec, five ticks); the Spirit share is from a beta combat log (foreverlogs report 40, rank 1, Spirit 72: 94.4 mana a tick = 80 + Spirit / 5). The health cost is not modelled; the cooldown manager casts it once the whole gain fits. Every rank is flagged No Threat (client 1.60.1.70205 Attributes[1] 0x400), so the mana adds no threat.",
 		"source": "forever",
 		"tooltip": "Instant\n10 min cooldown\nCannibalize 1600 of your own Health over 15 sec to gain (1600 + Spirit) Mana."
 	},

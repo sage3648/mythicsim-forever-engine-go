@@ -77,8 +77,11 @@ type dotCase struct {
 	meleeAP, rangedAP, spellPower float64
 	// The part of a tick that stays with the application: the client's flat tick, a combo point or stack
 	// count carried with it. Zero leaves it unchecked.
-	flat  float64
-	build func(t *testing.T) dotProbe
+	flat float64
+	// The tick spell ignores caster damage modifiers (Attributes[6] 0x20000000), so a multiplier gained
+	// mid-dot leaves it alone: Deep Wounds' 412613 (upstream #645).
+	ignoresCasterMods bool
+	build             func(t *testing.T) dotProbe
 }
 
 func dotCases() []dotCase {
@@ -155,7 +158,7 @@ func dotCases() []dotCase {
 			dot.Apply(sim)
 			return dotProbe{sim, &w.Unit, dot}
 		}},
-		{name: "Deep Wounds", build: func(t *testing.T) dotProbe {
+		{name: "Deep Wounds", ignoresCasterMods: true, build: func(t *testing.T) dotProbe {
 			sim, agent, target := probePlayer(t, warriorJSON, 7230) // Smite's Mighty Hammer
 			w := agent.(warrior.WarriorAgent).GetWarrior()
 			if w.Talents.DeepWounds == 0 {
@@ -249,8 +252,12 @@ func TestDotsReadStatsAtTheTick(t *testing.T) {
 			p = c.build(t)
 			multiplier := p.ticks(t, 2, func() { p.caster.PseudoStats.DamageDealtMultiplier *= 1.5 })
 			t.Logf("%s: multiplier %.4f -> %.4f after a 1.5x damage multiplier gained mid-dot", c.name, multiplier[0].multiplier, multiplier[1].multiplier)
-			if got := multiplier[1].multiplier / multiplier[0].multiplier; math.Abs(got-1.5) > 0.01 {
-				t.Errorf("the tick's multiplier rose %.3fx, want 1.5x (the dot did not read the multiplier at the tick)", got)
+			wantMultiplier := 1.5
+			if c.ignoresCasterMods {
+				wantMultiplier = 1
+			}
+			if got := multiplier[1].multiplier / multiplier[0].multiplier; math.Abs(got-wantMultiplier) > 0.01 {
+				t.Errorf("the tick's multiplier rose %.3fx, want %.1fx", got, wantMultiplier)
 			}
 			if math.Abs(multiplier[1].base-multiplier[0].base) > 0.11 {
 				t.Errorf("a multiplier change moved the base damage %.2f -> %.2f", multiplier[0].base, multiplier[1].base)

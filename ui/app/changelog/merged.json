@@ -1,5 +1,209 @@
 [
 	{
+		"number": 676,
+		"title": "feral: show the Windfury Totem party buff in Cat and Bear",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/676"
+	},
+	{
+		"number": 675,
+		"title": "shaman: one air totem per party",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/675"
+	},
+	{
+		"number": 674,
+		"title": "shaman: a main-hand Flametongue Weapon keeps Windfury Totem",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/674"
+	},
+	{
+		"number": 673,
+		"title": "shaman: register Rockbiter Weapon",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/673"
+	},
+	{
+		"number": 672,
+		"title": "warlock: register Rain of Fire",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/672"
+	},
+	{
+		"number": 671,
+		"title": "buffs: Faerie Fire and Curse of Recklessness share their armor reduction",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/671"
+	},
+	{
+		"number": 670,
+		"title": "druid: feral forms swing the equipped weapon's DPS",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/670"
+	},
+	{
+		"number": 669,
+		"title": "druid: Windfury Totem procs in Cat and Bear Form",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/669"
+	},
+	{
+		"number": 668,
+		"title": "core: dots tick on the caster's current spell power, attack power and damage multipliers",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/668"
+	},
+	{
+		"number": 667,
+		"title": "warrior: audit fixes; the arena pulls at 0 rage",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/667"
+	},
+	{
+		"number": 666,
+		"title": "evidence: Hack and Slash gives both halves, one per hand (beta log 2710)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/666"
+	},
+	{
+		"number": 665,
+		"title": "rogue: talent/ability audit fixes, main-hand poison in the arena",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/665"
+	},
+	{
+		"number": 664,
+		"title": "[DB] Update to 1.60.1.70205 with hotfixes as of 2026-10-04",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/664"
+	},
+	{
+		"number": 663,
+		"title": "[DB] 70205 hotfixes of 2026-10-04: list two new no-rate item procs (fixes #662)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/663"
+	},
+	{
+		"number": 661,
+		"title": "mage: Arcane Missiles spends Arcane Blast stacks as the channel starts",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/661"
+	},
+	{
+		"number": 660,
+		"title": "mage: talent/spell audit fixes and stronger rotations",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/660"
+	},
+	{
+		"number": 659,
+		"title": "shaman: Lightning Overload bolts read their own client rows",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/659"
+	},
+	{
+		"number": 658,
+		"title": "gear: one mage launch set per tree (Frost, Fire, Arcane)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/658"
+	},
+	{
+		"number": 657,
+		"title": "hunter: Freezing Trap has its own cooldown; traps read their client categories",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/657"
+	},
+	{
+		"number": 656,
+		"title": "mage: Presence of Mind and Combustion share one 3 min cooldown",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/656"
+	},
+	{
+		"number": 655,
+		"title": "Furor and Improved Sayaad read the effects their tooltips name",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/655"
+	},
+	{
+		"number": 654,
+		"title": "rogue: Hack and Slash reads crit and extra attack from the right effects",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/654"
+	},
+	{
+		"number": 653,
+		"title": "Charge's rage adds no threat (client No Threat flag)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/653"
+	},
+	{
+		"number": 652,
+		"title": "Life Tap and Dark Sacrifice mana adds no threat (client No Threat flag)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/652"
+	},
+	{
+		"number": 651,
+		"title": "druid: Ravage can't be dodged",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/651"
+	},
+	{
+		"number": 650,
+		"title": "hunter: trap burns, Scorpid Poison and Volley ticks can crit",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/650"
+	},
+	{
+		"number": 649,
+		"title": "Wowhead Forever data changed (2026-10-04)",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/649"
+	},
+	{
+		"number": 648,
+		"title": "warlock: Demonic Brand's hit never misses and can crit",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/648"
+	},
+	{
+		"number": 647,
+		"title": "mage: Blizzard ticks are procs, so Winter's Chill no longer stacks off them",
+		"mergedAt": "2026-10-04",
+		"url": "https://github.com/ElliotWood/Forever/pull/647"
+	},
+	{
+		"number": 646,
+		"title": "Ignite, Elemental Devastation, Flurry: read Can Proc From Procs from the Forever client",
+		"mergedAt": "2026-10-03",
+		"url": "https://github.com/ElliotWood/Forever/pull/646"
+	},
+	{
+		"number": 645,
+		"title": "warrior: Deep Wounds ticks ignore caster damage modifiers (client flag + beta logs)",
+		"mergedAt": "2026-10-03",
+		"url": "https://github.com/ElliotWood/Forever/pull/645"
+	},
+	{
+		"number": 644,
+		"title": "shaman: Windfury Weapon strikes twice with special hits, swing timer untouched (beta log)",
+		"mergedAt": "2026-10-03",
+		"url": "https://github.com/ElliotWood/Forever/pull/644"
+	},
+	{
+		"number": 643,
+		"title": "mage: Arcane Concentration skips triggered spells; Blizzard rolls on its cast",
+		"mergedAt": "2026-10-03",
+		"url": "https://github.com/ElliotWood/Forever/pull/643"
+	},
+	{
+		"number": 642,
+		"title": "evidence: Deep Wounds' top rank checked on a level 30 beta log",
+		"mergedAt": "2026-10-03",
+		"url": "https://github.com/ElliotWood/Forever/pull/642"
+	},
+	{
 		"number": 641,
 		"title": "warrior: offer Stance Dance and Battle Stance rotations; Auto picks them",
 		"mergedAt": "2026-10-03",

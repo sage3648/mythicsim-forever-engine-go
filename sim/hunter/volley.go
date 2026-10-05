@@ -52,8 +52,10 @@ func (hunter *Hunter) registerVolleySpell() {
 				dot.Snapshot(target, baseDamage)
 			},
 			OnTick: func(sim *core.Simulation, target *core.Unit, dot *core.Dot) {
+				// Each tick is its own ranged damage spell (client 1.60.1.70205: DefenseType 3, no
+				// Cannot Crit), so it rolls ranged hit and crit like Multi-Shot.
 				for _, aoeTarget := range sim.Encounter.ActiveTargetUnits {
-					dot.CalcAndDealPeriodicSnapshotDamage(sim, aoeTarget, dot.OutcomeTick)
+					dot.CalcAndDealPeriodicSnapshotDamage(sim, aoeTarget, dot.Spell.OutcomeRangedHitAndCrit)
 				}
 			},
 		},

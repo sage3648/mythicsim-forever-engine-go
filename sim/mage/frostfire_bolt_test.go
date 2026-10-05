@@ -118,11 +118,12 @@ func TestFrostfireFingersAndMissileBarrage(t *testing.T) {
 	if mage.FingersOfFrostAura.GetStacks() != 1 {
 		t.Errorf("Frostfire left %d charges, want 1", mage.FingersOfFrostAura.GetStacks())
 	}
-	// An Arcane build can use the same baseline spell to proc Missile Barrage.
+	// An Arcane build can use the same baseline spell to proc Missile Barrage, which rolls when the
+	// bolt lands (upstream #643's 400588 proc flags).
 	sim, mage = frostfireSim(ArcaneTalents)
 	spell = mage.GetSpell(core.ActionID{SpellID: 1237313})
 	for i := 0; i < 100 && !mage.MissileBarrageAura.IsActive(); i++ {
-		mage.OnCastComplete(sim, spell)
+		spell.CalcAndDealDamage(sim, mage.CurrentTarget, 1, spell.OutcomeAlwaysHit)
 	}
 	if !mage.MissileBarrageAura.IsActive() {
 		t.Fatal("Frostfire did not trigger Missile Barrage")

@@ -120,9 +120,9 @@
 	"11129": {
 		"ability": "Combustion",
 		"file": "sim/mage/combustion.go",
-		"note": "combustion.go reads 4 fire crits from 11129's charges and 10% a stack from 28682 in beta client 1.60.1.70009, where Classic's 11129 tooltip says 3 crits; the 3 minute cooldown is on the client row too.",
+		"note": "combustion.go reads 3 fire crits from 11129's charges (client 1.60.1.70205; it was 4 in 70009) and 10% a stack from 28682; the 3 minute cooldown is on the client row too, in category 1151, which it shares with Presence of Mind (client 1.60.1.70205 and Classic Era alike), so casting either locks both.",
 		"source": "forever",
-		"tooltip": "Instant\n3 min cooldown\nWhen activated, each of your Fire damage spell hits increases your critical strike chance with Fire spells by 10%.\nLasts until you have dealt 4 non-periodic critical strikes with Fire spells."
+		"tooltip": "Instant\n3 min cooldown\nWhen activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 non-periodic critical strikes with Fire spells."
 	},
 	"116": {
 		"ability": "Frostbolt",
@@ -140,7 +140,7 @@
 	"12043": {
 		"ability": "Presence of Mind",
 		"file": "sim/mage/presence_of_mind.go",
-		"note": "presence_of_mind.go reads 12043 from beta client 1.60.1.70009: a 3 min cooldown, and the next spell with a cast time is instant, the same as Classic.",
+		"note": "presence_of_mind.go reads 12043 from beta client 1.60.1.70009: a 3 min cooldown, and the next spell with a cast time is instant, the same as Classic. The cooldown is category 1151 (client 1.60.1.70205), shared with Combustion.",
 		"source": "classic"
 	},
 	"12051": {
@@ -196,7 +196,7 @@
 	"12536": {
 		"ability": "Clearcasting",
 		"file": "sim/mage/talents_arcane.go",
-		"note": "Arcane Concentration's Clearcasting buff, the id the sim registers. 2% chance per point (11213's curve 2/4/6/8/10 in beta client 1.60.1.70009) that the next spell costs no mana, 15 sec, the same as Classic.",
+		"note": "Arcane Concentration's Clearcasting buff, the id the sim registers. 2% chance per point (11213's curve 2/4/6/8/10 in beta client 1.60.1.70009) that the next spell costs no mana, 15 sec, the same as Classic. It rolls on each enemy a spell hits, not on spells another spell triggers: beta log 2706 (Jamal, 18 Arcane, level 26) has 70 procs from 246 Arcane Explosions (11% an enemy hit), 12 from 37 Blizzard casts, none from 642 Blizzard tick hits (62 if they rolled) and none from 32 Arcane Missiles missiles. The sim rolls Blizzard once an enemy on the cast and skips its ticks and the missiles.",
 		"source": "classic"
 	},
 	"13021": {
