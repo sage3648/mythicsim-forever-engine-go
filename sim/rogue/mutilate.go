@@ -38,7 +38,7 @@ func (rogue *Rogue) registerMutilateSpell() {
 		SpellSchool: row.SpellSchool,
 		DefenseType: row.DefenseType,
 		ProcMask:    core.ProcMaskMeleeOHSpecial,
-		Flags:       SpellFlagBuilder | core.SpellFlagMeleeMetrics | core.SpellFlagNoOnCastComplete,
+		Flags:       SpellFlagBuilder | SpellFlagColdBlooded | core.SpellFlagMeleeMetrics | core.SpellFlagNoOnCastComplete,
 
 		CritDamageBonus: rogue.lethality(),
 
@@ -88,7 +88,6 @@ func (rogue *Rogue) registerMutilateSpell() {
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			rogue.BreakStealth(sim)
 
-			// Cold Blood is spent on the main hand half, which is the larger of the two.
 			baseDamage := rogue.mutilateDamage(target, flatDamage, rogue.MHNormalizedWeaponDamage(sim, spell.MeleeAttackPower(target)))
 			result := spell.CalcAndDealDamage(sim, target, baseDamage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
 			rogue.mutilateOH.Cast(sim, target)
