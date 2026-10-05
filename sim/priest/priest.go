@@ -73,7 +73,12 @@ func (priest *Priest) Initialize() {
 	HolyFireRankMap.Each(func(_ int32, rank *spelldata.Spell) { priest.registerHolyFireSpell(rank) })
 	ChastiseRankMap.Each(func(_ int32, rank *spelldata.Spell) { priest.registerChastiseSpell(rank) })
 	priest.registerShadowfiendSpell()
-	priest.registerDarkSacrificeSpell()
+
+	// Dark Sacrifice is the undead priest's race ability: its SkillLineAbility rows carry race
+	// mask 16 (Undead), as Starshards' carry 8 (Night Elf).
+	if priest.Race == proto.Race_RaceUndead && !priest.RacialsDisabled() {
+		priest.registerDarkSacrificeSpell()
+	}
 
 	if priest.Race == proto.Race_RaceNightElf && !priest.RacialsDisabled() {
 		starshardsCDTimer := priest.NewTimer()

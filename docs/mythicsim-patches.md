@@ -33,7 +33,8 @@ yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an u
 
 - **What it does.** `Player.disable_racials` (field 59, JSON `disableRacials`) skips every racial
   effect and keeps the race's base stats. Besides `applyRaceEffects`, it gates the race-only
-  effects that live elsewhere: the night elf priest's Starshards (`sim/priest/priest.go`),
+  effects that live elsewhere: the night elf priest's Starshards and the undead priest's Dark
+  Sacrifice (`sim/priest/priest.go`, patch 85),
   Bloodthistle (`sim/core/consumes.go`) and the racial multipliers the reforge optimizer models
   (`sim/core/reforge_optimizer/model.go`). The rest of the code checks
   `Character.RacialsDisabled()`.
@@ -1655,3 +1656,20 @@ each row), Survival Melee +1.05% (trap crits and categories). Feral Cat moves +0
 unchanged; our rotation opens with Ravage, upstream's barely uses it. Specs whose upstream goldens
 moved for patches the fork already had (Feral -22%, hunters -5 to -6% from #670 and #671) do not
 move here. Whole suite green.
+
+## 85. `priest: Dark Sacrifice is Undead only`
+
+Dark Sacrifice (1277324 to 1277328) is the undead priest's race ability: the client's
+SkillLineAbility rows for its five ranks carry race mask 16 (Undead), as Starshards' carry 8 (Night
+Elf). The fork registered it for every priest and added it as a major cooldown, so Autocast Other
+Cooldowns and APL lines cast it for every race, behind `spellIsKnown` too (Zwuggel and Kerani on the
+MythicSim Discord, 5 October 2026). `Initialize` now registers it like Starshards: Undead, racials
+on, so a race comparison with racials disabled loses it as well (patch 2).
+
+`TestDarkSacrificeIsUndeadOnly` checks the spell and its major cooldown for Undead with and without
+racials and for four other races. TestShadowPriest and TestSmitePriest run Troll and Night Elf
+priests, whose goldens drop without the spell (Average-Default: Shadow 347.12 to 342.89, Smite 174.58
+to 155.68); Undead is unchanged, and so are MythicSim's Shadow and Smite references, which are
+Undead.
+
+Drop this when upstream gates Dark Sacrifice on race.

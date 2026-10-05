@@ -6,7 +6,8 @@ import (
 	"github.com/wowsims/forever/sim/core/stats"
 )
 
-// Dark Sacrifice is new in Forever: five ranks (1277324-1277328, trained 20 to 60), a free instant
+// Dark Sacrifice is new in Forever: the undead priest's race ability (registered in Initialize for
+// Undead only), five ranks (1277324-1277328, trained 20 to 60), a free instant
 // self buff on a 10 minute cooldown that turns health into mana over 15 sec. The client row carries the
 // base: rank 5 ticks 320 every 3 sec, five ticks. The tooltip's "(1640 + Spirit) Mana" adds Spirit on
 // top, which the row does not state; a beta combat log settles how: Papa (report 40, rank 1, Spirit 72)
