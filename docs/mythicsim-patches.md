@@ -1569,3 +1569,32 @@ in both forms, and that Crusader and the Elemental Sharpening Stone add no weapo
 goldens are unchanged: the suite carries no weapon-damage enchant or Dense stone.
 
 Drop this when upstream adds flat weapon damage to the form weapon after the rescale.
+
+## 87. `hunter: Lacerating Strikes keeps a refreshed bleed`
+
+`procLaceratingStrikes` wrote the bleed (40% of the Mongoose Bite over 7 ticks, multiplier 1) and
+then cast it. `Dot.Apply` deactivates a running dot before it snapshots, and the expiry zeroes
+`SnapshotBaseDamage` and `SnapshotAttackerMultiplier`, so a bite that landed with the last bleed
+still up (Mongoose Bite comes round about every 8 sec, the bleed lasts 21) left a bleed that ticked
+for 0 for its whole duration. Only the first bleed of a fight did damage, until the next bite. A
+first-iteration log of MythicSim's survival-hunter reference had 35 of 37 ticks at 0. The bleed is
+now written after the cast; a new bite still replaces the running bleed rather than rolling it over,
+as before. Ignite and Deep Wounds already write theirs after the cast.
+
+The bleed also reports under its own id, 1310536 (Lacerating Strikes), instead of Mongoose Bite's
+with tag 1, so results stop listing a second Mongoose Bite.
+
+MythicSim's survival-hunter reference, 10,000 iterations, 120 s with 15 s variation:
+
+| Seed | Before | After | Lacerating Strikes |
+| --- | ---: | ---: | ---: |
+| 1179722310 | 768.17 | 785.58 | 1.9 to 19.3 DPS |
+| 1180722310 | 766.94 | 784.35 | 1.9 to 19.3 DPS |
+
+Rolling the unticked damage into the new bleed (as Ignite does) would give 812 (+5.9%). The talent
+needs 31 Survival points, out of reach at the level 30 beta cap, so no log can settle it yet.
+
+`TestLaceratingStrikesRefreshKeepsTheNewBleed` lands two bites back to back and checks the second
+bleed carries its own 40%; it fails on the old order. `TestSurvivalMelee` goldens move.
+
+Drop this when upstream writes the bleed after the cast.
