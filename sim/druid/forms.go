@@ -55,15 +55,25 @@ func (druid *Druid) ClearForm(sim *core.Simulation) {
 // likewise use these damage values." (Druid class deep dive, 30 September 2026.) The equipped
 // weapon's damage range, weapon-damage enchants and bonus DPS are rescaled to the form's swing, so
 // the paw keeps the weapon's DPS and its spread. With nothing equipped the paw is the unarmed fist.
+//
+// A main-hand Dense Sharpening Stone or Dense Weightstone adds its flat damage to the weapon before
+// the rescale, so it counts as part of the weapon's DPS like a permanent weapon-damage enchant:
+// +8 on a 2.9 second staff is about +2.8 a cat swing. registerStaticImbue adds the flat damage to
+// the humanoid weapon only, which the form replaces, so without this the stone did nothing in form.
+// Whether Forever's server scales it the same way is unverified.
 func (druid *Druid) formWeapon(swingSpeed float64) core.Weapon {
 	weapon := druid.WeaponFromMainHand()
 	scale := 1.0
 	if weapon.SwingSpeed > 0 {
 		scale = swingSpeed / weapon.SwingSpeed
 	}
+	flat := 0.0
+	if druid.GetMHWeapon() != nil {
+		flat = druid.MHImbueFlatWeaponDamage()
+	}
 	return core.Weapon{
-		BaseDamageMin:        weapon.BaseDamageMin * scale,
-		BaseDamageMax:        weapon.BaseDamageMax * scale,
+		BaseDamageMin:        (weapon.BaseDamageMin + flat) * scale,
+		BaseDamageMax:        (weapon.BaseDamageMax + flat) * scale,
 		SwingSpeed:           swingSpeed,
 		NormalizedSwingSpeed: swingSpeed,
 		AttackPowerPerDPS:    core.DefaultAttackPowerPerDPS,
