@@ -139,7 +139,10 @@ export const CombatSinisterStrikeIEATalents = PresetUtils.makePresetTalents(
 	'Improved Expose Armor (SS)',
 	SavedTalents.create({ talentsString: '005303125-32003311201515131' }),
 );
-export const AssassinationMutilateTalents = PresetUtils.makePresetTalents('Mutilate', SavedTalents.create({ talentsString: '00530310551021051-302303202004' }));
+export const AssassinationMutilateTalents = PresetUtils.makePresetTalents(
+	'Mutilate',
+	SavedTalents.create({ talentsString: '00530310521001-302303202015151-002' }),
+);
 
 export const TalentsCombatDualWield = PresetUtils.makePresetTalents(
 	'Combat Dual-Wield 15/33/3',
