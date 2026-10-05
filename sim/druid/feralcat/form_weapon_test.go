@@ -67,17 +67,18 @@ func TestFormPawCarriesTheEquippedWeaponDPS(t *testing.T) {
 	}
 }
 
-// A Dense stone's flat damage is part of the weapon the paw is rescaled from: +8 on the 3.5 s
-// Smite's Mighty Hammer adds 8/3.5 to each cat swing and 8*2.5/3.5 to each bear swing. Before,
-// the form dropped it.
-func TestFormPawCarriesADenseStone(t *testing.T) {
-	paw := func(t *testing.T, imbue int32) (core.Weapon, core.Weapon) {
+// Flat weapon damage lands on every paw hit after the rescale: Hameru's beta cat form showed a +3
+// weightstone moving a 3.3 s hammer's 46 to 58 paw to 49 to 61. A Dense stone adds its full +8 and
+// Superior Impact its full +9 to each cat and bear swing. Before, the form dropped the stone and
+// scaled the enchant by the swing speed.
+func TestFormPawCarriesFlatWeaponDamage(t *testing.T) {
+	paw := func(t *testing.T, enchant, imbue int32) (core.Weapon, core.Weapon) {
 		t.Helper()
 		items := make([]*proto.ItemSpec, proto.ItemSlot_ItemSlotRanged+1)
 		for i := range items {
 			items[i] = &proto.ItemSpec{}
 		}
-		items[proto.ItemSlot_ItemSlotMainHand] = &proto.ItemSpec{Id: 7230}
+		items[proto.ItemSlot_ItemSlotMainHand] = &proto.ItemSpec{Id: 7230, Enchant: enchant} // Smite's Mighty Hammer, 55-83 at 3.5 s
 		sim := core.NewSim(&proto.RaidSimRequest{
 			SimOptions: &proto.SimOptions{RandomSeed: 1},
 			Raid: &proto.Raid{Parties: []*proto.Party{{Buffs: &proto.PartyBuffs{}, Players: []*proto.Player{{
@@ -92,24 +93,33 @@ func TestFormPawCarriesADenseStone(t *testing.T) {
 		cat := sim.Raid.Parties[0].Players[0].(druid.DruidAgent).GetDruid()
 		return cat.GetCatWeapon(), cat.GetBearWeapon()
 	}
-	plainCat, plainBear := paw(t, 0)
-	for _, imbue := range []int32{16622, 16138} { // Dense Weightstone, Dense Sharpening Stone
-		cat, bear := paw(t, imbue)
+	plainCat, plainBear := paw(t, 0, 0)
+	if want := 55.0 / 3.5; math.Abs(plainCat.BaseDamageMin-want) > 1e-9 {
+		t.Fatalf("plain cat paw minimum %.4f, want %.4f", plainCat.BaseDamageMin, want)
+	}
+	for _, c := range []struct {
+		name           string
+		enchant, imbue int32
+		want           float64
+	}{
+		{"Dense Weightstone", 0, 16622, 8},
+		{"Dense Sharpening Stone", 0, 16138, 8},
+		{"Superior Impact", 1896, 0, 9},
+		{"Superior Impact and Dense Weightstone", 1896, 16622, 17},
+		{"Elemental Sharpening Stone", 0, 18262, 0}, // crit, no weapon damage
+		{"Crusader", 1900, 0, 0},                    // a proc, no weapon damage
+	} {
+		cat, bear := paw(t, c.enchant, c.imbue)
 		for _, row := range []struct {
 			form        string
 			plain, with core.Weapon
-			want        float64
-		}{{"Cat", plainCat, cat, 8 / 3.5}, {"Bear", plainBear, bear, 8 * 2.5 / 3.5}} {
-			if got := row.with.BaseDamageMin - row.plain.BaseDamageMin; math.Abs(got-row.want) > 1e-9 {
-				t.Errorf("imbue %d: %s paw minimum +%.4f, want +%.4f", imbue, row.form, got, row.want)
+		}{{"Cat", plainCat, cat}, {"Bear", plainBear, bear}} {
+			if got := row.with.BaseDamageMin - row.plain.BaseDamageMin; math.Abs(got-c.want) > 1e-9 {
+				t.Errorf("%s: %s paw minimum +%.4f, want +%.4f", c.name, row.form, got, c.want)
 			}
-			if got := row.with.BaseDamageMax - row.plain.BaseDamageMax; math.Abs(got-row.want) > 1e-9 {
-				t.Errorf("imbue %d: %s paw maximum +%.4f, want +%.4f", imbue, row.form, got, row.want)
+			if got := row.with.BaseDamageMax - row.plain.BaseDamageMax; math.Abs(got-c.want) > 1e-9 {
+				t.Errorf("%s: %s paw maximum +%.4f, want +%.4f", c.name, row.form, got, c.want)
 			}
 		}
-	}
-	// The crit stone adds no weapon damage.
-	if cat, _ := paw(t, 18262); cat.BaseDamageMin != plainCat.BaseDamageMin {
-		t.Errorf("Elemental Sharpening Stone moved the paw to %.4f from %.4f", cat.BaseDamageMin, plainCat.BaseDamageMin)
 	}
 }

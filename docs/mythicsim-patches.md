@@ -1532,20 +1532,40 @@ Paladin and Warrior move only on the Vile Protector item row (armor). Whole suit
 
 ## 84. `druid: a Dense stone counts in cat and bear form`
 
-Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), and
-`registerStaticImbue` adds a Dense Sharpening Stone's or Dense Weightstone's +8 to the humanoid
-weapon only, which the form then replaces. A main-hand Dense stone therefore did nothing in cat or
-bear form. `formWeapon` now adds the stone's flat damage to the weapon before rescaling it to the
-form's swing, the same as a permanent weapon-damage enchant: +8 on the 3.5 second Smite's Mighty
-Hammer is +2.29 a cat swing and +5.71 a bear swing, and on the 2.9 second Headmaster's Charge
-about +2.8 a cat swing. The Elemental Sharpening Stone is a stat and is unchanged.
+Forever's forms rebuild the paw from the equipped weapon (`formWeapon`), rescaling its damage range
+to the form's 1.0 or 2.5 second swing. Flat weapon damage is not rescaled: it lands in full on
+every paw hit. Hameru's beta character sheet (MythicSim Discord, 5 October 2026) shows Heavyhammer
+(73 to 110 at 3.3 s) in cat form at 46 to 58, and 49 to 61 with a +3 weightstone, so the stone
+adds +3 per paw hit rather than 3 x 1.0 / 3.3. Hameru also reports a +5 weapon-damage enchant adds 5.
+The client stores both as the same enchantment kind (SpellItemEnchantment effect 2: "Weighted +8",
+"Sharpened +8" and "Weapon Damage +9" alike), and the server adds that kind to the hand's damage as
+one flat amount, so stones and weapon-damage enchants are treated the same.
 
-Unverified: Forever may instead add the full +8 to each paw hit. MythicSim's Feral reference
-(Headmaster's Charge, 20,000 iterations) gains +1.0% DPS from a Dense Weightstone with this
-scaling, +2.8% with the full +8, and +1.7% from an Elemental Sharpening Stone. A character sheet
-in cat form before and after applying a stone tells the two apart.
+Before this, `registerStaticImbue` added a Dense Sharpening Stone's or Dense Weightstone's +8 to the
+humanoid weapon only, which the form replaces, so the stone did nothing in form; and
+`newWeaponFromItem` folded `Enchant.WeaponDamage` into the range that `formWeapon` rescales, so +9
+Superior Impact gave a cat on a 2.9 second staff about +3.1 a swing. `formWeapon` now rescales the
+weapon's own range and bonus DPS, then adds the enchant's and the stone's flat damage. Crusader,
++25 Agility and the Elemental Sharpening Stone are not weapon damage and are unchanged.
 
-`TestFormPawCarriesADenseStone` checks both stones in both forms. Feral goldens are unchanged:
-the test suite assumes no Dense stone.
+MythicSim's references, board seed, 10,000 iterations, empty trinkets, default length (300 s in
+brackets):
 
-Drop this when upstream applies weapon imbues to the form weapon.
+| Main hand | Before | After |
+| --- | ---: | ---: |
+| Cat, Crusader, Elemental stone | 599.92 (563.43) | 599.92 (563.43) |
+| Cat, +9 Superior Impact, Elemental stone | 594.51 (557.02) | 606.76 (568.53) |
+| Cat, Crusader, Dense Weightstone | 590.16 (553.70) | 606.50 (569.07) |
+| Cat, +9 Superior Impact, Dense Weightstone | 584.75 (547.43) | 613.15 (574.12) |
+| Bear, Crusader, Elemental stone | 432.80 (435.85) | 432.80 (435.85) |
+| Bear, +9 Superior Impact, Elemental stone | 425.74 (427.82) | 426.36 (428.43) |
+| Bear, Crusader, Dense Weightstone | 422.68 (425.57) | 429.87 (432.73) |
+
+In cat form +9 weapon damage now beats Crusader and a Dense stone beats the Elemental one; the
+bear's 2.5 second swing keeps Crusader and the Elemental stone ahead.
+
+`TestFormPawCarriesFlatWeaponDamage` checks both Dense stones, Superior Impact and the two together
+in both forms, and that Crusader and the Elemental Sharpening Stone add no weapon damage. Feral
+goldens are unchanged: the suite carries no weapon-damage enchant or Dense stone.
+
+Drop this when upstream adds flat weapon damage to the form weapon after the rescale.
