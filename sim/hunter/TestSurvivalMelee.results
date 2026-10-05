@@ -373,8 +373,8 @@ dps_results: {
 dps_results: {
  key: "TestSurvivalMelee-AllItems-Dragon'sCall-10847"
  value: {
-  dps: 491.6993
-  tps: 305.06975
+  dps: 483.89585
+  tps: 303.28259
  }
 }
 dps_results: {

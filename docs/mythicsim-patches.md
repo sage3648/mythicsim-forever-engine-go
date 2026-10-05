@@ -1673,3 +1673,23 @@ to 155.68); Undead is unchanged, and so are MythicSim's Shadow and Smite referen
 Undead.
 
 Drop this when upstream gates Dark Sacrifice on race.
+
+## 86. `items: Dragon's Call whelp honours its 45 sec cooldown`
+
+Dragon's Call (10847) summons an Emerald Dragon Whelp with spell 13049, which carries a 45 sec
+category cooldown in the Forever client (SpellCooldowns 54877, category 23), retuned from Classic
+Era's 60 sec. The port rolled 1 PPM with no cooldown, so a proc while the 15 sec whelp was out
+refreshed it: about 50% uptime and 11.4 Acid Spits a fight on MythicSim's melee Survival Hunter
+reference (reported by Bae on the MythicSim Discord). The proc now waits out the cooldown
+(`WeaponProcTrigger.ICD`, new), and the summon's cooldown and duration are read from the 13049 row:
+25% uptime, at most one 15 sec whelp per 45 sec, 5.3 spits a fight.
+
+Measured on `20b551c6b` (10,000 iterations, seed 42), the Survival reference falls from 760.9 to
+735.3 DPS, and Dragon's Call drops from first to fourth of the main hand swords, behind Teebu's
+Blazing Longsword, Dal'Rend's Sacred Charge and Krol Blade. Goldens here: TestSurvivalMelee
+Dragon's Call 491.70 to 483.90, TestArms Dragon's Call 328.73 to 325.12; nothing else moves.
+
+`TestDragonsCallWhelpProcCooldown` checks that summons are 45 sec apart and each whelp lives
+exactly 15 sec.
+
+Drop this when upstream gives the Dragon's Call proc its spell's cooldown.

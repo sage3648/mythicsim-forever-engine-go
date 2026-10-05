@@ -19,8 +19,8 @@ type EmeraldDragonWhelp struct {
 }
 
 func init() {
-	// One whelp at a time, as on master: a proc while it is out refreshes it rather than adding
-	// another. Only a Dragon's Call equipped at the start gets one.
+	// One whelp at a time. The 45 sec proc cooldown outlasts the 15 sec summon, so a proc never
+	// finds it out. Only a Dragon's Call equipped at the start gets one.
 	core.RegisterGearPetConstructor(func(character *core.Character) {
 		if character.MainHand().ID == DragonsCall || character.OffHand().ID == DragonsCall {
 			character.AddPet(newEmeraldDragonWhelp(character))

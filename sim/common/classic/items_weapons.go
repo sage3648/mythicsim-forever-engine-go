@@ -5,6 +5,7 @@ import (
 
 	"github.com/wowsims/forever/sim/common/itemhelpers"
 	"github.com/wowsims/forever/sim/core"
+	"github.com/wowsims/forever/sim/core/spelldata"
 	"github.com/wowsims/forever/sim/core/stats"
 )
 
@@ -89,17 +90,21 @@ func init() {
 	})
 
 	// Dragon's Call: chance on hit, Dragon's Call (13049) summons an Emerald Dragon Whelp for 15 sec.
-	// The client gives no proc rate; 1 PPM is master's (Armaments Discord). 13049 carries a 45 sec
-	// category cooldown, which triggered procs ignore - Classic players saw several whelps at once.
+	// The client gives no proc rate; 1 PPM is master's (Armaments Discord). 13049's category cooldown
+	// gates the proc: Forever retuned it from Classic Era's 60 sec to 45 sec, and on Classic Era the
+	// whelp could not proc again for a minute after a summon. Without it the 1 PPM roll kept
+	// refreshing the whelp: 50% uptime on the melee Survival Hunter reference, 25% with it.
+	summonSpell := spelldata.MustFind(13049)
 	itemhelpers.CreateWeaponProcTrigger(itemhelpers.WeaponProcTrigger{
 		ItemID: DragonsCall,
 		Name:   "Emerald Dragon Whelp",
 		PPM:    1,
+		ICD:    time.Millisecond * time.Duration(summonSpell.CategoryCooldownMs),
 		Handler: func(character *core.Character) core.ProcHandler {
 			for _, petAgent := range character.PetAgents {
 				if whelp, ok := petAgent.(*EmeraldDragonWhelp); ok {
 					return func(sim *core.Simulation, _ *core.Spell, _ *core.SpellResult) {
-						whelp.summon(sim, time.Second*15)
+						whelp.summon(sim, time.Millisecond*time.Duration(summonSpell.DurationMs))
 					}
 				}
 			}

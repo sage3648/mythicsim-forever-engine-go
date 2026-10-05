@@ -1,6 +1,8 @@
 package itemhelpers
 
 import (
+	"time"
+
 	"github.com/wowsims/forever/sim/common/shared"
 	"github.com/wowsims/forever/sim/core"
 )
@@ -19,6 +21,9 @@ type WeaponProcTrigger struct {
 	// every hit of its weapon except those suppressing weapon procs.
 	EquipProc          bool
 	TriggerImmediately bool
+	// A cooldown between procs, for a proc whose spell the client puts on a cooldown. Zero means
+	// none.
+	ICD time.Duration
 
 	// Runs once per character and returns the proc handler, or nil to opt the character out.
 	Handler func(character *core.Character) core.ProcHandler
@@ -40,6 +45,7 @@ func CreateWeaponProcTrigger(config WeaponProcTrigger) {
 			Callback:           core.CallbackOnSpellHitDealt,
 			Outcome:            core.OutcomeLanded,
 			DPM:                character.NewDynamicLegacyProcForWeapon(config.ItemID, config.PPM, 0),
+			ICD:                config.ICD,
 			IsWeaponProc:       !config.EquipProc,
 			TriggerImmediately: config.TriggerImmediately,
 			Handler:            handler,

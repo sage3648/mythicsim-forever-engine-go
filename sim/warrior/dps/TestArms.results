@@ -422,8 +422,8 @@ dps_results: {
 dps_results: {
  key: "TestArms-AllItems-Dragon'sCall-10847"
  value: {
-  dps: 328.7269
-  tps: 197.50221
+  dps: 325.11728
+  tps: 198.11122
  }
 }
 dps_results: {
