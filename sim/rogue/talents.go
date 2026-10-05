@@ -116,7 +116,9 @@ func (rogue *Rogue) registerColdBloodCD() {
 			critMod.Deactivate()
 		},
 		OnSpellHitDealt: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			if spell.Flags.Matches(SpellFlagColdBlooded) {
+			// Mutilate's main-hand and off-hand hits are one ability. Keep Cold Blood active
+			// until the off-hand hit so both independent attack rolls receive the bonus.
+			if spell.Flags.Matches(SpellFlagColdBlooded) && spell != rogue.Mutilate {
 				aura.Deactivate(sim)
 			}
 		},

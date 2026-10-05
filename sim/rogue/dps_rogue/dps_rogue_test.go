@@ -6,6 +6,7 @@ import (
 
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/core/simsignals"
 )
 
 func init() {
@@ -82,6 +83,51 @@ func TestAssassinationMutilate(t *testing.T) {
 			Ruleset: proto.Ruleset_RulesetForever,
 		},
 	}))
+}
+
+func TestColdBloodAffectsBothMutilateStrikes(t *testing.T) {
+	sim := core.NewSim(&proto.RaidSimRequest{
+		SimOptions: &proto.SimOptions{RandomSeed: 1, Ruleset: proto.Ruleset_RulesetForever},
+		Raid: core.SinglePlayerRaidProto(&proto.Player{
+			Class:         proto.Class_ClassRogue,
+			Race:          proto.Race_RaceHuman,
+			Equipment:     core.GetGearSet("../../../ui/rogue/gear_sets", "combat_backstab_prebis").GearSet,
+			TalentsString: AssassinationMutilateTalents,
+			Rotation:      core.GetAplRotation("../../../ui/rogue/apls", "forever_mutilate").Rotation,
+			Spec:          DefaultRogue,
+		}, nil, nil, nil),
+		Encounter: core.MakeSingleTargetEncounter(0),
+	}, simsignals.CreateSignals())
+	sim.Reset()
+
+	rogue := sim.Raid.Parties[0].Players[0].(*DpsRogue).Rogue
+	mainHand := rogue.Mutilate
+	if mainHand == nil {
+		t.Fatal("Mutilate is not registered")
+	}
+	offHand := rogue.GetSpell(mainHand.ActionID.WithTag(2))
+	coldBloodAura := rogue.GetAura("Cold Blood")
+	if offHand == nil || rogue.ColdBlood == nil || coldBloodAura == nil {
+		t.Fatal("Mutilate or Cold Blood is not registered")
+	}
+
+	mainHandBaseCrit := mainHand.BonusCritRating
+	offHandBaseCrit := offHand.BonusCritRating
+	rogue.ColdBlood.Cast(sim, rogue.CurrentTarget)
+	bonus := float64(100 * core.CritRatingPerCritChance)
+	if mainHand.BonusCritRating != mainHandBaseCrit+bonus || offHand.BonusCritRating != offHandBaseCrit+bonus {
+		t.Fatal("Cold Blood did not apply its crit bonus to both Mutilate strikes")
+	}
+
+	coldBloodAura.OnSpellHitDealt(coldBloodAura, sim, mainHand, &core.SpellResult{})
+	if !coldBloodAura.IsActive() || offHand.BonusCritRating != offHandBaseCrit+bonus {
+		t.Fatal("Cold Blood was consumed before Mutilate's off-hand strike")
+	}
+
+	coldBloodAura.OnSpellHitDealt(coldBloodAura, sim, offHand, &core.SpellResult{})
+	if coldBloodAura.IsActive() || mainHand.BonusCritRating != mainHandBaseCrit || offHand.BonusCritRating != offHandBaseCrit {
+		t.Fatal("Cold Blood was not consumed after both Mutilate strikes")
+	}
 }
 
 func TestSubtletyHemorrhage(t *testing.T) {
