@@ -126,8 +126,11 @@ func (mage *Mage) registerIgnite() {
 		ProcMask:           core.ProcMaskSpellDamage,
 		Outcome:            core.OutcomeCrit,
 		TriggerImmediately: true,
-		ExtraCondition: func(_ *core.Simulation, spell *core.Spell, _ *core.SpellResult) bool {
-			return spell.SpellSchool.Matches(core.SpellSchoolFire) && spell != mage.Ignite
+		// Only a crit on an enemy: the Goblin Sapper Charge's half that hits the thrower is a Fire spell
+		// with the spell damage mask, and the mage carries no Ignite dot.
+		ExtraCondition: func(_ *core.Simulation, spell *core.Spell, result *core.SpellResult) bool {
+			return spell.SpellSchool.Matches(core.SpellSchoolFire) && spell != mage.Ignite &&
+				result.Target.Type == core.EnemyUnit
 		},
 		Handler: func(sim *core.Simulation, _ *core.Spell, result *core.SpellResult) {
 			dot := mage.Ignite.Dot(result.Target)
