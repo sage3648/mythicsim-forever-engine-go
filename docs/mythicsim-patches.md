@@ -1884,3 +1884,44 @@ extremes are kept).
 holds no zero-damage event,
 that the totals add up to the action's damage, and that hits, crits and ticks all appear.
 `TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.
+
+## 95. `items: weapons from master's database leave out Classic's bonus damage roll`
+
+Bae asked on the MythicSim Discord why Iceblade Hacker's Frost hits looked far too big. The Frost
+hits are right: Forever's client gives the axe an equip spell, "Melee attacks with this weapon deal
+41 Frost damage" (1298413 triggering 1298414, 40.7 flat in every 1.60.1 build from 69876 to 70235).
+What was wrong is the axe's swing. Classic gives some weapons a second damage roll of another
+school, "+ 1 - 5 Frost Damage" on Iceblade Hacker. The Forever client has no such roll: it drops the
+line or rebuilds it as an equip spell, and Wowhead Forever lists those weapons with their base damage
+only (Shadowfang 29 - 55, Torturing Poker 22 - 45, Thunderfury 44 - 115).
+
+The items `mergeForeverSimDB` fills in, the ones the beta client does not ship yet, come from master's
+database, which took Wowhead Classic's `damageMinAll` and `damageMaxAll`: the base roll plus the bonus
+roll, simmed as Physical. So Iceblade Hacker swung for 58 - 111 and the equip spell's Frost came on top.
+
+`dropClassicBonusDamage` (`tools/database/gen_db/classic_bonus_damage.go`) puts each filled-in weapon
+whose range equals Classic's base-plus-bonus total back on its base roll, read from the same Wowhead
+Classic planner (`assets/db_inputs/wowhead_gearplannerdb.txt`, `dmgmin1` and `dmgmax1`). A bonus roll is
+at least 1 at each end, so a half-point rounding gap between the planner's base and total (Blade of
+Eternal Darkness, 33.5 - 69.5 against 34 - 70) is not one. Client rows are left alone.
+
+Three weapons move, all level 57 and up, which the beta client does not ship yet:
+
+| Item | Before | After |
+| --- | --- | --- |
+| Iceblade Hacker (13952) | 58 - 111 | 57 - 106 |
+| Warblade of Caer Darrow (13982) | 143 - 236 | 142 - 214 |
+| Ta'Kierthan Songblade (16039) | 130 - 214 | 129 - 194 |
+
+`assets/database/db.json` carries the same three edits, and `go run ./tools/sync_db_binary` rebuilt
+`db.bin` from it (run on the unedited JSON first, it reproduced the old binary byte for byte). A full
+`make db` should write the same three rows through `dropClassicBonusDamage`; it was not run here, as it
+needs `tools/database/wowsims.db`.
+
+Tests: `TestDropClassicBonusDamage` and `TestDropClassicBonusDamageLeavesClientRows`
+(`tools/database/gen_db`), and `TestForeverWeaponsLeaveOutClassicBonusDamage` (`sim/core`, with_db), which
+reads the embedded binary and fails on the old one. Goldens move only on AllItems rows for Iceblade
+Hacker (`TestSurvivalMelee`, `TestProtection`, `TestFury`, `TestArms`, `TestProtectionWarrior`,
+`TestEnhancement`) and Warblade of Caer Darrow (`TestSurvivalMelee`, `TestArms`), each by 0.4% to 0.9%.
+
+Drop it when the client ships these items, or master's database carries base damage.
