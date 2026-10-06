@@ -1758,3 +1758,38 @@ with an axe 670.62 to 667.37, Night Elf 672.40. Dwarf hunters cannot wield a mac
 Night Elf have no weapon racial, so they do not move.
 
 Drop this when upstream keeps the weapon racials off the ranged auto attack.
+
+## 89. `warrior: a refreshed Deep Wounds keeps its tick timer`
+
+Zirene's answer on forever-bugs #234 (6 October 2026): Deep Wounds scales with weapon damage and not
+attack power, rolls over its damage when refreshed, and does not reset its tick timer when refreshed.
+Upstream (#506) already had the first two. A refresh deactivated the bleed and applied it again, so
+every crit on a running bleed restarted its 3 sec tick phase and pushed the owed damage further out.
+
+`Dot.ApplyKeepingTickTimer` (new, `sim/core/dot.go`) applies a dot without touching a running one's
+pending tick: the duration starts over from now, the next tick lands when it was due, and
+`RemainingTicks` becomes the ticks that fit between that tick and the new expiry (4 for Deep Wounds,
+or 5 when a tick is due the same instant). Deep Wounds reads `OutstandingDmg` before the call and
+spreads it with the new crit's share over `RemainingTicks` after it. A first application is a plain
+`Apply`. Whether the server also carries the partial tick into the new duration is not known; this
+keeps the 12 sec duration.
+
+The Impale connection Zirene mentions ships in the next client build, so it is not here.
+
+`TestDeepWoundsRefreshKeepsItsTickTimer` refreshes a 3 point bleed at 4.5 sec: the next tick stays
+at 6 sec, the bleed runs out at 16.5 sec with 4 ticks of (3 x the first tick + the new share) / 4,
+and it ticks at 3, 6, 9, 12 and 15 sec. It fails on the previous commit. Goldens (Average-Default):
+TestArms 262.95 to 264.65, TestFury 310.72 to 313.02.
+
+MythicSim references, same runs as patch 88:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| warrior (Human, Fury) | 843.32 to 851.99 | 842.40 to 851.07 | 826.96 to 831.49 | 827.17 to 831.71 |
+| arms-warrior (Human) | 693.33 to 694.81 | 691.05 to 692.52 | 684.16 to 684.53 | 683.51 to 683.87 |
+
+The gain is the bleed no longer pushed past the end of the fight, so it is about a constant amount
+of damage and shrinks with fight length. protection-warrior and fury-protection-warrior take no
+Deep Wounds and do not move.
+
+Drop this when upstream keeps the Deep Wounds tick timer on a refresh.

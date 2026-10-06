@@ -128,6 +128,8 @@ func (warrior *Warrior) registerDeepWounds() {
 	// Report 2705 confirms the top rank at level 30: 3 points on a 102-154 axe tick 19.25 against 60% x 128 / 4 = 19.2.
 	// The tick spell 412613 carries Attributes[6] 0x20000000 (ignore caster damage modifiers), and reports 2705/2708 agree:
 	// the same warrior's ticks hold ~19.3 in Defensive Stance while Thunder Clap and Rend lose their 10% there.
+	// A refresh keeps the bleed's tick timer (Zirene on forever-bugs #234): the 12 sec start over, the
+	// next tick lands when it was due, and the owed and new damage spread over the ticks left (patch 89).
 	warrior.DeepWounds = warrior.RegisterSpell(core.SpellConfig{
 		ActionID:       core.ActionID{SpellID: deepWoundsBleed.ID},
 		SpellSchool:    core.SpellSchoolPhysical,
@@ -154,9 +156,8 @@ func (warrior *Warrior) registerDeepWounds() {
 			spell.CalcAndDealOutcome(sim, target, spell.OutcomeAlwaysHitNoHitCounter)
 			dot := spell.Dot(target)
 			owed := dot.OutstandingDmg()
-			dot.Deactivate(sim)
-			dot.Apply(sim)
-			dot.SnapshotBaseDamage = (owed + warrior.AutoAttacks.MH().AverageDamage()*share) / float64(dot.HastedTickCount())
+			dot.ApplyKeepingTickTimer(sim)
+			dot.SnapshotBaseDamage = (owed + warrior.AutoAttacks.MH().AverageDamage()*share) / float64(dot.RemainingTicks())
 		},
 	})
 

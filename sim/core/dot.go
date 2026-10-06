@@ -112,6 +112,28 @@ func (dot *Dot) Apply(sim *Simulation) {
 	dot.Activate(sim)
 }
 
+// ApplyKeepingTickTimer applies the dot like Apply, but a running dot keeps its tick timer: its
+// duration starts over from now, the next tick stays where it was, and RemainingTicks becomes the
+// ticks that fit between that tick and the new expiry. A dot that rolls what it still owed into the
+// refresh reads OutstandingDmg before the call and divides it over RemainingTicks after it.
+func (dot *Dot) ApplyKeepingTickTimer(sim *Simulation) {
+	if !dot.IsActive() || dot.tickAction == nil {
+		dot.Apply(sim)
+		return
+	}
+	if dot.Spell.Flags&SpellFlagSupressDoTApply > 0 {
+		return
+	}
+
+	untilNextTick := dot.tickAction.NextActionAt - sim.CurrentTime
+	dot.TakeSnapshot(sim)
+	dot.recomputeAuraDuration(sim)
+	dot.remainingTicks = int32((dot.Duration-untilNextTick)/dot.tickPeriod) + 1
+	// A tick due this very moment still lands, one more than a fresh dot has.
+	dot.tmpExtraTicks = max(dot.remainingTicks-dot.HastedTickCount(), 0)
+	dot.Activate(sim)
+}
+
 // Calculates the current tick period the dot would have based on the affects currently present
 func (dot *Dot) CalcTickPeriod() time.Duration {
 	if dot.affectedByCastSpeed {
