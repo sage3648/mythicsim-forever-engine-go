@@ -1618,3 +1618,30 @@ mage, which panicked before the fix, then on the target, which must still ignite
 the mage suites carry no sapper.
 
 Drop this when upstream's Ignite (or the sapper's self hit) keeps the self hit out of Ignite.
+
+## 89. `core: pushback only pushes back a cast still in progress`
+
+The pushback trigger in `sim/core/character.go` checks that a hardcast is running when the hit
+lands, but its handler runs one spell batch window (10 ms) later and did not check again. If the
+cast completed in between, `Hardcast.pushBack` moved the finished cast (whose end is then
+`startingCDTime`, so it took the full 500 ms) and `newHardcastAction` scheduled it again: the cast
+completed a second time at once and its effect landed twice. A hit that rolled at the very instant
+the cast ended ran before the completion and moved the cast a full 500 ms. MythicSim's
+`feral-bear-druid-boomerang-pushback-after-cast` request shows it: the target's swing lands at 0.49 s
+into Linken's Boomerang's 0.5 s cast, and the log has "Completed cast {ItemID: 11905}" twice at 0.50
+and two Boomerang hits. With this patch it has one of each and no pushback line.
+
+The handler now returns, before the pushback roll, when the cast has ended
+(`Hardcast.Expires <= sim.CurrentTime`), which is when the hardcast action itself counts a cast as
+complete. The same return covers a channel that ended inside the window, which the channeled branch
+would otherwise have given a new end at the current time and completed again. A hit in the last 10 ms of a cast now never
+pushes it back, as the batch window already implied.
+
+`TestPushbackLeavesACompletedCastAlone` (`sim/druid/feralbear/pushback_test.go`) has a tanking Bear
+hardcast Linken's Boomerang and takes a swing 10, 5 and 1 ms before it completes. Before the fix the
+first completed once at 1 s and the other two completed twice; now each completes once at 0.5 s.
+`TestPushbackStillDelaysACastInProgress` checks that a swing at 0.2 s still moves the cast to 0.71 s.
+No golden moves: no suite run reaches the handler after its cast has ended.
+
+Drop this when upstream rechecks the cast in the pushback handler, or rolls pushback when the hit
+lands.
