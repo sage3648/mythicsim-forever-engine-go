@@ -291,6 +291,11 @@ func applyCreatureTypeSlaying(character *Character, mobType proto.MobType) {
 	})
 }
 
+// The weapon racials (Human Sword, Orc Axe, Dwarf Mace) raise melee, ability and spell crit, but not
+// the ranged auto attack: an Orc with an axe at 2% melee and 1% ranged crit took no crit from over
+// 500 Auto Shots against a level 21 target (forever-bugs #91), and the character select text says
+// physical abilities. Ranged abilities such as Aimed Shot and Multi-Shot keep it. The stat buffs
+// stay global and a crit modifier on ProcMaskRangedAuto takes the bonus back off the auto attack.
 func applyWeaponSpecialization(character *Character, label string, spellID int32, critPercent float64, weaponType proto.WeaponType) {
 	hasWeaponEquipped := func() bool {
 		mh, oh := character.MainHand(), character.OffHand()
@@ -304,7 +309,12 @@ func applyWeaponSpecialization(character *Character, label string, spellID int32
 		BuildPhase: Ternary(hasWeaponEquipped(), CharacterBuildPhaseBase, CharacterBuildPhaseNone),
 	}).
 		AttachStatBuff(stats.PhysicalCritPercent, critPercent).
-		AttachStatBuff(stats.SpellCritPercent, critPercent)
+		AttachStatBuff(stats.SpellCritPercent, critPercent).
+		AttachSpellMod(SpellModConfig{
+			Kind:       SpellMod_BonusCrit_Percent,
+			ProcMask:   ProcMaskRangedAuto,
+			FloatValue: -critPercent,
+		})
 
 	if hasWeaponEquipped() {
 		MakePermanent(aura)

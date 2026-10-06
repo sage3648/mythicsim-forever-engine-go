@@ -1722,3 +1722,39 @@ needs 31 Survival points, out of reach at the level 30 beta cap, so no log can s
 bleed carries its own 40%; it fails on the old order. `TestSurvivalMelee` goldens move.
 
 Drop this when upstream writes the bleed after the cast.
+
+## 88. `racials: weapon specializations leave the ranged auto attack alone`
+
+Human Sword, Orc Axe and Dwarf Mace Specialization added their crit as global physical and spell
+crit, so a Human hunter with a sword shot Auto Shot with 2% more crit (an Orc with an axe 1%). In the
+game they do not touch the ranged auto attack: on forever-bugs #91 an Orc with an axe, 2% melee and
+1% ranged crit on the sheet, took 0 crits from over 500 Auto Shots against a level 21 target, where
+the racial would have left 1% after the level suppression, and the character select text names
+physical abilities. Melee swings keep it (the same test had 1% melee crit over 101 swings), and so do
+ranged abilities and spells. The stat buffs stay global; the aura now also carries a
+`SpellMod_BonusCrit_Percent` of minus the bonus on `ProcMaskRangedAuto`, the mask Mortal Shots and
+Ranged Weapon Specialization already use for Auto Shot. A warrior's or rogue's Shoot is the same
+ranged auto attack and loses it too. The character sheet's ranged crit still shows the bonus.
+
+`TestWeaponRacialsSkipTheRangedAutoAttack` compares Human (sword), Orc (axe) and Dwarf (mace)
+hunters with and without their weapon racial: Auto Shot crit does not move, Aimed Shot, Multi-Shot
+and the melee swing move by 2%, 1% and 1%; a Night Elf moves nowhere. It fails on the previous
+commit. Goldens: the hunter suites run an Orc with Arcanite Reaper (Average-Default: Beast Mastery
+424.38 to 423.02, Marksmanship 312.53 to 311.01, Survival 324.29 to 322.65); melee Survival does not
+move.
+
+MythicSim references, 10,000 iterations, empty trinkets, board seed (s1) and board seed + 1,000,000
+(s2), 120 s with 15 s variation and 300 s without:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| hunter (Beast Mastery, Human, Barbarous Blade) | 599.59 to 594.45 | 599.86 to 594.79 | 592.58 to 587.57 | 592.41 to 587.43 |
+| marksmanship-hunter (Human, Barbarous Blade) | 675.52 to 669.10 | 675.29 to 668.76 | 618.05 to 611.55 | 617.60 to 611.17 |
+
+No other reference moves; survival-hunter (Orc, axes) fights in melee. On the race board (seed
+1179603525, 120 s) Night Elf passes Human for both ranged builds: Beast Mastery Human 599.85 to
+594.87, Orc with an axe 597.11 to 594.61, Night Elf 598.20; Marksmanship Human 675.83 to 669.29, Orc
+with an axe 670.62 to 667.37, Night Elf 672.40. Dwarf hunters cannot wield a mace and Troll and
+Night Elf have no weapon racial, so they do not move.
+
+Drop this when upstream keeps the weapon racials off the ranged auto attack.
