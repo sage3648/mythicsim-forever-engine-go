@@ -1793,3 +1793,30 @@ of damage and shrinks with fight length. protection-warrior and fury-protection-
 Deep Wounds and do not move.
 
 Drop this when upstream keeps the Deep Wounds tick timer on a refresh.
+
+## 90. `rotations: hunters stop timing shots around Auto Shot`
+
+The Beast Mastery, Marksmanship and ranged Survival rotations cast Aimed Shot only with the next Auto
+Shot over 1 sec away, Multi-Shot and Arcane Shot over 0.5 sec, Summon Hawk and Sniper Shot over 1 sec,
+and Rapid Fire just before an Auto Shot. That avoided clipping the shot, but Forever's Auto Shot
+cannot be clipped: casts never hold it, only moving and a melee swing do (`swing` in
+`sim/core/attack.go`, upstream since e4fd251171), and a hunter at range never swings. Sanctum made
+the point on the MythicSim Discord. The conditions only held casts back, so the three rotations
+drop every `autoTimeToNext` comparison; Rapid Fire keeps its wait for Aimed Shot. The arena's
+`bm_arcane` and the melee Survival rotation are unchanged.
+
+MythicSim builds its presets from these files. Same runs as patch 88, on this branch's engine:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| hunter (Beast Mastery) | 594.45 to 597.36 | 594.79 to 597.65 | 587.57 to 589.62 | 587.43 to 589.96 |
+| marksmanship-hunter | 669.10 to 671.58 | 668.76 to 671.56 | 611.55 to 612.93 | 611.17 to 612.70 |
+
+The Marksmanship row keeps the condition on the Summon Hawk line MythicSim adds to this rotation.
+That one is worth keeping: without it the reference loses 2.8 DPS, as Summon Hawk shares Arcane
+Shot's cooldown and the condition is what leaves room for Arcane Shot, not anything to do with
+clipping. The ranged Survival rotation on the two ranged references' gear and talents gains 1.1 to
+3.9 DPS. Goldens (Average-Default): TestBeastMastery 423.02 to 425.18, TestMarksmanship 311.01 to
+310.17, TestSurvival 322.65 to 325.47.
+
+Drop this when upstream's hunter rotations drop the Auto Shot timing.

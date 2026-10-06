@@ -15,31 +15,14 @@
 		{
 			"action": {
 				"condition": {
-					"and": {
-						"vals": [
-							{
-								"cmp": {
-									"op": "OpLt",
-									"lhs": {
-										"autoTimeToNext": {
-											"autoType": "RangedAuto"
-										}
-									},
-									"rhs": { "const": { "val": "0.1" } }
-								}
-							},
-							{
-								"cmp": {
-									"op": "OpLt",
-									"lhs": {
-										"spellTimeToReady": {
-											"spellId": { "spellId": 20904 }
-										}
-									},
-									"rhs": { "const": { "val": "0.5" } }
-								}
+					"cmp": {
+						"op": "OpLt",
+						"lhs": {
+							"spellTimeToReady": {
+								"spellId": { "spellId": 20904 }
 							}
-						]
+						},
+						"rhs": { "const": { "val": "0.5" } }
 					}
 				},
 				"castSpell": { "spellId": { "spellId": 3045 } }
@@ -47,29 +30,11 @@
 		},
 		{
 			"action": {
-				"condition": {
-					"cmp": {
-						"op": "OpGt",
-						"lhs": {
-							"autoTimeToNext": { "autoType": "RangedAuto" }
-						},
-						"rhs": { "const": { "val": "1s" } }
-					}
-				},
 				"castSpell": { "spellId": { "spellId": 20904 } }
 			}
 		},
 		{
 			"action": {
-				"condition": {
-					"cmp": {
-						"op": "OpGt",
-						"lhs": {
-							"autoTimeToNext": { "autoType": "RangedAuto" }
-						},
-						"rhs": { "const": { "val": "0.5s" } }
-					}
-				},
 				"castSpell": { "spellId": { "spellId": 2643 } }
 			}
 		},
@@ -123,15 +88,6 @@
 						"vals": [
 							{
 								"cmp": {
-									"op": "OpGt",
-									"lhs": {
-										"autoTimeToNext": { "autoType": "RangedAuto" }
-									},
-									"rhs": { "const": { "val": "1s" } }
-								}
-							},
-							{
-								"cmp": {
 									"op": "OpGe",
 									"lhs": { "spellTimeToReady": { "spellId": { "spellId": 20904 } } },
 									"rhs": { "const": { "val": "1" } }
@@ -152,14 +108,7 @@
 		},
 		{
 			"action": {
-				"condition": {
-					"and": {
-						"vals": [
-							{ "cmp": { "op": "OpGt", "lhs": { "autoTimeToNext": { "autoType": "RangedAuto" } }, "rhs": { "const": { "val": "0.5s" } } } },
-							{ "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } }
-						]
-					}
-				},
+				"condition": { "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } },
 				"castSpell": { "spellId": { "spellId": 14287 } }
 			}
 		}
