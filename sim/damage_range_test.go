@@ -51,6 +51,9 @@ func TestActionMetricsCarryDamageRanges(t *testing.T) {
 					continue
 				}
 				seen[kind] = true
+				if r.Min <= 0 {
+					t.Errorf("%v %s range %v counts an event that dealt no damage", action.Id, kind, r)
+				}
 				if r.Count <= 0 || r.Min > r.Total/float64(r.Count)+1e-9 || r.Max < r.Total/float64(r.Count)-1e-9 {
 					t.Errorf("%v %s range %v is not a range", action.Id, kind, r)
 				}

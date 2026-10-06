@@ -1869,8 +1869,9 @@ additive, so an older reader skips them):
 | `crit_tick_range` | critical periodic ticks |
 
 `DamageRange` is `count`, `total`, `min` and `max` over every iteration of the run, as the other
-totals are; the average is `total / count`. Partial resists count in their kind. A kind with no landed
-event is left unset. Together with `glance_damage`, `block_damage`, `blocked_crit_damage` and
+totals are; the average is `total / count`. Partial resists count in their kind. A landed result that
+deals no damage is the application of a dot or a debuff (Deep Wounds' trigger, say) and is left out.
+A kind with no landed damage is left unset (null in the CLI's JSON). Together with `glance_damage`, `block_damage`, `blocked_crit_damage` and
 `crush_damage` the four totals add up to `damage`. JSON names are `hitRange`, `critRange`, `tickRange`
 and `critTickRange`.
 
@@ -1879,6 +1880,7 @@ allocation, `doneIteration` merges the iteration into the action's target metric
 `CombineConcurrentSimResults` merges the ranges of concurrent sims (counts and totals add, the
 extremes are kept).
 
-`TestActionMetricsCarryDamageRanges` (sim/) runs an Arms warrior and checks each range is ordered,
+`TestActionMetricsCarryDamageRanges` (sim/) runs an Arms warrior and checks each range is ordered and
+holds no zero-damage event,
 that the totals add up to the action's damage, and that hits, crits and ticks all appear.
 `TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.

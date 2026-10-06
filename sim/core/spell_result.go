@@ -518,7 +518,8 @@ func (spell *Spell) dealDamageInternal(sim *Simulation, isPeriodic bool, result 
 		}
 		spell.SpellMetrics[result.Target.UnitIndex].TotalThreat += result.Threat
 
-		if result.Landed() {
+		// A landed result with no damage is an application (a dot's or a debuff's), not a hit.
+		if result.Landed() && result.Damage > 0 {
 			spell.SpellMetrics[result.Target.UnitIndex].recordDamageRange(isPeriodic, result)
 		}
 	}
