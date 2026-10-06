@@ -202,9 +202,10 @@ func TestFlametongueTotemHitDamage(t *testing.T) {
 	}
 }
 
-// The hit is Flametongue Attack's spell, so it takes that spell's 0.1 coefficient of the shaman's spell
-// damage, as the imbue's does: a Greater Arcane Elixir (+35 here) adds 3.5 to each hit and 5.25 to a crit.
-func TestFlametongueTotemHitScalesWithSpellDamage(t *testing.T) {
+// The hit takes none of the shaman's spell damage: Hameru tested the totem's hit on the beta (MythicSim
+// Discord, 6 October 2026) and spell power did not move it (patch 91). A Greater Arcane Elixir changes
+// neither a hit nor a crit. The imbue's own hit keeps Flametongue Attack's 0.1 coefficient.
+func TestFlametongueTotemHitIgnoresSpellDamage(t *testing.T) {
 	plain := ftCase{mh: crestedScepter, casts: []int32{flametongueTotemCast}}
 	boosted := plain
 	boosted.elixir = 13454
@@ -213,11 +214,11 @@ func TestFlametongueTotemHitScalesWithSpellDamage(t *testing.T) {
 		t.Fatalf("the elixir adds %v spell damage, want some", extra)
 	}
 	base, withElixir := runFlametongueTotem(t, plain).spell(flametongueTotemHit), runFlametongueTotem(t, boosted).spell(flametongueTotemHit)
-	if got, want := withElixir.cleanHit()-base.cleanHit(), 0.1*extra; !near(got, want) {
-		t.Errorf("%v spell damage adds %v to a hit, want %v (a 0.1 coefficient)", extra, got, want)
+	if got := withElixir.cleanHit() - base.cleanHit(); !near(got, 0) {
+		t.Errorf("%v spell damage adds %v to a hit, want nothing", extra, got)
 	}
-	if got, want := withElixir.cleanCrit()-base.cleanCrit(), 0.15*extra; !near(got, want) {
-		t.Errorf("%v spell damage adds %v to a crit, want %v", extra, got, want)
+	if got := withElixir.cleanCrit() - base.cleanCrit(); !near(got, 0) {
+		t.Errorf("%v spell damage adds %v to a crit, want nothing", extra, got)
 	}
 }
 

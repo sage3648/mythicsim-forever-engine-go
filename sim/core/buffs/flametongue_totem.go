@@ -23,13 +23,21 @@ import (
 // "Flametongue Attack" spells (10444, 29469, 29470: Magic in SpellCategories, a 0.1 spell power coefficient,
 // class mask bit 21), which the imbue's dummies feed, and the totem's proc has no damage row, no
 // SpellCategories row and a class mask (bit 34) that no talent names but Improved Weapon Totems' dummy. The
-// engine therefore treats the totem's hit as the imbue's: the same Magic fire spell with the same 0.1
-// coefficient, and the talents that name Flametongue Attack (Elemental Fury's crit damage, Elemental
-// Weapons' damage) apply to it. That is an inference, not a client row: patch 70 says what changes if the
-// hit has no coefficient and no talents.
+// engine therefore treats the totem's hit as the imbue's Magic fire spell, and the talents that name
+// Flametongue Attack (Elemental Fury's crit damage, Elemental Weapons' damage) apply to it. It takes none
+// of the caster's spell power: Hameru tested that on the beta (MythicSim Discord, 6 October 2026), so the
+// imbue's 0.1 coefficient stays on the imbue (patch 91).
+//
+// Hameru's rank 4 tooltip on the beta reads "18.825 to 61.062". That is 1363 / 77 * 1.12 - 1 to
+// 1363 / 25 * 1.12: the tooltip's $mult (SpellDescriptionVariables 860) is 1.12 when the reader knows
+// Improved Weapon Totems rank 2 (29193), 1.06 for rank 1 (29192) and 1 otherwise. 16389's dummy is 1363
+// on builds 70205 and 70235 alike (SpellEffect 694279). Forever's talent trees have no Improved Weapon
+// Totems, so the engine keeps 1363; a beta log of the largest hit would show whether the 12% applies.
+//
+// The bounds are for a 1.3 to 4.0 speed weapon. A druid in Cat or Bear Form swings a 1.0 or 2.5 second
+// paw, but the hit reads the speed of the weapon in the main hand, not the paw's (Hameru, same day).
 var flametongueTotemParty = spelldata.MustFind(15036)
 var flametongueTotemProc = spelldata.MustFind(16389)
-var flametongueAttack = spelldata.MustFind(10444)
 
 // FlametongueAttackTraits is what a class's own Flametongue Attack carries that its talents and threat
 // modifiers key on. The shaman sets its own (sim/shaman/weapon_imbues.go): the class mask Flametongue Weapon's
@@ -78,8 +86,8 @@ func DisableFlametongueTotem(aura *core.Aura) {
 }
 
 // FlametongueTotemAttack is the damage a main-hand auto attack adds under the totem, the imbue's spell with
-// the totem's base damage: Magic fire, so it rolls the spell hit and crit tables, with the 0.1 spell power
-// coefficient of Flametongue Attack. It keeps the totem's own id (16389) so a report lists it apart from the
+// the totem's base damage: Magic fire, so it rolls the spell hit and crit tables, with no spell power
+// coefficient. It keeps the totem's own id (16389) so a report lists it apart from the
 // imbue. A weapon with no speed (a druid's paws, no weapon at all) adds nothing, as the imbue's does.
 func FlametongueTotemAttack(char *core.Character) *core.Spell {
 	traits := flametongueAttackTraits[char.Class]
@@ -92,9 +100,9 @@ func FlametongueTotemAttack(char *core.Character) *core.Spell {
 		Flags:            core.SpellFlagPassiveSpell | core.SpellFlagProc | traits.Flags,
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
-		BonusCoefficient: flametongueAttack.EffectN(1).Coeff(),
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
+			// The equipped item's speed, which a druid's form leaves alone while its paw swings at 1.0 or 2.5.
 			weapon := char.MainHand()
 			if weapon == nil || weapon.SwingSpeed == 0 {
 				return

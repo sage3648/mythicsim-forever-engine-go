@@ -1820,3 +1820,35 @@ clipping. The ranged Survival rotation on the two ranged references' gear and ta
 310.17, TestSurvival 322.65 to 325.47.
 
 Drop this when upstream's hunter rotations drop the Auto Shot timing.
+
+## 91. `buffs: Flametongue Totem's hit takes no spell power`
+
+Hameru tested Flametongue Totem on the beta (MythicSim Discord #contributors, 6 October 2026; Kerani
+and Lazyshadow agree): its hit does not scale with spell power, and in Cat Form it is sized by the
+speed of the weapon in the main hand, not by the 1.0 s paw. Patch 70 gave the hit Flametongue
+Attack's 0.1 coefficient as an inference; `FlametongueTotemAttack` now has none. Flametongue Weapon's
+own hit keeps its coefficient, and the talents that name Flametongue Attack (Elemental Fury,
+Elemental Weapons) still reach the totem's hit, which the beta has not been asked about. The hit
+still fires on landed main-hand auto attacks only.
+
+The form rule needed no change: the hit already read `Character.MainHand().SwingSpeed`, the equipped
+item, which a form leaves alone while its paw swings at 1.0 or 2.5 s. Bear Form is assumed to follow
+the same rule as Cat Form; nobody has tested it.
+
+Hameru's rank 4 tooltip reads "18.825 to 61.062", which would be a dummy of about 1526 against the
+engine's 1363. It is 1363 with the tooltip's $mult of 1.12: 1363 / 77 x 1.12 - 1 = 18.825 and
+1363 / 25 x 1.12 = 61.062. The description (16387) multiplies by $mult, and SpellDescriptionVariables
+860 sets it to 1.12 when the reader knows Improved Weapon Totems rank 2 (29193), 1.06 for rank 1
+(29192) and 1 otherwise. The 16389 dummy is 1363 on builds 1.60.1.70205 and 1.60.1.70235 (SpellEffect
+694279, wago.tools). Forever's talent trees have no Improved Weapon Totems, so the engine keeps 1363.
+The 29193 row still carries its +12% Flametongue Totem dummy (SpellEffect 705635, class mask bit 34),
+so a beta log of the largest plain hit decides it: a 3.8 s weapon hits for 51.79 at 1363 and 58.01
+with the 12%.
+
+`TestFlametongueTotemInFormUsesTheEquippedWeaponAndNoSpellPower` (sim/) puts a Cat and a Bear with
+Soulkeeper (3.8 s) under the party totem: the largest plain hit is 3.8 x 13.63 through the druid's
+damage multipliers, and 1000 spell damage leaves the total unchanged on the same seed. It fails on the
+previous commit. The enhancement test of the old coefficient becomes
+`TestFlametongueTotemHitIgnoresSpellDamage`. No golden moves.
+
+Drop this when upstream gives the totem's hit no coefficient.
