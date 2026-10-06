@@ -184,6 +184,67 @@ type SpellMetrics struct {
 	TotalCritHealing            float64 // Healing done by all critical casts of this spell.
 	TotalShielding              float64 // Shielding done by all casts of this spell.
 	TotalCastTime               time.Duration
+
+	// The spread of each kind of landed damage event (patch 92): direct hits, direct crits, ticks and
+	// critical ticks. See DamageRange.
+	HitRange, CritRange, TickRange, CritTickRange DamageRange
+}
+
+// DamageRange is the count, total, smallest and largest of one kind of damage event. Recording one is
+// a few comparisons on the spell's metrics, with nothing allocated.
+type DamageRange struct {
+	Count    int32
+	Total    float64
+	Min, Max float64
+}
+
+func (r *DamageRange) add(damage float64) {
+	if r.Count == 0 || damage < r.Min {
+		r.Min = damage
+	}
+	if r.Count == 0 || damage > r.Max {
+		r.Max = damage
+	}
+	r.Count++
+	r.Total += damage
+}
+
+func (r *DamageRange) merge(other DamageRange) {
+	if other.Count == 0 {
+		return
+	}
+	if r.Count == 0 || other.Min < r.Min {
+		r.Min = other.Min
+	}
+	if r.Count == 0 || other.Max > r.Max {
+		r.Max = other.Max
+	}
+	r.Count += other.Count
+	r.Total += other.Total
+}
+
+// ToProto is nil when no event of the kind landed, so the field stays out of the result.
+func (r DamageRange) ToProto() *proto.DamageRange {
+	if r.Count == 0 {
+		return nil
+	}
+	return &proto.DamageRange{Count: r.Count, Total: r.Total, Min: r.Min, Max: r.Max}
+}
+
+// CombineDamageRange adds add into *base, for results combined from concurrent sims.
+func CombineDamageRange(base **proto.DamageRange, add *proto.DamageRange) {
+	if add == nil || add.Count == 0 {
+		return
+	}
+	if *base == nil || (*base).Count == 0 {
+		*base = &proto.DamageRange{Count: add.Count, Total: add.Total, Min: add.Min, Max: add.Max}
+		return
+	}
+	b := *base
+	b.Min = min(b.Min, add.Min)
+	b.Max = max(b.Max, add.Max)
+	b.Count += add.Count
+	b.Total += add.Total
 }
 
 type TargetedActionMetrics struct {
@@ -223,6 +284,8 @@ type TargetedActionMetrics struct {
 	CritHealing            float64
 	Shielding              float64
 	CastTime               time.Duration
+
+	HitRange, CritRange, TickRange, CritTickRange DamageRange
 }
 
 func (tam *TargetedActionMetrics) ToProto() *proto.TargetedActionMetrics {
@@ -262,6 +325,10 @@ func (tam *TargetedActionMetrics) ToProto() *proto.TargetedActionMetrics {
 		CritHealing:            tam.CritHealing,
 		Shielding:              tam.Shielding,
 		CastTimeMs:             float64(tam.CastTime.Milliseconds()),
+		HitRange:               tam.HitRange.ToProto(),
+		CritRange:              tam.CritRange.ToProto(),
+		TickRange:              tam.TickRange.ToProto(),
+		CritTickRange:          tam.CritTickRange.ToProto(),
 	}
 }
 
@@ -419,6 +486,10 @@ func (unitMetrics *UnitMetrics) addSpellMetrics(spell *Spell, actionID ActionID,
 		tam.Healing += spellTargetMetrics.TotalHealing
 		tam.CritHealing += spellTargetMetrics.TotalCritHealing
 		tam.Shielding += spellTargetMetrics.TotalShielding
+		tam.HitRange.merge(spellTargetMetrics.HitRange)
+		tam.CritRange.merge(spellTargetMetrics.CritRange)
+		tam.TickRange.merge(spellTargetMetrics.TickRange)
+		tam.CritTickRange.merge(spellTargetMetrics.CritTickRange)
 		if !spell.Flags.Matches(SpellFlagPassiveSpell) {
 			tam.CastTime += spellTargetMetrics.TotalCastTime
 		}
@@ -669,5 +740,21 @@ func (auraMetrics *AuraMetrics) ToProto() *proto.AuraMetrics {
 			N:     int32(auraMetrics.n),
 			SumSq: auraMetrics.sumSq,
 		},
+	}
+}
+
+// recordDamageRange files a landed damage event under its kind. Glancing, blocked and crushing blows
+// are left out of the ranges: they have totals of their own and are not what a hit or a crit deals.
+func (spellMetrics *SpellMetrics) recordDamageRange(isPeriodic bool, result *SpellResult) {
+	switch {
+	case result.DidBlockCrit() || result.DidGlance() || result.DidBlock() || result.DidCrush():
+	case result.DidCrit() && isPeriodic:
+		spellMetrics.CritTickRange.add(result.Damage)
+	case result.DidCrit():
+		spellMetrics.CritRange.add(result.Damage)
+	case isPeriodic:
+		spellMetrics.TickRange.add(result.Damage)
+	default:
+		spellMetrics.HitRange.add(result.Damage)
 	}
 }

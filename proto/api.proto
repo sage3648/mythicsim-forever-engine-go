@@ -283,6 +283,26 @@ message TargetedActionMetrics {
 
 	// Total time spent casting this action, in milliseconds, either from hard casts, GCD, or channeling.
 	double cast_time_ms = 26;
+
+	// The spread of this action's damage on this target, one range per kind of landed event, over every
+	// iteration (MythicSim patch 92). Unset when no event of the kind landed.
+	// Direct hits that are not critical, glancing, blocked or crushing. Partial resists count.
+	DamageRange hit_range = 37;
+	// Direct critical strikes, blocked crits excluded. Partial resists count.
+	DamageRange crit_range = 38;
+	// Periodic ticks that are not critical.
+	DamageRange tick_range = 39;
+	// Critical periodic ticks.
+	DamageRange crit_tick_range = 40;
+}
+
+// The count, total, smallest and largest of one kind of damage event (MythicSim patch 92). The average
+// is total / count.
+message DamageRange {
+	int32 count = 1;
+	double total = 2;
+	double min = 3;
+	double max = 4;
 }
 
 message AggregatorData {

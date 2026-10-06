@@ -1722,3 +1722,165 @@ needs 31 Survival points, out of reach at the level 30 beta cap, so no log can s
 bleed carries its own 40%; it fails on the old order. `TestSurvivalMelee` goldens move.
 
 Drop this when upstream writes the bleed after the cast.
+
+## 88. `racials: weapon specializations leave the ranged auto attack alone`
+
+Human Sword, Orc Axe and Dwarf Mace Specialization added their crit as global physical and spell
+crit, so a Human hunter with a sword shot Auto Shot with 2% more crit (an Orc with an axe 1%). In the
+game they do not touch the ranged auto attack: on forever-bugs #91 an Orc with an axe, 2% melee and
+1% ranged crit on the sheet, took 0 crits from over 500 Auto Shots against a level 21 target, where
+the racial would have left 1% after the level suppression, and the character select text names
+physical abilities. Melee swings keep it (the same test had 1% melee crit over 101 swings), and so do
+ranged abilities and spells. The stat buffs stay global; the aura now also carries a
+`SpellMod_BonusCrit_Percent` of minus the bonus on `ProcMaskRangedAuto`, the mask Mortal Shots and
+Ranged Weapon Specialization already use for Auto Shot. A warrior's or rogue's Shoot is the same
+ranged auto attack and loses it too. The character sheet's ranged crit still shows the bonus.
+
+`TestWeaponRacialsSkipTheRangedAutoAttack` compares Human (sword), Orc (axe) and Dwarf (mace)
+hunters with and without their weapon racial: Auto Shot crit does not move, Aimed Shot, Multi-Shot
+and the melee swing move by 2%, 1% and 1%; a Night Elf moves nowhere. It fails on the previous
+commit. Goldens: the hunter suites run an Orc with Arcanite Reaper (Average-Default: Beast Mastery
+424.38 to 423.02, Marksmanship 312.53 to 311.01, Survival 324.29 to 322.65); melee Survival does not
+move.
+
+MythicSim references, 10,000 iterations, empty trinkets, board seed (s1) and board seed + 1,000,000
+(s2), 120 s with 15 s variation and 300 s without:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| hunter (Beast Mastery, Human, Barbarous Blade) | 599.59 to 594.45 | 599.86 to 594.79 | 592.58 to 587.57 | 592.41 to 587.43 |
+| marksmanship-hunter (Human, Barbarous Blade) | 675.52 to 669.10 | 675.29 to 668.76 | 618.05 to 611.55 | 617.60 to 611.17 |
+
+No other reference moves; survival-hunter (Orc, axes) fights in melee. On the race board (seed
+1179603525, 120 s) Night Elf passes Human for both ranged builds: Beast Mastery Human 599.85 to
+594.87, Orc with an axe 597.11 to 594.61, Night Elf 598.20; Marksmanship Human 675.83 to 669.29, Orc
+with an axe 670.62 to 667.37, Night Elf 672.40. Dwarf hunters cannot wield a mace and Troll and
+Night Elf have no weapon racial, so they do not move.
+
+Drop this when upstream keeps the weapon racials off the ranged auto attack.
+
+## 89. `warrior: a refreshed Deep Wounds keeps its tick timer`
+
+Zirene's answer on forever-bugs #234 (6 October 2026): Deep Wounds scales with weapon damage and not
+attack power, rolls over its damage when refreshed, and does not reset its tick timer when refreshed.
+Upstream (#506) already had the first two. A refresh deactivated the bleed and applied it again, so
+every crit on a running bleed restarted its 3 sec tick phase and pushed the owed damage further out.
+
+`Dot.ApplyKeepingTickTimer` (new, `sim/core/dot.go`) applies a dot without touching a running one's
+pending tick: the duration starts over from now, the next tick lands when it was due, and
+`RemainingTicks` becomes the ticks that fit between that tick and the new expiry (4 for Deep Wounds,
+or 5 when a tick is due the same instant). Deep Wounds reads `OutstandingDmg` before the call and
+spreads it with the new crit's share over `RemainingTicks` after it. A first application is a plain
+`Apply`. Whether the server also carries the partial tick into the new duration is not known; this
+keeps the 12 sec duration.
+
+The Impale connection Zirene mentions ships in the next client build, so it is not here.
+
+`TestDeepWoundsRefreshKeepsItsTickTimer` refreshes a 3 point bleed at 4.5 sec: the next tick stays
+at 6 sec, the bleed runs out at 16.5 sec with 4 ticks of (3 x the first tick + the new share) / 4,
+and it ticks at 3, 6, 9, 12 and 15 sec. It fails on the previous commit. Goldens (Average-Default):
+TestArms 262.95 to 264.65, TestFury 310.72 to 313.02.
+
+MythicSim references, same runs as patch 88:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| warrior (Human, Fury) | 843.32 to 851.99 | 842.40 to 851.07 | 826.96 to 831.49 | 827.17 to 831.71 |
+| arms-warrior (Human) | 693.33 to 694.81 | 691.05 to 692.52 | 684.16 to 684.53 | 683.51 to 683.87 |
+
+The gain is the bleed no longer pushed past the end of the fight, so it is about a constant amount
+of damage and shrinks with fight length. protection-warrior and fury-protection-warrior take no
+Deep Wounds and do not move.
+
+Drop this when upstream keeps the Deep Wounds tick timer on a refresh.
+
+## 90. `rotations: hunters stop timing shots around Auto Shot`
+
+The Beast Mastery, Marksmanship and ranged Survival rotations cast Aimed Shot only with the next Auto
+Shot over 1 sec away, Multi-Shot and Arcane Shot over 0.5 sec, Summon Hawk and Sniper Shot over 1 sec,
+and Rapid Fire just before an Auto Shot. That avoided clipping the shot, but Forever's Auto Shot
+cannot be clipped: casts never hold it, only moving and a melee swing do (`swing` in
+`sim/core/attack.go`, upstream since e4fd251171), and a hunter at range never swings. Sanctum made
+the point on the MythicSim Discord. The conditions only held casts back, so the three rotations
+drop every `autoTimeToNext` comparison; Rapid Fire keeps its wait for Aimed Shot. The arena's
+`bm_arcane` and the melee Survival rotation are unchanged.
+
+MythicSim builds its presets from these files. Same runs as patch 88, on this branch's engine:
+
+| Reference | 120 s s1 | 120 s s2 | 300 s s1 | 300 s s2 |
+| --- | ---: | ---: | ---: | ---: |
+| hunter (Beast Mastery) | 594.45 to 597.36 | 594.79 to 597.65 | 587.57 to 589.62 | 587.43 to 589.96 |
+| marksmanship-hunter | 669.10 to 671.58 | 668.76 to 671.56 | 611.55 to 612.93 | 611.17 to 612.70 |
+
+The Marksmanship row keeps the condition on the Summon Hawk line MythicSim adds to this rotation.
+That one is worth keeping: without it the reference loses 2.8 DPS, as Summon Hawk shares Arcane
+Shot's cooldown and the condition is what leaves room for Arcane Shot, not anything to do with
+clipping. The ranged Survival rotation on the two ranged references' gear and talents gains 1.1 to
+3.9 DPS. Goldens (Average-Default): TestBeastMastery 423.02 to 425.18, TestMarksmanship 311.01 to
+310.17, TestSurvival 322.65 to 325.47.
+
+Drop this when upstream's hunter rotations drop the Auto Shot timing.
+
+## 91. `buffs: Flametongue Totem's hit takes no spell power`
+
+Hameru tested Flametongue Totem on the beta (MythicSim Discord #contributors, 6 October 2026; Kerani
+and Lazyshadow agree): its hit does not scale with spell power, and in Cat Form it is sized by the
+speed of the weapon in the main hand, not by the 1.0 s paw. Patch 70 gave the hit Flametongue
+Attack's 0.1 coefficient as an inference; `FlametongueTotemAttack` now has none. Flametongue Weapon's
+own hit keeps its coefficient, and the talents that name Flametongue Attack (Elemental Fury,
+Elemental Weapons) still reach the totem's hit, which the beta has not been asked about. The hit
+still fires on landed main-hand auto attacks only.
+
+The form rule needed no change: the hit already read `Character.MainHand().SwingSpeed`, the equipped
+item, which a form leaves alone while its paw swings at 1.0 or 2.5 s. Bear Form is assumed to follow
+the same rule as Cat Form; nobody has tested it.
+
+Hameru's rank 4 tooltip reads "18.825 to 61.062", which would be a dummy of about 1526 against the
+engine's 1363. It is 1363 with the tooltip's $mult of 1.12: 1363 / 77 x 1.12 - 1 = 18.825 and
+1363 / 25 x 1.12 = 61.062. The description (16387) multiplies by $mult, and SpellDescriptionVariables
+860 sets it to 1.12 when the reader knows Improved Weapon Totems rank 2 (29193), 1.06 for rank 1
+(29192) and 1 otherwise. The 16389 dummy is 1363 on builds 1.60.1.70205 and 1.60.1.70235 (SpellEffect
+694279, wago.tools). Forever's talent trees have no Improved Weapon Totems, so the engine keeps 1363.
+The 29193 row still carries its +12% Flametongue Totem dummy (SpellEffect 705635, class mask bit 34),
+so a beta log of the largest plain hit decides it: a 3.8 s weapon hits for 51.79 at 1363 and 58.01
+with the 12%.
+
+`TestFlametongueTotemInFormUsesTheEquippedWeaponAndNoSpellPower` (sim/) puts a Cat and a Bear with
+Soulkeeper (3.8 s) under the party totem: the largest plain hit is 3.8 x 13.63 through the druid's
+damage multipliers, and 1000 spell damage leaves the total unchanged on the same seed. It fails on the
+previous commit. The enhancement test of the old coefficient becomes
+`TestFlametongueTotemHitIgnoresSpellDamage`. No golden moves.
+
+Drop this when upstream gives the totem's hit no coefficient.
+
+## 92. `metrics: each action reports the spread of its hits, crits and ticks`
+
+Lazyshadow asked on the MythicSim Discord for the average, smallest and largest damage of an
+ability's normal hits and of its crits, for APL work. The result had totals (`damage`, `crit_damage`,
+`tick_damage`, `crit_tick_damage`) and counts whose kinds do not line up one for one with them, and no
+smallest or largest. `TargetedActionMetrics` gains four `DamageRange` fields (field numbers 37 to 40,
+additive, so an older reader skips them):
+
+| Field | Events |
+| --- | --- |
+| `hit_range` | direct hits that are not critical, glancing, blocked or crushing |
+| `crit_range` | direct critical strikes (blocked crits excluded) |
+| `tick_range` | periodic ticks that are not critical |
+| `crit_tick_range` | critical periodic ticks |
+
+`DamageRange` is `count`, `total`, `min` and `max` over every iteration of the run, as the other
+totals are; the average is `total / count`. Partial resists count in their kind. A landed result that
+deals no damage is the application of a dot or a debuff (Deep Wounds' trigger, say) and is left out.
+A kind with no landed damage is left unset (null in the CLI's JSON). Together with `glance_damage`, `block_damage`, `blocked_crit_damage` and
+`crush_damage` the four totals add up to `damage`. JSON names are `hitRange`, `critRange`, `tickRange`
+and `critTickRange`.
+
+`SpellMetrics` records each landed damage event in `dealDamageInternal` with a few comparisons and no
+allocation, `doneIteration` merges the iteration into the action's target metrics, and
+`CombineConcurrentSimResults` merges the ranges of concurrent sims (counts and totals add, the
+extremes are kept).
+
+`TestActionMetricsCarryDamageRanges` (sim/) runs an Arms warrior and checks each range is ordered and
+holds no zero-damage event,
+that the totals add up to the action's damage, and that hits, crits and ticks all appear.
+`TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.
