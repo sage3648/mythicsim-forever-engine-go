@@ -1852,3 +1852,33 @@ previous commit. The enhancement test of the old coefficient becomes
 `TestFlametongueTotemHitIgnoresSpellDamage`. No golden moves.
 
 Drop this when upstream gives the totem's hit no coefficient.
+
+## 92. `metrics: each action reports the spread of its hits, crits and ticks`
+
+Lazyshadow asked on the MythicSim Discord for the average, smallest and largest damage of an
+ability's normal hits and of its crits, for APL work. The result had totals (`damage`, `crit_damage`,
+`tick_damage`, `crit_tick_damage`) and counts whose kinds do not line up one for one with them, and no
+smallest or largest. `TargetedActionMetrics` gains four `DamageRange` fields (field numbers 37 to 40,
+additive, so an older reader skips them):
+
+| Field | Events |
+| --- | --- |
+| `hit_range` | direct hits that are not critical, glancing, blocked or crushing |
+| `crit_range` | direct critical strikes (blocked crits excluded) |
+| `tick_range` | periodic ticks that are not critical |
+| `crit_tick_range` | critical periodic ticks |
+
+`DamageRange` is `count`, `total`, `min` and `max` over every iteration of the run, as the other
+totals are; the average is `total / count`. Partial resists count in their kind. A kind with no landed
+event is left unset. Together with `glance_damage`, `block_damage`, `blocked_crit_damage` and
+`crush_damage` the four totals add up to `damage`. JSON names are `hitRange`, `critRange`, `tickRange`
+and `critTickRange`.
+
+`SpellMetrics` records each landed damage event in `dealDamageInternal` with a few comparisons and no
+allocation, `doneIteration` merges the iteration into the action's target metrics, and
+`CombineConcurrentSimResults` merges the ranges of concurrent sims (counts and totals add, the
+extremes are kept).
+
+`TestActionMetricsCarryDamageRanges` (sim/) runs an Arms warrior and checks each range is ordered,
+that the totals add up to the action's damage, and that hits, crits and ticks all appear.
+`TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.

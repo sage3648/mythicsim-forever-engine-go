@@ -517,6 +517,10 @@ func (spell *Spell) dealDamageInternal(sim *Simulation, isPeriodic bool, result 
 			spell.SpellMetrics[result.Target.UnitIndex].TotalCrushDamage += result.Damage
 		}
 		spell.SpellMetrics[result.Target.UnitIndex].TotalThreat += result.Threat
+
+		if result.Landed() {
+			spell.SpellMetrics[result.Target.UnitIndex].recordDamageRange(isPeriodic, result)
+		}
 	}
 
 	// Mark total damage done in raid so far for health based fights.
