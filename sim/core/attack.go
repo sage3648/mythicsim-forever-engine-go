@@ -816,6 +816,23 @@ func (aa *AutoAttacks) scheduleMeleeWeaveWakeup(sim *Simulation) {
 	sim.AddPendingAction(pa)
 }
 
+// holdArrivalSwingForRotation lets a weaver's rotation act before the swing that lands the moment it
+// steps into melee range. A swing already due waits heldSwingLag and the rotation wakes now, so an
+// on-next-swing ability (Raptor Strike) pressed on arrival replaces that first swing instead of
+// waiting out a full swing timer behind a white hit. A rotation held by a Wait is left alone.
+func (aa *AutoAttacks) holdArrivalSwingForRotation(sim *Simulation) {
+	if !aa.AutoSwingRanged || aa.mh.replaceSwing == nil || !aa.mh.enabled || aa.mh.swingAt > sim.CurrentTime {
+		return
+	}
+	unit := aa.mh.unit
+	if unit.Rotation == nil || unit.Rotation.HasBlockingControllingAction() {
+		return
+	}
+	aa.mh.swingAt = sim.CurrentTime + heldSwingLag
+	sim.rescheduleWeaponAttack(aa.mh.swingAt)
+	unit.ReactToEvent(sim, false, false)
+}
+
 func (aa *AutoAttacks) cancelMeleeWeaveWakeup(sim *Simulation) {
 	if aa.meleeWeaveWakeup != nil && !aa.meleeWeaveWakeup.consumed {
 		aa.meleeWeaveWakeup.Cancel(sim)

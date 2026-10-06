@@ -88,6 +88,7 @@ func (unit *Unit) UpdatePosition(sim *Simulation, isFinal bool) {
 		if unit.AutoAttacks.mh.IsInRange() {
 			unit.AutoAttacks.cancelMeleeWeaveWakeup(sim)
 			unit.AutoAttacks.EnableMeleeSwing(sim)
+			unit.AutoAttacks.holdArrivalSwingForRotation(sim)
 		} else {
 			unit.AutoAttacks.CancelMeleeSwing(sim)
 			unit.AutoAttacks.scheduleMeleeWeaveWakeup(sim)

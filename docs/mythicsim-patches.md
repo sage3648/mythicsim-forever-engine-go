@@ -1972,3 +1972,31 @@ Hacker (`TestSurvivalMelee`, `TestProtection`, `TestFury`, `TestArms`, `TestProt
 `TestEnhancement`) and Warblade of Caer Darrow (`TestSurvivalMelee`, `TestArms`), each by 0.4% to 0.9%.
 
 Drop it when the client ships these items, or master's database carries base damage.
+
+## 96. `hunter: a weaver's rotation acts before the swing that lands on arrival in melee range, so a queued Raptor Strike replaces it`
+
+Sanctum asked on the MythicSim Discord why Raptor Strike waited after his melee-weaving Hunter stepped
+in (sim `cb8a969e`). The hunter reached 5 yards at 3.71 s with his main-hand swing ready since the pull.
+`UpdatePosition` turned the swing on (`EnableMeleeSwing`) and it landed at once as a white hit. The
+rotation's next check was on its 100 ms grid, after the swing, so the Raptor Strike it queued at 3.71
+waited a full swing timer and landed at 5.99. `swing()` already runs the rotation before a swing to let
+a last-moment Heroic Strike or Raptor Strike in, but `DoNextAction` returns while the rotation timer is
+not ready, which is the case for any arrival between two checks.
+
+`AutoAttacks.holdArrivalSwingForRotation` (`sim/core/attack.go`), called from `UpdatePosition` when the
+main hand comes into range: for a unit that swings both ranged and melee and has a swing replacer (a
+Hunter), a swing already due moves `heldSwingLag` (1 ns) later and the rotation wakes now
+(`ReactToEvent`), so it runs first and a Raptor Strike queued on arrival takes the swing. A rotation held
+by a Wait or WaitUntil is left alone and the swing lands as before. Arrivals with the swing not yet due
+are unchanged: the rotation already queued Raptor Strike before that swing.
+
+Sanctum's request (3000 iterations) goes from 744.6 to 739.2 DPS: the white hit on arrival is gone, and
+his rotation steps back out as soon as Raptor Strike lands, so he spends about 1.5 s less in melee per
+trip on those arrivals.
+
+`TestRaptorStrikeTakesTheSwingOnArrival` (`sim/hunter/raptor_strike_arrival_test.go`) walks a Hunter
+6 yards in 0.857 s, between two 100 ms checks, with Raptor Strike first in its rotation. Before the fix
+the arrival swing was a white hit and the Raptor Strike never landed in the 3 s fight; now the arrival
+swing is the Raptor Strike. No golden moves: no suite rotation steps into melee.
+
+Drop this when upstream runs the rotation before a swing that comes due on arrival in range.
