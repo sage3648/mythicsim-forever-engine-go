@@ -1884,3 +1884,23 @@ extremes are kept).
 holds no zero-damage event,
 that the totals add up to the action's damage, and that hits, crits and ticks all appear.
 `TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.
+
+## 93. `mage: Ignite ignores hits on a unit that is not an enemy`
+
+Since 8fb1a2d75a the half of a Goblin Sapper Charge that goes off in the thrower's face is its own
+spell (`newSapperSelfDamageSpell` in `sim/core/consumes.go`), with the spell damage proc mask and
+the Fire school, so that a listener on spell damage taken hears it. Ignite's trigger in
+`sim/mage/talents_fire.go` listens for Fire spell damage crits the mage deals, so a crit of that half
+reached it with the mage as the target. The mage carries no Ignite dot, `Ignite.Dot` returned nil,
+and the handler panicked on `IsActive`: any Fire Mage with Ignite and the charge crashed the sim as
+soon as the self hit crit. MythicSim's `fire-mage-goblin-sapper` request failed every run before
+this and now sims 593.67 DPS (3,000 iterations).
+
+The trigger now also requires the target to be an enemy unit. The sapper's proc mask is left alone:
+the self hit is a harmful spell landing on the character, which is why 8fb1a2d75a gave it that mask.
+
+`TestIgniteIgnoresSapperCritOnTheMage` (`sim/mage/ignite_test.go`) crits the self damage spell on the
+mage, which panicked before the fix, then on the target, which must still ignite it. No golden moves:
+the mage suites carry no sapper.
+
+Drop this when upstream's Ignite (or the sapper's self hit) keeps the self hit out of Ignite.
