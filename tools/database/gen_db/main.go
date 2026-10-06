@@ -203,7 +203,8 @@ func main() {
 	db.MergeEnchants(database.EnchantOverrides)
 	ApplyGlobalFilters(db)
 	// After the global filters: those are for the client's rows, ours were filtered on master.
-	mergeForeverSimDB(db, fmt.Sprintf("%s/forever_sim_db.json", inputsDir))
+	filled := mergeForeverSimDB(db, fmt.Sprintf("%s/forever_sim_db.json", inputsDir))
+	dropClassicBonusDamage(db, filled, fmt.Sprintf("%s/wowhead_gearplannerdb.txt", inputsDir))
 	fillPlannerArmor(db, fmt.Sprintf("%s/wowhead_forever_gearplanner.txt", inputsDir))
 	leftovers := db.Clone()
 	ApplyNonSimmableFilters(leftovers)
@@ -365,12 +366,15 @@ func processItems(instance *dbc.DBC,
 // Our Forever sim's items, enchants and random suffixes (tools/database/import_forever_sim_db.py).
 // The client wins wherever it has the row; this fills in what it does not ship: the Classic-era
 // items our gear presets use that the beta client lacks (Hand of Justice, the Tier 1 sets), the
-// Lesser Arcanums, and the random suffixes, which the client no longer carries at all.
-func mergeForeverSimDB(db *database.WowDatabase, path string) {
+// Lesser Arcanums, and the random suffixes, which the client no longer carries at all. Returns the
+// ids of the items it filled in.
+func mergeForeverSimDB(db *database.WowDatabase, path string) []int32 {
 	ours := database.ReadDatabaseFromJson(tools.ReadFile(path))
+	var filled []int32
 	for id, item := range ours.Items {
 		if _, ok := db.Items[id]; !ok {
 			db.Items[id] = item
+			filled = append(filled, id)
 		}
 	}
 	FillArmorFromOurs(db, ours)
@@ -398,6 +402,7 @@ func mergeForeverSimDB(db *database.WowDatabase, path string) {
 			db.Npcs[id] = npc
 		}
 	}
+	return filled
 }
 
 // Filters out entities which shouldn't be included anywhere.
@@ -922,36 +927,11 @@ func FillArmorFromOurs(db *database.WowDatabase, ours *database.WowDatabase) {
 // The pinned Forever planner separates base armor from bonus armor. Apply only
 // these fields, never its aggregated conditional attack power or spell effects.
 func fillPlannerArmor(db *database.WowDatabase, path string) {
-	text := tools.ReadFile(path)
-	start, end := strings.Index(text, "{"), strings.Index(text, "});")
-	if start < 0 || end < start {
-		panic("invalid Forever gear planner")
-	}
-	raw := strings.TrimSpace(text[start : end+1])
-	raw = strings.TrimSuffix(strings.TrimSpace(strings.TrimSuffix(raw, "}")), ",") + "}"
-	// Most stats are numbers, but some keys hold objects (appearances, skillBuff), so the map is
-	// decoded loosely and only the two fields read here are given a type.
-	var rows map[string]struct {
-		Stats map[string]json.RawMessage `json:"stats"`
-	}
-	if err := json.Unmarshal([]byte(raw), &rows); err != nil {
-		panic(err)
-	}
-	stat := func(id string, stats map[string]json.RawMessage, key string) (float64, bool) {
-		value, ok := stats[key]
-		if !ok {
-			return 0, false
-		}
-		var number float64
-		if err := json.Unmarshal(value, &number); err != nil {
-			panic(fmt.Sprintf("Forever gear planner item %s: %q is not a number: %s", id, key, value))
-		}
-		return number, true
-	}
+	rows := readPlannerStats(path, "Forever gear planner")
 	for id, item := range db.Items {
 		key := fmt.Sprint(id)
-		row := rows[key]
-		armor, ok := stat(key, row.Stats, "armor")
+		stats := rows[key]
+		armor, ok := plannerStat(key, stats, "armor")
 		opt := item.ScalingOptions[0]
 		if !ok || opt == nil {
 			continue
@@ -960,6 +940,6 @@ func fillPlannerArmor(db *database.WowDatabase, path string) {
 			opt.Stats = map[int32]float64{}
 		}
 		opt.Stats[int32(proto.Stat_StatArmor)] = armor
-		opt.Stats[int32(proto.Stat_StatBonusArmor)], _ = stat(key, row.Stats, "armorbonus")
+		opt.Stats[int32(proto.Stat_StatBonusArmor)], _ = plannerStat(key, stats, "armorbonus")
 	}
 }

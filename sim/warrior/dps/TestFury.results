@@ -752,8 +752,8 @@ dps_results: {
 dps_results: {
  key: "TestFury-AllItems-IcebladeHacker-13952"
  value: {
-  dps: 348.97793
-  tps: 222.17962
+  dps: 347.00202
+  tps: 221.05107
  }
 }
 dps_results: {
