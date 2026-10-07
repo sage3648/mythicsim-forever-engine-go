@@ -2173,3 +2173,34 @@ Goldens: none move; no suite preset puts a Flametongue Totem beside a Windfury T
 
 Drop it when upstream changes the rule, or keep it as long as upstream carries the same rule (then it is
 only the party-flag half, since upstream has no party Flametongue Totem).
+
+## 99. `druid: Rake adds 5.26% of attack power to its hit and every tick`
+
+The client rows at the pinned build carry no BonusCoefficientFromAP on Rake, and Blizzard's Druid deep
+dive (30 September 2026) only says it "now gains increased damage from Attack Power". The share is a
+fit to beta combat logs (Hameru, MythicSim Discord #bugs, 7 October 2026, level 30, non-crits on many
+mobs): at 324 attack power Rake hit 40 and ticked 33, 33, 33; at 225 it hit 35 and ticked 28, 28, 27.
+That rank's base is 23 on the hit and 16 a tick, so hit = 23 + 0.0526 x AP (40.0, 34.8) and tick =
+16 + 0.0526 x AP (33.0, 27.8), every logged number within rounding.
+
+`sim/druid/rake.go`: `rakeAttackPowerShare = 0.0526` rides on whatever rank the engine casts, which keeps
+its own base from client data (rank 4, 9904: 61 on the hit, 34 a tick). `rakeHitDamage` adds the share
+to the initial hit in `ApplyEffects`; `rakeTickDamage` goes into the snapshot, followed by
+`dot.SnapshotAttackPowerShare`, as Rip does, so a tick reads the share from the attack power the druid
+has then (`currentTickInputs` swaps the snapshotted share for the current one, nothing counted twice).
+The non-snapshot `ExpectedTickDamage` path (the projection `UpdateBleedPower` stores, which nothing in
+the feral rotation reads) uses the same formula.
+
+Tests: `TestRakeAddsAttackPowerShareToHitAndTick` (`sim/druid/rake_test.go`) checks the formula over
+Hameru's 99 attack power gap. `TestRakeScalesWithAttackPower` (`sim/druid/feralcat/rake_test.go`) drives
+the live spell on a naked Cat with crit removed: the non-crit hit (each on a target that is not
+bleeding, out of Rend and Tear's reach) and a tick, each divided by the multipliers on top of its base,
+gain 0.0526 x 99 from 99 more attack power, on a running dot snapshotted at the old attack power and on
+a fresh one.
+
+Goldens: none move. Neither Feral Cat APL (`default`, `simple_vael`) casts Rake, so `TestFeralCat` is
+unchanged; Bear, Balance and Restoration do not use it. A player APL that casts Rake gains about 20
+damage on the hit and on each tick at 391 attack power.
+
+Drop it when a client build carries Rake's attack power coefficient (then read it from the row), or
+refit if a log at another level disagrees.
