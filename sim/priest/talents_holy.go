@@ -72,15 +72,15 @@ func (priest *Priest) applyImprovedRenew() {
 	}
 }
 
-// Holy Specialization is new in Forever: +1% critical strike per point on Holy spells.
+// Holy Specialization is new in Forever: +1% critical strike per point on Smite, Holy Fire, Holy Nova
+// and the Penance bolts. 14889's class mask leaves Chastise (1277335) out (client 1.60.1.70205).
 func (priest *Priest) applyHolySpecialization() {
 	if priest.Talents.HolySpecialization == 0 {
 		return
 	}
 
 	priest.AddStaticMod(core.SpellModConfig{
-		ClassMask:  PriestSpellsAll,
-		School:     core.SpellSchoolHoly,
+		ClassMask:  PriestHolySpells,
 		FloatValue: spellData.HolySpecialization.ValueAt(priest.Talents.HolySpecialization),
 		Kind:       core.SpellMod_BonusCrit_Percent,
 	})
@@ -142,14 +142,15 @@ func (priest *Priest) registerHolyNovaSpell(rank *spelldata.Spell) {
 	})
 
 	priest.RegisterSpell(core.SpellConfig{
-		ActionID:       core.ActionID{SpellID: rank.ID},
-		SpellSchool:    rank.SpellSchool(),
-		DefenseType:    rank.DefenseTypeCore(),
-		ProcMask:       core.ProcMaskSpellDamage,
-		Flags:          core.SpellFlagAPL,
-		ClassSpellMask: PriestSpellHolyNova,
-		Rank:           rank.RankNumber(),
-		MaxRange:       float64(rank.MaxRange),
+		ActionID:        core.ActionID{SpellID: rank.ID},
+		SpellSchool:     rank.SpellSchool(),
+		DefenseType:     rank.DefenseTypeCore(),
+		ProcMask:        core.ProcMaskSpellDamage,
+		Flags:           core.SpellFlagAPL,
+		ClassSpellMask:  PriestSpellHolyNova,
+		Rank:            rank.RankNumber(),
+		MaxRange:        float64(rank.MaxRange),
+		CastRequirement: rank.CastRequirement(), // not in Shadowform
 
 		ManaCost: core.ManaCostOptions{
 			FlatCost: int32(rank.Cost()),

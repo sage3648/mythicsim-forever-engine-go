@@ -405,10 +405,12 @@ func (priest *Priest) applyShadowform() {
 				aura.Activate(sim)
 			}
 		},
-		OnCastComplete: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell) {
-			if spell.SpellSchool.Matches(core.SpellSchoolHoly) && spell.Flags.Matches(core.SpellFlagHelpful) {
-				aura.Deactivate(sim)
-			}
+		// The client's form 28, which Holy Nova's and Chastise's rows exclude.
+		OnGain: func(aura *core.Aura, sim *core.Simulation) {
+			priest.ShapeshiftForm = rank.ShapeshiftForm()
+		},
+		OnExpire: func(aura *core.Aura, sim *core.Simulation) {
+			priest.ShapeshiftForm = 0
 		},
 	}).AttachSpellMod(core.SpellModConfig{
 		ClassMask:  PriestSpellsAll,

@@ -99,7 +99,8 @@
 									"lhs": { "spellTimeToReady": { "spellId": { "spellId": 2643 } } },
 									"rhs": { "const": { "val": "1" } }
 								}
-							}
+							},
+							{ "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "remainingTimePercent": {} } } }
 						]
 					}
 				},
@@ -108,7 +109,20 @@
 		},
 		{
 			"action": {
-				"condition": { "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } },
+				"condition": {
+					"and": {
+						"vals": [
+							{ "cmp": { "op": "OpGe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "30%" } } } },
+							{
+								"cmp": {
+									"op": "OpGe",
+									"lhs": { "spellTimeToReady": { "spellId": { "spellId": 20904 } } },
+									"rhs": { "const": { "val": "2" } }
+								}
+							}
+						]
+					}
+				},
 				"castSpell": { "spellId": { "spellId": 14287 } }
 			}
 		}

@@ -19,14 +19,10 @@ import (
 // speed, with the speed held to 1.3 to 4.0 so that the bounds are the tooltip's. The imbue's rank 6 is 2810
 // at 60, the totem's rank 4 is 1363, so the base damage is 48% of the imbue's.
 //
-// Neither dummy deals damage. The client's only fire spells of the family with a hit table are the three
-// "Flametongue Attack" spells (10444, 29469, 29470: Magic in SpellCategories, a 0.1 spell power coefficient,
-// class mask bit 21), which the imbue's dummies feed, and the totem's proc has no damage row, no
-// SpellCategories row and a class mask (bit 34) that no talent names but Improved Weapon Totems' dummy. The
-// engine therefore treats the totem's hit as the imbue's Magic fire spell, and the talents that name
-// Flametongue Attack (Elemental Fury's crit damage, Elemental Weapons' damage) apply to it. It takes none
-// of the caster's spell power: Hameru tested that on the beta (MythicSim Discord, 6 October 2026), so the
-// imbue's 0.1 coefficient stays on the imbue (patch 91).
+// Neither dummy deals damage. The totem's hit lands as Flametongue Attack 16368 (beta log 2713, upstream
+// #682): a Magic fire hit whose client row has no spell power coefficient (Hameru tested the same on the beta,
+// MythicSim Discord, 6 October 2026, patch 91) and a class mask (bit 25) that neither Elemental Fury nor
+// Elemental Weapons names, so no talent reaches it. The imbue's own hit keeps its 0.1 coefficient and talents.
 //
 // Hameru's rank 4 tooltip on the beta reads "18.825 to 61.062". That is 1363 / 77 * 1.12 - 1 to
 // 1363 / 25 * 1.12: the tooltip's $mult (SpellDescriptionVariables 860) is 1.12 when the reader knows
@@ -40,9 +36,8 @@ var flametongueTotemParty = spelldata.MustFind(15036)
 var flametongueTotemProc = spelldata.MustFind(16389)
 
 // FlametongueAttackTraits is what a class's own Flametongue Attack carries that its talents and threat
-// modifiers key on. The shaman sets its own (sim/shaman/weapon_imbues.go): the class mask Flametongue Weapon's
-// hit has, so Elemental Fury and Elemental Weapons reach the totem's hit as they reach the imbue's, and its
-// spell flag. Any other class has none, and its totem hit takes no talent.
+// modifiers key on. The shaman sets its own (sim/shaman/weapon_imbues.go): its spell flag, so Natural Grace's
+// threat cut reaches the hit, and no class mask. Any other class has none.
 type FlametongueAttackTraits struct {
 	ClassSpellMask int64
 	Flags          core.SpellFlag

@@ -150,13 +150,13 @@ var flametongueImbue = spellData.FlametongueWeaponTriggered.ByID(16344)
 var frostbrandImbue = spellData.FrostbrandWeaponTriggered.Highest()
 var rockbiterImbue = spellData.RockbiterWeaponTriggered.Highest()
 
-// A Flametongue Totem hit is the imbue's spell with the totem's base damage (patch 70): a shaman's carries the
-// imbue's class mask, so Elemental Fury's crit damage and Elemental Weapons' damage reach it, and the shaman
-// spell flag, so Natural Grace's threat cut does.
+// A Flametongue Totem hit lands as Flametongue Attack 16368 (beta log 2713, upstream #682), whose client row
+// has no spell power coefficient and a class mask (bit 25) that Elemental Fury and Elemental Weapons do not
+// name, so a shaman's carries no talent mask. It keeps the shaman spell flag, so Natural Grace's threat cut
+// reaches it.
 func init() {
 	buffs.SetFlametongueAttackTraits(proto.Class_ClassShaman, buffs.FlametongueAttackTraits{
-		ClassSpellMask: SpellMaskFlametongueWeapon,
-		Flags:          SpellFlagShamanSpell,
+		Flags: SpellFlagShamanSpell,
 	})
 }
 

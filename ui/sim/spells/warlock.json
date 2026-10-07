@@ -71,7 +71,7 @@
 	"11763": {
 		"ability": "Firebolt",
 		"file": "sim/warlock/pets.go",
-		"note": "Forever halved the damage. The pet spells are not in the sim's spell store, so pets.go carries rank 7's client row by hand (44 + 0.6 a level from 58, capped at 63, +-11.4%: 42 to 48 at 60, was a hand-typed 43 to 48; 0.571 coefficient, 115 mana) and no lower rank is registered. Values from the beta client 1.60.1.70094.",
+		"note": "Forever halved the damage. The pet spells are not in the sim's spell store, so pets.go carries rank 7's client row by hand (44 + 0.6 a level from 58, capped at 63, +-11.4%: 42 to 48 at 60, was a hand-typed 43 to 48; 0.571 coefficient, 115 mana) and no lower rank is registered. Values from the beta client 1.60.1.70094. The Imp starts its next Firebolt about 0.43 sec after the last one lands (beta logs: 281 Firebolts a median 2.435 sec apart with a 2.0 sec cast, foreverlogs.gg 2687 and 2695); the sim casts every 2.4 sec.",
 		"source": "forever",
 		"tooltip": "115 Mana\n2 sec cast\nDeals 43 to 48 Fire damage to a target."
 	},

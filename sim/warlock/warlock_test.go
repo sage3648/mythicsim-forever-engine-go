@@ -33,7 +33,7 @@ func TestAffliction(t *testing.T) {
 
 func TestDestruction(t *testing.T) {
 	core.RunTestSuite(t, t.Name(), core.FullCharacterTestSuiteGenerator([]core.CharacterSuiteConfig{
-		warlockSuite("destruction", DestructionTalents, &proto.WarlockOptions{
+		warlockSuite("destruction_conflag", DestructionTalents, &proto.WarlockOptions{
 			Summon:          proto.WarlockOptions_Succubus,
 			SacrificeSummon: true,
 			Armor:           proto.WarlockOptions_DemonArmor,

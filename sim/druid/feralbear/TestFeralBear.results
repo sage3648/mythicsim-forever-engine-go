@@ -731,8 +731,8 @@ dps_results: {
 dps_results: {
  key: "TestFeralBear-AllItems-KissoftheSpider-22954"
  value: {
-  dps: 177.49878
-  tps: 455.28578
+  dps: 177.17658
+  tps: 454.47468
   dtps: 1633.67569
  }
 }
@@ -1267,8 +1267,8 @@ dps_results: {
 dps_results: {
  key: "TestFeralBear-Average-Default"
  value: {
-  dps: 173.0754
-  tps: 443.66314
+  dps: 173.07439
+  tps: 443.66026
   dtps: 1607.46932
  }
 }

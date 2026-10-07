@@ -160,8 +160,13 @@ func (rogue *Rogue) registerColdBlood() {
 		ActionID: actionID,
 		Duration: core.NeverExpires,
 
+		// Mutilate's hand strikes are triggered spells: they take the crit but don't spend the
+		// charge, and the parent cast isn't in the mask, so Cold Blood stays up through every
+		// Mutilate until a Sinister Strike, Backstab, Ambush or Eviscerate. Beta logs 2701/2702:
+		// one rogue's Mutilates crit with both hands 191 of 192 times under Cold Blood (the other
+		// was blocked), and the buff dropped on the next Eviscerate.
 		OnSpellHitDealt: func(aura *core.Aura, sim *core.Simulation, spell *core.Spell, result *core.SpellResult) {
-			if spell.Matches(RogueSpellColdBlooded) {
+			if spell.Matches(RogueSpellColdBlooded &^ RogueSpellMutilateHit) {
 				aura.Deactivate(sim)
 			}
 		},

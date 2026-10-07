@@ -85,11 +85,13 @@ func (warlock *Warlock) applyMalediction() {
 
 	// Periodic damage only ("Increases all periodic damage done"). The row also states the same
 	// value on op 0, but a tick already takes DamageDone, so taking both would count it twice.
+	// The mask names Hellfire, but its area hits are Hellfire Effect (11682), a direct School
+	// Damage effect, so a dot modifier never reaches them; only the self-burn is periodic.
 	points := warlock.Talents.Malediction
 	warlock.AddStaticMod(core.SpellModConfig{
 		Kind:       core.SpellMod_DotDamageDone_Pct,
 		FloatValue: spellData.Malediction.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_DOT)).FractionAt(points),
-		ClassMask:  WarlockSpellAll,
+		ClassMask:  WarlockSpellAll &^ WarlockSpellHellfire,
 	})
 }
 

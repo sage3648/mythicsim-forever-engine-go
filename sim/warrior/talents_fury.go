@@ -62,6 +62,9 @@ func (warrior *Warrior) registerUnbridledWrath() {
 	warrior.MakeProcTriggerAura(core.ProcTrigger{
 		Name:               "Unbridled Wrath",
 		ProcMask:           core.ProcMaskMeleeWhiteHit,
+		// Heroic Strike and Cleave replace a main-hand swing (ProcMaskMeleeMH) but never proc it: beta
+		// logs 2670/2698 (Cor, Osicat) show it on 31-59% of landed autos and 0 of 148 HS/Cleave hits.
+		ProcMaskExclude:    core.ProcMaskMeleeSpecial,
 		ProcChance:         spellData.UnbridledWrath.FractionAt(warrior.Talents.UnbridledWrath),
 		RequireDamageDealt: true,
 		Outcome:            core.OutcomeLanded,

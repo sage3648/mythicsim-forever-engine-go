@@ -57,6 +57,7 @@ var tooltipAllowed = map[int32][]float64{
 	13976:   {3, 33, 67},                              // Initiative: per rank
 	16257:   {5, 20, 25},                              // Flurry (shaman): per rank
 	16344:   {35, 112},                                // Flametongue Weapon: by weapon speed
+	16387:   {54},                                     // Flametongue Totem: by weapon speed (1363 / 25)
 	408345:  {443},                                    // Fire Nova: damage is on 408428, via hand triggers
 	408505:  {4},                                      // Maelstrom Weapon: per point
 	1293696: {7.8, 65, 68},                            // Demonic Brand: assumed row

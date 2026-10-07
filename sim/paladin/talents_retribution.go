@@ -148,13 +148,23 @@ func (paladin *Paladin) applyVindication() {
 
 // Sanctified Judgement - Gives your Judgement ability a 33/66/100% chance to return 20/40/60% of
 // the Mana cost of the judged seal. The chance is the first effect, the refund the second.
+//
+// The game returns 10/9 of the stated share of what the seal cost: 22/44/67%. Beta logs (reports
+// 2699/2701/2712, 1311077) show it on 13 paladins at all three ranks and five seal costs: Seal
+// of Command 65 -> 14-15 / 29 / 43, Seal of the Crusader 40 -> 9 at rank 1, Seal of Fury 60 -> 40
+// and 90 -> 60, Seal of Command rank 2 110 -> 73 at rank 3. The chance reads true (Ligma 73 of
+// 223 Judgements at rank 1, 3-point paladins every one). Two paladins land on exactly 40% (Inco,
+// rank 2) and 60% (Tristram, rank 3): 10/9 of a seal 10% cheaper, five points of Benediction, so
+// the share applies to the cost paid.
+const sanctifiedJudgementLogScale = 10.0 / 9
+
 func (paladin *Paladin) applySanctifiedJudgement() {
 	if paladin.Talents.SanctifiedJudgement == 0 {
 		return
 	}
 
 	manaMetrics := paladin.NewManaMetrics(core.ActionID{SpellID: spellData.SanctifiedJudgement.Highest().ID})
-	refund := spellData.SanctifiedJudgement.EffectAt(2).FractionAt(paladin.Talents.SanctifiedJudgement)
+	refund := spellData.SanctifiedJudgement.EffectAt(2).FractionAt(paladin.Talents.SanctifiedJudgement) * sanctifiedJudgementLogScale
 
 	paladin.MakeProcTriggerAura(core.ProcTrigger{
 		Name:               "Sanctified Judgement" + paladin.Label,

@@ -190,8 +190,10 @@ func (pet *WarlockPet) ExecuteCustomRotation(sim *core.Simulation) {
 }
 
 // The generator makes no table for pet spells, so Firebolt and Lash of Pain carry our
-// client-verified beta 1.60.1 values (Firebolt rank 7, Lash of Pain rank 6). The 200 ms gap on
-// Firebolt stands in for the imp's real cast delay. Improved Imp and Improved Sayaad ride on their
+// client-verified beta 1.60.1 values (Firebolt rank 7, Lash of Pain rank 6). Firebolt's cooldown is the
+// Imp's pause between casts: beta logs time 281 Firebolts 2.435 sec apart (median, 2.0 sec cast, next one
+// starting 0.43 sec after the last lands; foreverlogs.gg 2687, 2695). The rotation polls every 100 ms, so
+// 400 ms lands the next cast 2.4 sec after the last; 430 would round up to 2.5. Improved Imp and Improved Sayaad ride on their
 // talents as SpellMods.
 // Firebolt rank 7's damage effect, client 1.60.1.70094 11763: 44 + 0.6 a level from 58 (capped at 63),
 // +-11.4%, so 45 (42.4 to 47.6) at 60. Beta logs agree on the row: level 20 imps' rank 2 (7799, 7 + 0.2 a
@@ -216,7 +218,7 @@ func (pet *WarlockPet) registerFireboltSpell() {
 			},
 			CD: core.Cooldown{
 				Timer:    pet.NewTimer(),
-				Duration: time.Millisecond * 200,
+				Duration: time.Millisecond * 400,
 			},
 		},
 

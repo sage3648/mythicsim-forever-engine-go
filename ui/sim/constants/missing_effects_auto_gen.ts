@@ -4782,6 +4782,12 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		]
 	],
 	[
+		285102, // Darkmist Dirk
+		[
+			"Your attacks have a high chance to poison the target for 8 Nature damage every 3.0 sec for 9s.", // 1317583 - https://www.wowhead.com/forever/spell=1317583
+		]
+	],
+	[
 		285281, // Arcanite Blacksmith Hammer
 		[
 			"Stun the target for 1s.", // 1318178 - https://www.wowhead.com/forever/spell=1318178

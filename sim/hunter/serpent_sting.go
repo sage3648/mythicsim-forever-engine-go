@@ -16,7 +16,8 @@ func (hunter *Hunter) registerSerpentStingSpell() {
 	spellCoeff := 1.0 / float64(numberOfTicks)
 	// Nor any attack power share, but the same combat logs that fit Arcane Shot's (arcane_shot.go) put
 	// each tick at base + about 0.035 of ranged attack power, and the same aspect swap moves a tick
-	// 0.037-0.041 a point.
+	// 0.037-0.041 a point. At levels 24-30 Hunter's Mark rank 2 moves a tick 0.034 (Miss, 2712, 549
+	// ticks; Consumer, 2717) and 0.042 (Lokronn, 2695); Miss's absolute fit is 0.033.
 	const rapPerTick = 0.035
 
 	hunter.SerpentSting = hunter.RegisterRangedSpell(core.SpellConfig{

@@ -1,9 +1,9 @@
 # MythicSim downstream patches
 
 MythicSim runs this engine from its fork (`sage3648/mythicsim-forever-engine-go`, branch
-`mythicsim/upstream-sync-20261005`). The branch is ElliotWood/Forever master, which is built on the
+`mythicsim/upstream-sync-20261007`). The branch is ElliotWood/Forever master, which is built on the
 official wowsims/forever, plus the patches below. The first base was `442076902` (Merge
-wowsims/forever master ea5412873). The current base is `67f14b04a5` (2026-10-04, client 1.60.1.70205); the 2026-10-05 sync merged #642 to #676 and dropped patches 13, 18, 19, 20, 22, 23, 27, 30 and 31, which upstream now carries ("Upstream sync 2026-10-05, #642 to #676" at the end of this file). The base before it was `f764984d8b` (2026-10-03), merged by "Upstream sync 2026-10-03, #613 to #641", and before that `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
+wowsims/forever master ea5412873). The current base is `5c115f1725` (2026-10-07, client 1.60.1.70235 with the 2026-10-06 hotfixes); the 2026-10-07 sync merged #677 to #719 and dropped patches 3, 76, 91, 93 and 94 and folded upstream's Flametongue Totem into patches 70 to 72 ("Upstream sync 2026-10-07, #677 to #719" at the end of this file). The base before it was `67f14b04a5` (2026-10-04, client 1.60.1.70205); the 2026-10-05 sync merged #642 to #676 and dropped patches 13, 18, 19, 20, 22, 23, 27, 30 and 31, which upstream now carries ("Upstream sync 2026-10-05, #642 to #676" at the end of this file). The base before it was `f764984d8b` (2026-10-03), merged by "Upstream sync 2026-10-03, #613 to #641", and before that `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
 
 Keep the set small. Each patch exists because MythicSim needs something upstream does not do
 yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an upstream version.
@@ -12,7 +12,7 @@ yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an u
 |---|---|---|
 | 1 | `cli: sim --strict rejects unknown fields and enum names` | The worker builds requests in code. Without it, a misspelt field or a race the build does not know is dropped silently and the sim runs a different character. |
 | 2 | `core: a player option to disable racials` | The race comparison page sims each character with and without its racials to show what they are worth. |
-| 3 | `rotation: Destruction casts Conflagrate for Shadow and Flame` | The Destruction rotation never casts Conflagrate, so Shadow and Flame's Shadow buff never applies to the Shadow Bolt filler. |
+| 3 | `rotation: Destruction casts Conflagrate for Shadow and Flame` | Dropped 2026-10-07: upstream #716 makes `destruction_conflag` the Shadow and Flame preset. |
 | 4 | `hunter: Aspect of the Beast` | Forever made Beast the melee aspect. Upstream models only Hawk, so a melee hunter has no aspect. |
 | 5 | `rotation: a melee Survival rotation` | Upstream's Survival rotation shoots from range, so Raptor Strike, Mongoose Bite and Strider Kick never fire. MythicSim ranks melee Survival. |
 | 6 | `items: Iceblade Hacker and Warblade of Caer Darrow proc from their own hand` | The two hand-written weapon procs fired off both hands, so a main-hand Iceblade Hacker added its Frost damage to every off-hand swing. |
@@ -63,7 +63,13 @@ against upstream's version:
 - Upstream also models Gnome Expansive Mind, which the patch left out.
 - The pairings are the ones MythicSim's race pages offer.
 
-## 3. `rotation: Destruction casts Conflagrate for Shadow and Flame`
+## 3. `rotation: Destruction casts Conflagrate for Shadow and Flame` (dropped, upstream #716)
+
+Dropped in the 2026-10-07 sync: upstream's Shadow and Flame preset and `TestDestruction` now run
+`destruction_conflag.apl.json`, which casts Conflagrate whenever Immolate is up, and
+`destruction.apl.json` is back to upstream's. On the merged engine `destruction_conflag` scores
+194.66 against this patch's rule at 192.34 (TestDestruction Average-Default).
+
 
 - **What it does.** `ui/specs/warlock/dps/apls/destruction.apl.json` casts Conflagrate (18932)
   after the Immolate refresh, while Immolate is up and either Immolate has under 4 seconds
@@ -1317,7 +1323,17 @@ pass. Tests this sync changed: the off-hand hit test (now Furious Precision), th
 is the only source above 100 now), the crit Rage tests (Dual Wield Specialization pays the off hand 1.5 times at 5/5), the
 percent-stat test (Mystic Mushroom only), and the talent strings of the Warrior tests that were not upstream's.
 
-## 70. `shaman: Flametongue Totem`
+## 70. `shaman: Flametongue Totem` (narrowed 2026-10-07, upstream #677 and #682)
+
+Upstream now registers the cast (#677, ported from this patch) and lands its hit with no spell power
+coefficient and no talent mask (#682: the hit logs as Flametongue Attack 16368, beta log 2713, whose
+class mask Elemental Fury and Elemental Weapons do not name). The fork keeps its own registration
+(`sim/core/buffs/flametongue_totem.go` and `registerFlametongueTotemSpell`) because the party flag
+(patch 71) shares the trigger and the hit, and takes #682's rules: the shaman's traits now carry the
+spell flag only, and `TestFlametongueTotemHitTakesNoElementalFuryOrElementalWeapons` replaces the
+talent test. The one remaining difference is Windfury Totem: see "Upstream sync 2026-10-07". The
+measurements below predate both changes.
+
 
 Redfall (Discord, 2 October 2026) asked for a Windfury Weapon main hand with Windfury Totem and a Flametongue Totem in
 place of Searing Totem ("ftt (for yourself, which is a dps increase over searing totem) while keeping wf imbue up"). The
@@ -1571,7 +1587,12 @@ goldens are unchanged: the suite carries no weapon-damage enchant or Dense stone
 
 Drop this when upstream adds flat weapon damage to the form weapon after the rescale.
 
-## 76. `hunter: Hawk follow-up attacks roll melee avoidance`
+## 76. `hunter: Hawk follow-up attacks roll melee avoidance` (dropped, upstream #703)
+
+Dropped in the 2026-10-07 sync: upstream's #703 fits the hawk to 534 beta swings (every 2.5 sec
+hasted, about 0.35 of the dive bomb base, `OutcomeMeleeSpecialHit`: misses, dodges and parries, no
+crits) and its `TestSummonHawkTwoHawks` replaces ours.
+
 
 Forever Logs report 2701 records Trapz's Hawk auto-attacks missing, being dodged,
 being parried and critically hitting Saltspine. The previous follow-up outcome
@@ -1821,7 +1842,10 @@ clipping. The ranged Survival rotation on the two ranged references' gear and ta
 
 Drop this when upstream's hunter rotations drop the Auto Shot timing.
 
-## 91. `buffs: Flametongue Totem's hit takes no spell power`
+## 91. `buffs: Flametongue Totem's hit takes no spell power` (dropped, upstream #682)
+
+Upstream's #682 takes the coefficient off too, and also the talents; see patch 70.
+
 
 Hameru tested Flametongue Totem on the beta (MythicSim Discord #contributors, 6 October 2026; Kerani
 and Lazyshadow agree): its hit does not scale with spell power, and in Cat Form it is sized by the
@@ -1885,7 +1909,11 @@ holds no zero-damage event,
 that the totals add up to the action's damage, and that hits, crits and ticks all appear.
 `TestConcurrentResultsCombineDamageRanges` combines two runs and checks the merge. No golden moves.
 
-## 93. `mage: Ignite ignores hits on a unit that is not an enemy`
+## 93. `mage: Ignite ignores hits on a unit that is not an enemy` (dropped, upstream #699/#702)
+
+Upstream's fix is the same condition; its test in `sim/mage/mage_test.go` replaces
+`sim/mage/ignite_test.go`.
+
 
 Since 8fb1a2d75a the half of a Goblin Sapper Charge that goes off in the thrower's face is its own
 spell (`newSapperSelfDamageSpell` in `sim/core/consumes.go`), with the spell damage proc mask and
@@ -1905,7 +1933,12 @@ the mage suites carry no sapper.
 
 Drop this when upstream's Ignite (or the sapper's self hit) keeps the self hit out of Ignite.
 
-## 94. `core: pushback only pushes back a cast still in progress`
+## 94. `core: pushback only pushes back a cast still in progress` (dropped, upstream #700/#701)
+
+Upstream's handler returns on the same `Hardcast.Expires <= sim.CurrentTime` check (its test is
+`sim/core/pushback_test.go`). The fork keeps `sim/druid/feralbear/pushback_test.go` as extra coverage
+(the 10, 5 and 1 ms cases and a cast still in progress); it passes on upstream's code.
+
 
 The pushback trigger in `sim/core/character.go` checks that a hardcast is running when the hit
 lands, but its handler runs one spell batch window (10 ms) later and did not check again. If the
@@ -2000,3 +2033,87 @@ the arrival swing was a white hit and the Raptor Strike never landed in the 3 s 
 swing is the Raptor Strike. No golden moves: no suite rotation steps into melee.
 
 Drop this when upstream runs the rotation before a swing that comes due on arrival in range.
+
+## Upstream sync 2026-10-07, #677 to #719
+
+Merged ElliotWood/Forever `5c115f1725` (76 commits, #677 to #719 plus data, changelog and arena
+commits) into the live pin `cd7d44aec7` (patches 1 to 96). Client data is now 1.60.1.70235 with the
+2026-10-06 hotfixes (#706).
+
+Behaviour adopted: Flametongue Totem (#677, #682, see patch 70); hard-cast bolts and Lava Burst hold the
+swing (#681, #684, see patch 17); Malediction leaves Hellfire alone (#680); Penance rank 3 for Smite and
+Holy Precision / Holy Specialization leave Chastise out (#678, #679); Shadowform refuses Holy Nova and
+Chastise (#686); Demonic Embrace keeps its -1% Spirit (#687); balance audit and gear sets (#688, #689);
+Cold Blood crits both Mutilate hands and is cast before Mutilate (#690, #691); Unbridled Wrath from white
+autos only (#692); Scorpid poison stacks to 5 (#694); Searing Totem every 2.43 sec (#697); Imp Firebolt
+every ~0.4 sec (#698); Sanctified Judgement refunds (#705); hunter attack power shares at 24 to 30
+(#707); Wowhead data (#708); energy refills smoothly at 10 a second (#709); shadow casts Devouring Plague
+on its 1 min cooldown (#710); cat powershifts only with Wolfshead Helm (#711); no Heroic Strike / Cleave
+in execute below 40 rage (#712); Intimidation is not an auto-cast cooldown (#713); arcane falls back to
+Frostbolt (#714); Arcane Missiles keep Arcane Blast stacks at 15% each (#715); Shadow and Flame preset
+casts Conflagrate (#716); Marksmanship paces Sniper Shot and holds Arcane Shot for Aimed Shot (#717,
+#718); Power Infusion keeps Shadowform (#719).
+
+Patches upstream now carries, dropped here:
+
+| Patch | Upstream | Notes |
+|---|---|---|
+| 3 Destruction Conflagrate | #716 | `destruction_conflag` is the Shadow and Flame preset; 194.66 against our rule's 192.34 on TestDestruction. |
+| 76 Hawk avoidance | #703 | Upstream's log-fitted hawk (2.5 sec hasted, ~0.35 of the dive bomb base, no crits, can miss and be dodged). |
+| 91 Flametongue Totem coefficient | #682 | Also drops the talents; see patch 70. |
+| 93 Ignite and the sapper | #699/#702 | Same condition. |
+| 94 Pushback after the cast | #700/#701 | Same check; our feral bear test stays as coverage. |
+
+Kept against upstream:
+
+- **17 hard casts hold the swing.** Upstream's #681/#684 restart the swing a full weapon speed after
+  every hard cast (`StopMeleeUntil`). Ours (`HoldMeleeForCast`) also lands a swing that came due during
+  the cast as the cast completes, as tested on the beta; a cast that completes first resets the timer the
+  same way upstream's does. Lightning Bolt, Chain Lightning and Lava Burst call ours; upstream's
+  `holdSwingDuringCast` is removed. Upstream's `TestHardCastRestartsTheSwingTimer` passes on ours.
+- **70 to 72 Flametongue Totem.** One registration (ours), with #682's hit. A main-hand Flametongue
+  Weapon still disables it (patch 72, same rule as #677). **Windfury Totem differs:** #677 has Windfury
+  Totem (party flag or the shaman's own) switch Flametongue Totem off, citing the beta development notes
+  ("no longer stacks"), and says the notes do not say which totem stays. The fork keeps both: client
+  70235 has them as separate party proc auras in different totem slots (fire 1, air 4), and no log has
+  shown them failing to stack. Upstream's `TestFlametongueTotem` is taken without its Windfury case;
+  `TestFlametongueTotemAndWindfuryTotemDoNotInteract` stays. To follow upstream, join the two Windfury
+  Totem auras (`driveWindfuryTotem` and `registerWindfuryTotemSpell`) to `FlametongueTotemCategory` at a
+  bid above the totem's (1363) and below the imbue's (2726).
+- **71 party Flametongue Totem.** Upstream has no party flag.
+- **Feral Cat default rotation.** #711 adds a Wolfshead Helm guard to the powershift rows; the fork's
+  rotation (patch 42) has none, so it is unchanged.
+
+`db.json`: `scripts/forever-merge-db.py` from base `67f14b04a5`, 13 new upstream items and 5 spell
+icons, planner armor re-applied to 15. Four field conflicts, all armor: upstream turned Revelosh's Boots,
+Armguards and Spaulders (9387 to 9389) and Ironaya's Bracers (9409) into random-property items and
+removed their stat rows; the planner's armor (patch 7) is kept. Patch 95's three weapon rows survive.
+`go run ./tools/sync_db_binary` rebuilt `db.bin` and `leftover_db.bin`.
+
+Goldens, Average-Default, fork old to new against upstream's own move over the same range. Every
+movement was traced to an upstream commit by reverting that commit alone on the merged tree, which put
+the suite back on the old golden exactly (Shadow, Survival, Survival Melee, Marksmanship, Feral Cat,
+Elemental):
+
+| Suite | Fork | Upstream | Cause |
+|---|---|---|---|
+| Arcane | +3.45% | +3.45% | #715 |
+| Balance | -1.91% | -1.91% | #688 |
+| Feral Cat | -0.08% | +3.31% | #709 only; #711 changes rows the fork's rotation does not have |
+| Beast Mastery | 425.18 to 406.29 (-4.44%) | -7.48% | #703, #704, #713. The fork's old hawk already rolled avoidance (patch 76); end value is 0.27% over upstream's, the size of patches 88 and 90 |
+| Marksmanship | +7.55% | +6.54% | #704, #717, #718 together; the rest is patch 90's missing Auto Shot gates |
+| Survival | +3.41% | +3.45% | #704 |
+| Survival Melee (fork only) | 385.47 to 396.59 (+2.89%) | n/a | #704 |
+| Retribution | +0.34% | +0.34% | |
+| Shadow | +1.12% | +2.75% | #710. Smaller here because the suite's Troll and Night Elf priests have no Dark Sacrifice (patch 85), so the extra plagues are mana-bound |
+| Smite | +7.38% | +7.79% | #678, #679; same Dark Sacrifice gap |
+| Assassination / Combat / Subtlety | +0.88 / -0.05 / -0.17% | same | #690, #691, #709 |
+| Elemental | -2.22% | -2.11% | #697 only. Rows spread differently (median +0.57% against -2.64%) because the fork's preset casts Fire Nova above 30% mana (patch 28) |
+| Enhancement | -1.67% | -1.67% | #697 |
+| Destruction | 192.50 to 194.66 | 182.02 to 194.66 | #716; patch 3 dropped, so the suite runs upstream's rotation |
+| Arms / Fury | +4.77 / +2.35% | +4.80 / +2.38% | #692, #712 |
+
+Single item rows that move differently: Warblade of Caer Darrow and Dragon's Call, which the fork's own
+item patches (95, 86) changed, and two Balance rows not traced further (Shard of the Gods -2.35% against
+-3.20%, Cenarion Raiment +0.03% against -0.53%; 2 of 162 rows). Whole suite green after the goldens were
+regenerated.

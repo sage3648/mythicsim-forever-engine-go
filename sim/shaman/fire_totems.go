@@ -1,6 +1,8 @@
 package shaman
 
 import (
+	"time"
+
 	"github.com/wowsims/forever/sim/core"
 	"github.com/wowsims/forever/sim/core/buffs"
 )
@@ -44,8 +46,9 @@ func (shaman *Shaman) registerSearingTotemSpell() {
 		},
 	})
 
-	// The pulse's own cast time is the interval between pulses.
-	tickLength := searingTotemAttack.CastTime()
+	// The totem hard casts the pulse (2.2 sec), then waits about 0.23 sec before starting the next one:
+	// beta logs time 1,267 attacks 2.435 sec apart (median, ranks 1-2, foreverlogs.gg reports to 2717).
+	tickLength := searingTotemAttack.CastTime() + 230*time.Millisecond
 	duration := searingTotemRank.Duration()
 
 	shaman.SearingTotem = shaman.RegisterSpell(core.SpellConfig{

@@ -464,3 +464,111 @@ func TestBlizzardTicksCrit(t *testing.T) {
 		t.Error("no Blizzard tick crit in 50 iterations")
 	}
 }
+
+// A Goblin Sapper Charge also hits the Mage, and that hit is a fire spell crit
+// Ignite hears. Ignite burns enemies only; the self hit must not reach for a
+// dot the Mage doesn't have (issue #699).
+func TestIgniteIgnoresTheSapperHitOnTheMage(t *testing.T) {
+	sim := core.NewSim(&proto.RaidSimRequest{
+		SimOptions: &proto.SimOptions{RandomSeed: 1},
+		Raid: &proto.Raid{Parties: []*proto.Party{{Buffs: &proto.PartyBuffs{}, Players: []*proto.Player{{
+			Name: "Mage", Class: proto.Class_ClassMage, Race: proto.Race_RaceGnome, TalentsString: FireTalents,
+			Profession1: proto.Profession_Engineering, Consumables: &proto.ConsumesSpec{GoblinSapper: true},
+			Equipment: &proto.EquipmentSpec{}, Buffs: &proto.IndividualBuffs{},
+			Spec:     &proto.Player_Mage{Mage: &proto.Mage{Options: &proto.Mage_Options{ClassOptions: &proto.MageOptions{}}}},
+			Rotation: &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
+		}}}}},
+		Encounter: core.MakeSingleTargetEncounter(0),
+	}, simsignals.CreateSignals())
+	sim.Reset()
+
+	mage := sim.Raid.Parties[0].Players[0].(MageAgent).GetMage()
+	if mage.Talents.Ignite == 0 {
+		t.Fatal("FireTalents no longer take Ignite; pick a build that does")
+	}
+	mage.AddStatDynamic(sim, stats.SpellCritPercent, 100)
+
+	sapper := mage.GetSpell(core.GoblinSapperActionID)
+	if sapper == nil {
+		t.Fatal("Goblin Sapper Charge is not registered")
+	}
+	if !sapper.Cast(sim, mage.CurrentTarget) {
+		t.Fatal("Goblin Sapper Charge did not cast")
+	}
+	for sim.CurrentTime < 2*time.Second && !sim.Step() {
+	}
+	self := mage.GetSpell(core.GoblinSapperActionID.WithTag(1))
+	if self == nil || self.SpellMetrics[mage.UnitIndex].Crits == 0 {
+		t.Fatal("the sapper's hit on the Mage did not crit; the test proves nothing")
+	}
+}
+
+// Arcane Blast is a talent (MageTalents.arcane_blast): without it the arcane APL falls back to Frostbolt
+// instead of standing idle.
+func TestArcaneWithoutArcaneBlastStillCasts(t *testing.T) {
+	player := core.WithSpec(&proto.Player{
+		Race:          proto.Race_RaceGnome,
+		Class:         proto.Class_ClassMage,
+		Equipment:     &proto.EquipmentSpec{},
+		TalentsString: "055005023000311531--005500033",
+		Rotation:      core.GetAplRotation("../../ui/specs/mage/dps/apls", "arcane").Rotation,
+	}, &proto.Player_Mage{Mage: &proto.Mage{Options: &proto.Mage_Options{ClassOptions: &proto.MageOptions{}}}})
+	result := core.RunRaidSim(&proto.RaidSimRequest{
+		SimOptions: &proto.SimOptions{RandomSeed: 101, Iterations: 1},
+		Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+		Encounter:  core.MakeSingleTargetEncounter(0),
+	})
+	if result.Error != nil {
+		t.Fatal(result.Error.Message)
+	}
+	if dps := result.RaidMetrics.Dps.Avg; dps <= 0 {
+		t.Errorf("arcane mage without Arcane Blast did %.1f DPS", dps)
+	}
+}
+
+// Arcane Missiles spends the Arcane Blast stacks as the channel starts, but its missiles keep 15% a
+// stack (beta log 2721: 1 stack 99-101 a missile, 2 stacks 112-114).
+func TestArcaneMissilesKeepTheArcaneBlastStacks(t *testing.T) {
+	sim, mage := newThreeTargetMage(ArcaneTalents)
+	if mage.ArcaneBlastAura == nil {
+		t.Fatal("ArcaneTalents no longer take Arcane Blast; pick a build that does")
+	}
+	missiles := mage.GetSpell(core.ActionID{SpellID: spellData.ArcaneMissiles.Highest().ID})
+	missile := mage.GetSpell(core.ActionID{SpellID: spellData.ArcaneMissilesTriggered.Highest().ID})
+	metrics := &missile.SpellMetrics[mage.CurrentTarget.UnitIndex]
+
+	// A missile has no damage range, so every plain hit (no crit, no partial resist) deals the same.
+	plain := func() (float64, int32) {
+		return metrics.TotalDamage - metrics.TotalCritDamage - (metrics.TotalResistedDamage - metrics.TotalResistedCritDamage),
+			metrics.Hits - metrics.ResistedHits
+	}
+	perMissile := make([]float64, 3)
+	for stacks := range perMissile {
+		damage, hits := plain()
+		for i := 0; i < 10; i++ {
+			mage.ArcaneBlastAura.Deactivate(sim)
+			if stacks > 0 {
+				mage.ArcaneBlastAura.Activate(sim)
+				mage.ArcaneBlastAura.SetStacks(sim, int32(stacks))
+			}
+			start := sim.CurrentTime
+			missiles.SkipCastAndApplyEffects(sim, mage.CurrentTarget)
+			if mage.ArcaneBlastAura.IsActive() {
+				t.Fatal("Arcane Missiles left the Arcane Blast stacks up")
+			}
+			for sim.CurrentTime < start+6*time.Second {
+				sim.Step()
+			}
+		}
+		newDamage, newHits := plain()
+		perMissile[stacks] = (newDamage - damage) / float64(newHits-hits)
+	}
+	// The stacks join the missile's other additive bonuses (Arcane Instability and the like).
+	base := missile.DamageMultiplierAdditive
+	for stacks := range perMissile {
+		want := (base + 0.15*float64(stacks)) / base
+		if got := perMissile[stacks] / perMissile[0]; math.Abs(got-want) > 1e-9 {
+			t.Errorf("missiles after %d Arcane Blast stacks = %.4f x those after none, want %.4f", stacks, got, want)
+		}
+	}
+}

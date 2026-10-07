@@ -45,4 +45,9 @@ func TestNoInnerFocusDropsTheSequence(t *testing.T) {
 	if n := casts("shadow", "025300030201--550022401201302251", 19280); n == 0 {
 		t.Errorf("shadow without Inner Focus never cast Devouring Plague")
 	}
+	// Forever's Devouring Plague is a 1 min cooldown (19280 category 691), Inner Focus 3 min: the
+	// rank 6 plague must not wait for Inner Focus.
+	if n := casts("shadow", ShadowTalents, 19280); n < 2 {
+		t.Errorf("shadow with Inner Focus cast Devouring Plague %d times in %d s, want it again on its 1 min cooldown", n, core.LongDuration)
+	}
 }

@@ -139,7 +139,7 @@
 	"10438": {
 		"ability": "Searing Totem",
 		"file": "sim/shaman/fire_totems.go",
-		"note": "Rank 6, the only rank the sim casts. The beta client keeps the summon's cost, duration and attack damage, so the Classic tooltip reads right; only the 1 sec totem global cooldown and the attack's coefficient (see 10436) changed.",
+		"note": "Rank 6, the only rank the sim casts. The beta client keeps the summon's cost, duration and attack damage, so the Classic tooltip reads right; only the 1 sec totem global cooldown and the attack's coefficient (see 10436) changed. The totem hard casts its 2.2 sec attack and waits about 0.23 sec before the next, so it attacks every 2.43 sec: beta logs time 1,267 attacks a median 2.435 sec apart (ranks 1 and 2, foreverlogs.gg reports up to 2717).",
 		"source": "classic"
 	},
 	"10473": {
@@ -209,6 +209,14 @@
 		"note": "Rank 5's Frostbrand Attack, the only one the sim casts. Beta client 1.60.1.70009 (sim/core/spelldata), damage scaled to level 60 by the client's per-level points: 169 Frost damage, lower than Classic, coefficient 0.1 unchanged; the enchant now lasts 1 hour. 8 procs per minute, not Classic's 9 (the client stores no rate): a beta log has 636 procs from 1,601 landed swings of a 3.0 speed axe, 0.397 a hit = 7.95 +- 0.24 (foreverlogs.gg report 2681); rank 1's 32 lands as 33-34 (avg 33.6 = 32 x 1.05, one Elemental Weapons point), crits 50-51.",
 		"source": "forever",
 		"tooltip": "Imbue the Shaman's weapon with frost. Each hit has a chance of causing 169 additional Frost damage and slowing the target's movement speed by 25% for 8 sec. Lasts 1 hour."
+	},
+	"16387": {
+		"ability": "Flametongue Totem",
+		"file": "sim/shaman/fire_totems.go",
+		"note": "Rank 4, the only rank the sim casts. Beta client 1.60.1.70205: 275 mana, 1 sec global, 5 min; its party aura (15036) procs on every landed melee auto and triggers 16389, 1363 hundredths of Fire damage per second of main-hand speed (1.3-4.0), the imbue's shape. The hit lands as Flametongue Attack 16368, whose client row has no spell power coefficient and a class mask Elemental Fury and Elemental Weapons don't name. A beta log bears it out at rank 1 (8253, 5.48 a second): 5 players' totem hits average 13.0-20.6 against 13.2-20.8 for their 2.4-3.8 speed main hands, crits 1.5x, one hit for every landed main-hand swing while the totem was up (735 of 738), none from a rogue's off hand, Sinister Strike, Holy Strike, Stormstrike or Windfury Weapon's extra hits (foreverlogs.gg report 2713). A main-hand Flametongue Weapon disables it (tooltips 8024/16342). Ported from MythicSim patch 70.",
+		"source": "assumed",
+		"assumptions": ["MythicSim fork: it stacks with Windfury Totem. Client 70235 puts the two in different totem slots (fire 1, air 4) as separate party proc auras; the beta development notes say they no longer stack, which no log has confirmed yet."],
+		"tooltip": "275 Mana\nInstant\nSummons a Flametongue Totem with 5 health at the feet of the caster. The totem enhances the melee attacks of all party members within 30 yards. Each main hand hit causes 17 to 54 additional Fire damage, based on the speed of the weapon. Slower weapons cause more fire damage per swing. Lasts 5 min."
 	},
 	"26121": {
 		"ability": "Stormcaller's Wrath",

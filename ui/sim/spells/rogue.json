@@ -41,7 +41,7 @@
 	"1310703": {
 		"ability": "Venom",
 		"assumptions": [
-			"Venom's 30% reaches a Deadly Poison already ticking only when the next stack lands, because the sim snapshots the dot on each application (the client stores a percent modifier and cannot say when it is read)"
+			"Venom's 30% reaches a Deadly Poison already ticking from its next tick, because the sim reads the caster's current modifiers at every tick, as for every Forever dot (#668: logs show dots ticking on current spell power); the client stores a percent modifier and cannot say whether a modifier, rather than spell power, is read per tick"
 		],
 		"file": "sim/rogue/talents_assassination.go",
 		"note": "Beta client 1.60.1.70009: Venom is spell 1310703, 25 Energy plus combo points, 30% poison damage and 10% poison chance, 6 sec plus 3 sec a combo point.",
@@ -104,7 +104,7 @@
 	"14177": {
 		"ability": "Cold Blood",
 		"file": "sim/rogue/talents_assassination.go",
-		"note": "Client 14177: +100% crit on the next Sinister Strike, Backstab, Ambush, Eviscerate or Mutilate, 3 min cooldown; its class mask adds Mutilate's two hits to Classic's list, and the sim reads the mask and the numbers from it.",
+		"note": "Client 14177: +100% crit on the next Sinister Strike, Backstab, Ambush, Eviscerate or Mutilate, 3 min cooldown; its class mask adds Mutilate's two hits to Classic's list, and the sim reads the mask and the numbers from it. The hand strikes are triggered spells and the parent cast is not in the mask, so Mutilate takes the crit on both hands without spending the buff: in beta logs one rogue's Mutilates crit with both hands 191 of 192 times under Cold Blood (the other was blocked) and the buff dropped on the next Eviscerate (foreverlogs.gg reports 2701, 2702).",
 		"source": "forever",
 		"tooltip": "Instant\n3 min cooldown\nWhen activated, increases the critical strike chance of your next Sinister Strike, Backstab, Ambush, Eviscerate, or Mutilate by 100%."
 	},

@@ -4,6 +4,7 @@ import (
 	"github.com/wowsims/forever/sim/core"
 	"github.com/wowsims/forever/sim/core/buffs"
 	"github.com/wowsims/forever/sim/core/dbcenums"
+	"github.com/wowsims/forever/sim/core/spelldata"
 	"github.com/wowsims/forever/sim/core/stats"
 )
 
@@ -101,15 +102,19 @@ func (priest *Priest) applySilentResolve() {
 	})
 }
 
-// Holy Precision is new in Forever: +6% Holy hit per point. A school-specific hit bonus has to go
-// through the pseudo-stat; a SpellMod carrying a school panics.
+// Holy Precision is new in Forever: +6% hit per point. 1309957 is a miss chance mod on a class mask,
+// not school hit: Smite, Holy Fire, Holy Nova and the Penance bolts are in, Chastise (1277335) is not
+// (client 1.60.1.70205). The mask also catches Vampiric Embrace and Shadowfiend, which never roll hit here.
 func (priest *Priest) applyHolyPrecision() {
 	if priest.Talents.HolyPrecision == 0 {
 		return
 	}
 
-	priest.PseudoStats.SchoolBonusHitChance[stats.SchoolIndexHoly] +=
-		spellData.HolyPrecision.Effect(dbcenums.A_ADD_FLAT_MODIFIER, int32(dbcenums.SPELLMOD_RESIST_MISS_CHANCE)).ValueAt(priest.Talents.HolyPrecision)
+	priest.AddStaticMod(core.SpellModConfig{
+		ClassMask:  PriestHolySpells,
+		Kind:       core.SpellMod_BonusHit_Percent,
+		FloatValue: spellData.HolyPrecision.Effect(dbcenums.A_ADD_FLAT_MODIFIER, int32(dbcenums.SPELLMOD_RESIST_MISS_CHANCE)).ValueAt(priest.Talents.HolyPrecision),
+	})
 }
 
 // applyImprovedPowerWordShield implements Improved Power Word: Shield, new in Forever.
@@ -267,7 +272,7 @@ func (priest *Priest) applyPenance() {
 		return
 	}
 
-	priest.registerPenanceSpell()
+	spellData.Penance.Each(func(_ int32, rank *spelldata.Spell) { priest.registerPenanceSpell(rank) })
 }
 
 // applyRenewedHope implements Renewed Hope, new in Forever.

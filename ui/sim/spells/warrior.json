@@ -79,7 +79,7 @@
 	"12964": {
 		"ability": "Unbridled Wrath",
 		"file": "sim/warrior/talents_fury.go",
-		"note": "Client 1.60.1.70009: the rank curve reads 12/24/36/48/60% for 1 Rage, doubled with a two-handed weapon (Classic 8% per point, 1 Rage). The sim only procs it from white swings.",
+		"note": "Client 1.60.1.70009: the rank curve reads 12/24/36/48/60% for 1 Rage (Classic 8% per point); hotfix 112347 dropped the two-handed doubling. Procs from white swings only: beta logs 2670/2698 show it on 31-59% of landed autos and on none of 148 Heroic Strike/Cleave hits, so the sim excludes those queued swings.",
 		"source": "forever",
 		"tooltip": "Passive\nGives you a 12% chance per point to generate 1 additional Rage when you deal melee damage with a weapon. This effect is increased to 2 Rage for two-handed weapons."
 	},
