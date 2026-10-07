@@ -203,6 +203,7 @@ func driveWindfuryTotem(char *core.Character, _ *proto.PartyBuffs) {
 
 	// Joined first, so a cast air totem refuses the aura before it arms the proc.
 	totemAura.NewExclusiveEffect(AirTotemCategory, true, core.ExclusiveEffect{Priority: AirTotemPartyWindfury})
+	WindfuryTotemDisablesFlametongueTotem(totemAura)
 	totemAura.NewExclusiveEffect(WindfuryTotemCategory, false, core.ExclusiveEffect{
 		Priority: WindfuryTotemValue(0),
 		OnGain: func(_ *core.ExclusiveEffect, sim *core.Simulation) {

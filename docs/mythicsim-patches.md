@@ -1331,8 +1331,9 @@ class mask Elemental Fury and Elemental Weapons do not name). The fork keeps its
 (`sim/core/buffs/flametongue_totem.go` and `registerFlametongueTotemSpell`) because the party flag
 (patch 71) shares the trigger and the hit, and takes #682's rules: the shaman's traits now carry the
 spell flag only, and `TestFlametongueTotemHitTakesNoElementalFuryOrElementalWeapons` replaces the
-talent test. The one remaining difference is Windfury Totem: see "Upstream sync 2026-10-07". The
-measurements below predate both changes.
+talent test. Since patch 98 Windfury Totem switches it off as upstream's does, so the fork and upstream
+agree on the rules; the registration and the party flag are what remain ours. The measurements below
+predate all three changes; since patch 98 rows (b) and (c) get no totem hits at all.
 
 
 Redfall (Discord, 2 October 2026) asked for a Windfury Weapon main hand with Windfury Totem and a Flametongue Totem in
@@ -1390,8 +1391,8 @@ speed mace, 51.794 for a 3.8 speed axe and 20.445 for a 1.5 speed dagger, and a 
 of a 40 iteration run), `TestFlametongueTotemHitScalesWithSpellDamage` (a +35 elixir adds exactly 3.5 to a hit),
 `TestFlametongueTotemHitTakesElementalFuryAndElementalWeapons` (2.0 on a crit at 5/5, +15% at 3/3),
 `TestFlametongueTotemHitsOnlyMainHandAutoAttacks` (one hit per landed main-hand swing, none for the more numerous
-off-hand ones), `TestFlametongueTotemNeedsTheCast`, `TestFlametongueTotemReplacesSearingTotem` (both orders) and
-`TestFlametongueTotemAndWindfuryTotemDoNotInteract`. None of them can build or pass without the cast and trigger.
+off-hand ones), `TestFlametongueTotemNeedsTheCast`, `TestFlametongueTotemReplacesSearingTotem` (both orders) and, since
+patch 98, `TestWindfuryTotemSwitchesFlametongueTotemOff` and `TestGraceOfAirLeavesFlametongueTotemAlone`. None of them can build or pass without the cast and trigger.
 
 **Default.** Nothing sets the cast or the flag, so every request that does not name 16387 is bit-identical: the Enhancement
 reference's one-click request gives 619.6935 (120 s) and 596.4838 (300 s) before and after, and every suite golden passes
@@ -1435,13 +1436,13 @@ A party buff flag (`flametongue_totem`, field 20, JSON `flametongueTotem`) so a 
 Flametongue Totem, as `windfuryTotem` does. It is a row of the buff manifest (`tools/database/buffmanifest/buffs.go`, a
 manual driver on 15036 in the "FlametongueTotem" category), so `proto/buffs.proto`, `sim/core/buffs/buffs_auto_gen.go` and
 `ui/features/settings/model/buffs_debuffs_auto_gen.ts` come from `go run ./tools/gen_buffs_proto` and the buff render.
-`driveFlametongueTotem` keeps a permanent "Flametongue Totem" aura that switches the shared trigger on; the totem sits in
-no air slot, so it does not interact with Windfury Totem or Grace of Air (patch 30), and the party's totem and the
-shaman's own cast are the same effect, so both together add one hit per swing. No spec's defaults set it: every default
+`driveFlametongueTotem` keeps a permanent "Flametongue Totem" aura that switches the shared trigger on. A Windfury
+Totem switches it off (patch 98); Grace of Air does not. The party's totem and the shaman's own cast are the same
+effect, so both together add one hit per swing. No spec's defaults set it: every default
 request is unchanged.
 
-**Tests.** `TestPartyAndCastFlametongueTotemAddOneHit` and `TestFlametongueTotemAndWindfuryTotemDoNotInteract` (all four
-pairings of cast and party totems) in the Enhancement package, and `TestPartyFlametongueTotemHitsOnMainHandAutoAttacksOnly`
+**Tests.** `TestPartyAndCastFlametongueTotemAddOneHit` and `TestWindfuryTotemSwitchesFlametongueTotemOff` (all four
+pairings of cast and party totems, patch 98) in the Enhancement package, and `TestPartyFlametongueTotemHitsOnMainHandAutoAttacksOnly`
 in `sim/warrior/dps` (a dual-wielding Fury Warrior: a main-hand auto adds the hit, an off-hand auto, a main-hand or
 off-hand special, a ranged auto and a spell add none).
 
@@ -1455,9 +1456,8 @@ main-hand imbue's trigger aura in the "FlametongueTotem" exclusive category at t
 (`buffs.DisableFlametongueTotem`), so with a main-hand Flametongue Weapon the totem stands (the aura stays up, the mana is
 spent) and adds no hit, from the shaman's own cast and from the party flag; the totem takes over again when the imbue leaves
 the main hand. An off-hand Flametongue Weapon, Windfury Weapon, Frostbrand Weapon and Rockbiter Weapon leave it alone, since
-the client says this only of Flametongue. Windfury Totem and Flametongue Totem are in different slots (air and fire) and
-categories, and nothing in the rows makes one outrank the other: with both down each procs on its own, and a main-hand
-Windfury Weapon turns off only Windfury Totem's benefit, a Flametongue Weapon only Flametongue Totem's.
+the client says this only of Flametongue. A main-hand Windfury Weapon turns off only Windfury Totem's benefit, a
+Flametongue Weapon only Flametongue Totem's. Windfury Totem itself switches Flametongue Totem off since patch 98.
 
 **Tests.** `TestOnlyAMainHandFlametongueWeaponDisablesFlametongueTotem`: six imbue setups by cast and party totem, the
 imbue's own hit counted beside; it fails if the exclusive effect is removed.
@@ -2072,14 +2072,9 @@ Kept against upstream:
   same way upstream's does. Lightning Bolt, Chain Lightning and Lava Burst call ours; upstream's
   `holdSwingDuringCast` is removed. Upstream's `TestHardCastRestartsTheSwingTimer` passes on ours.
 - **70 to 72 Flametongue Totem.** One registration (ours), with #682's hit. A main-hand Flametongue
-  Weapon still disables it (patch 72, same rule as #677). **Windfury Totem differs:** #677 has Windfury
-  Totem (party flag or the shaman's own) switch Flametongue Totem off, citing the beta development notes
-  ("no longer stacks"), and says the notes do not say which totem stays. The fork keeps both: client
-  70235 has them as separate party proc auras in different totem slots (fire 1, air 4), and no log has
-  shown them failing to stack. Upstream's `TestFlametongueTotem` is taken without its Windfury case;
-  `TestFlametongueTotemAndWindfuryTotemDoNotInteract` stays. To follow upstream, join the two Windfury
-  Totem auras (`driveWindfuryTotem` and `registerWindfuryTotemSpell`) to `FlametongueTotemCategory` at a
-  bid above the totem's (1363) and below the imbue's (2726).
+  Weapon still disables it (patch 72, same rule as #677). Windfury Totem (party flag or the shaman's own)
+  switches it off as #677 has it: the merge first kept both, and patch 98 (same day) follows upstream.
+  Upstream's `TestFlametongueTotem` is taken whole, its Windfury case included.
 - **71 party Flametongue Totem.** Upstream has no party flag.
 - **Feral Cat default rotation.** #711 adds a Wolfshead Helm guard to the powershift rows; the fork's
   rotation (patch 42) has none, so it is unchanged.
@@ -2141,3 +2136,40 @@ item effect removed. Goldens: one new AllItems row in each of `TestElemental` (1
 `TestEnhancement` (153.88 DPS); nothing else moves, since no preset equips the relic.
 
 Drop it when upstream implements Totem of Thunder.
+
+## 98. `shaman: Windfury Totem switches Flametongue Totem off`
+
+Follows upstream #677. The Forever beta development notes say Flametongue Totem "no longer stacks" with
+Windfury Totem; they do not say which totem holds. Upstream has Windfury hold, and the players on the
+MythicSim Discord (7 October 2026) treat the two as either/or, so the fork now does the same. Until this
+patch the merge kept both: the client rows (70235) give no exclusivity, the two are party proc auras in
+different totem slots, and no log has shown them failing to stack. If a log shows both proccing on the
+same swings, drop this patch.
+
+`buffs.WindfuryTotemDisablesFlametongueTotem` joins an aura to `FlametongueTotemCategory` at 1.5 times
+the totem's bid (2044.5, between the totem's 1363 and a main-hand Flametongue Weapon's 2726), the
+place upstream's `FlametongueTotemWindfuryTotem` holds between `FlametongueTotemCast` and
+`FlametongueTotemMainHandImbue`. Both Windfury Totem auras call it, as upstream's do:
+`driveWindfuryTotem`'s "Windfury Totem" (the party flag, joined after the air slot so a cast Grace of
+Air refuses it first) and `registerWindfuryTotemSpell`'s "Windfury Totem (Self)". Both Flametongue
+Totems, the party flag (patch 71) and the shaman's cast, are in the category, so all four pairings
+switch off. The Flametongue Totem stays down and its mana is spent; it adds no hits. Grace of Air is
+not in the category. A cast Grace of Air that takes the air slot from the party's Windfury Totem lets
+the Flametongue Totem back on. As upstream, a main-hand Windfury Weapon beside a Windfury Totem leaves
+the totem standing, so Flametongue Totem stays off there too: for the whole fight with a cast Windfury
+Totem, and from 5 s in with the party's, whose aura the imbue knocks off at the pull until its next 5 s
+refresh (`driveWindfuryTotem`'s `OnExpire`, same code upstream). That gap gives about 1.6 totem hits a
+fight on a 3.8 speed weapon; not worth a fork-only change to the driver.
+
+Tests (`sim/shaman/enhancement/flametongue_totem_test.go`): `TestWindfuryTotemSwitchesFlametongueTotemOff`
+replaces `TestFlametongueTotemAndWindfuryTotemDoNotInteract` (both cast in either order, party Windfury
+with cast Flametongue, cast Windfury with party Flametongue, both party, and party Windfury with party
+Grace of Air: extra attacks still come, no totem hits, the cast totem stays up).
+`TestGraceOfAirLeavesFlametongueTotemAlone` checks one totem hit per landed main-hand swing beside a cast
+or party Grace of Air, and after a cast Grace of Air replaces the party's Windfury Totem. Upstream's
+Windfury case is back in `TestFlametongueTotem`. All three fail with the two joins removed.
+
+Goldens: none move; no suite preset puts a Flametongue Totem beside a Windfury Totem. Whole suite green.
+
+Drop it when upstream changes the rule, or keep it as long as upstream carries the same rule (then it is
+only the party-flag half, since upstream has no party Flametongue Totem).

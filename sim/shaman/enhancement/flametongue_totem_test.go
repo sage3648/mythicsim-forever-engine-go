@@ -355,16 +355,21 @@ func TestPartyAndCastFlametongueTotemAddOneHit(t *testing.T) {
 	}
 }
 
-// Windfury Totem is an air totem and Flametongue Totem a fire one: with both down each does its own thing.
-func TestFlametongueTotemAndWindfuryTotemDoNotInteract(t *testing.T) {
+// "Flametongue Totem no longer stacks with Windfury Totem" (Forever beta development notes, upstream #677),
+// and Windfury holds (patch 98): whichever way each totem reaches the shaman, the party's or its own cast,
+// in either cast order, Windfury Totem keeps granting extra attacks, the Flametongue Totem stays down and
+// adds no hits beside it.
+func TestWindfuryTotemSwitchesFlametongueTotemOff(t *testing.T) {
 	for _, row := range []struct {
 		name string
 		c    ftCase
 	}{
-		{"both cast", ftCase{casts: []int32{windfuryTotemCastID, flametongueTotemCast}}},
+		{"both cast, Windfury first", ftCase{casts: []int32{windfuryTotemCastID, flametongueTotemCast}}},
+		{"both cast, Flametongue first", ftCase{casts: []int32{flametongueTotemCast, windfuryTotemCastID}}},
 		{"the party's Windfury Totem and the cast Flametongue Totem", ftCase{party: &proto.PartyBuffs{WindfuryTotem: true}, casts: []int32{flametongueTotemCast}}},
 		{"the cast Windfury Totem and the party's Flametongue Totem", ftCase{party: &proto.PartyBuffs{FlametongueTotem: true}, casts: []int32{windfuryTotemCastID}}},
 		{"both the party's", ftCase{party: &proto.PartyBuffs{WindfuryTotem: true, FlametongueTotem: true}}},
+		{"the party's Windfury Totem and Grace of Air", ftCase{party: &proto.PartyBuffs{WindfuryTotem: true, GraceOfAirTotem: true, FlametongueTotem: true}}},
 	} {
 		t.Run(row.name, func(t *testing.T) {
 			r := runFlametongueTotem(t, row.c)
@@ -374,16 +379,47 @@ func TestFlametongueTotemAndWindfuryTotemDoNotInteract(t *testing.T) {
 			if extra.casts == 0 {
 				t.Error("Windfury Totem granted no extra attacks beside Flametongue Totem")
 			}
-			if hit := r.spell(flametongueTotemHit); hit.rolled() == 0 {
-				t.Error("Flametongue Totem added no hits beside Windfury Totem")
+			if hit := r.spell(flametongueTotemHit); hit.rolled() != 0 {
+				t.Errorf("Flametongue Totem added %v hits beside Windfury Totem, want none", hit.rolled())
+			}
+			if len(row.c.casts) == 2 && r.uptime(flametongueTotemCast) < 100 {
+				t.Errorf("the cast Flametongue Totem is up %.1f s, want it standing with no benefit", r.uptime(flametongueTotemCast))
 			}
 		})
 	}
 }
 
-// Flametongue Totem (16387) adds 16389's fire hit to each landed main-hand auto, and a main-hand
-// Flametongue Weapon disables it (tooltips 8024/16342). Upstream also has Windfury Totem switch it off
-// (beta development notes); the fork keeps both totems (TestFlametongueTotemAndWindfuryTotemDoNotInteract).
+// Grace of Air is the other air totem, and the notes do not tie it to Flametongue Totem: beside it, or when
+// a cast Grace of Air takes the air slot from the party's Windfury Totem, Flametongue Totem adds its hit on
+// every landed main-hand swing.
+func TestGraceOfAirLeavesFlametongueTotemAlone(t *testing.T) {
+	for _, row := range []struct {
+		name string
+		c    ftCase
+	}{
+		{"both cast", ftCase{mh: crestedScepter, casts: []int32{graceOfAirCast, flametongueTotemCast}}},
+		{"the party's Grace of Air and the cast Flametongue Totem", ftCase{mh: crestedScepter, party: &proto.PartyBuffs{GraceOfAirTotem: true}, casts: []int32{flametongueTotemCast}}},
+		{"both the party's", ftCase{mh: crestedScepter, party: &proto.PartyBuffs{GraceOfAirTotem: true, FlametongueTotem: true}}},
+		{"a cast Grace of Air replacing the party's Windfury Totem", ftCase{mh: crestedScepter, party: &proto.PartyBuffs{WindfuryTotem: true, FlametongueTotem: true}, casts: []int32{graceOfAirCast}}},
+	} {
+		t.Run(row.name, func(t *testing.T) {
+			r := runFlametongueTotem(t, row.c)
+			extra := r.rows(func(a *proto.ActionMetrics) bool {
+				return a.Id.GetOtherId() == proto.OtherAction_OtherActionAttack && (a.Id.Tag == partyTotemExtra || a.Id.Tag == castTotemExtra)
+			})
+			if extra.casts != 0 {
+				t.Fatalf("%v Windfury Totem extra attacks, want none with Grace of Air in the air slot", extra.casts)
+			}
+			if hit, mh := r.spell(flametongueTotemHit), r.swings(1); hit.rolled() == 0 || hit.rolled() != mh.landed() {
+				t.Errorf("%v totem hits for %v landed main-hand swings, want one each", hit.rolled(), mh.landed())
+			}
+		})
+	}
+}
+
+// Flametongue Totem (16387) adds 16389's fire hit to each landed main-hand auto. It no longer stacks
+// with Windfury Totem or Flametongue Weapon (Forever beta development notes), and a main-hand
+// Flametongue Weapon disables it (tooltips 8024/16342).
 func TestFlametongueTotem(t *testing.T) {
 	run := func(mh proto.ShamanImbue, party *proto.PartyBuffs) (autos, hits int32) {
 		player := &proto.Player{
@@ -422,6 +458,9 @@ func TestFlametongueTotem(t *testing.T) {
 	}
 	if autos, hits := run(proto.ShamanImbue_FrostbrandWeapon, &proto.PartyBuffs{}); hits == 0 || hits != autos {
 		t.Errorf("Frostbrand main hand: %d totem hits for %d landed main-hand autos, want one each", hits, autos)
+	}
+	if _, hits := run(proto.ShamanImbue_NoImbue, &proto.PartyBuffs{WindfuryTotem: true}); hits != 0 {
+		t.Errorf("with the party's Windfury Totem: %d totem hits, want 0", hits)
 	}
 	if _, hits := run(proto.ShamanImbue_FlametongueWeapon, &proto.PartyBuffs{}); hits != 0 {
 		t.Errorf("Flametongue main hand: %d totem hits, want 0", hits)

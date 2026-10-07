@@ -91,8 +91,8 @@ func (shaman *Shaman) registerSearingTotemSpell() {
 // The shaman's own Flametongue Totem: a 5 min fire totem whose party aura gives the shaman a fire hit on
 // each main-hand auto attack (buffs.FlametongueTotemAttack). It takes the fire slot, so Searing Totem and
 // Magma Totem replace it and it replaces them, and a main-hand Flametongue Weapon turns the benefit off
-// (buffs.DisableFlametongueTotem) while the totem stands. It sits in no air slot, so it does not interact
-// with Windfury Totem or Grace of Air.
+// (buffs.DisableFlametongueTotem) while the totem stands. A Windfury Totem, the party's or the shaman's own,
+// turns it off too (buffs.WindfuryTotemDisablesFlametongueTotem); Grace of Air does not.
 func (shaman *Shaman) registerFlametongueTotemSpell() {
 	duration := flametongueTotemRank.Duration()
 

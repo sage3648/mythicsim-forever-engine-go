@@ -80,6 +80,17 @@ func DisableFlametongueTotem(aura *core.Aura) {
 	aura.NewExclusiveEffect(FlametongueTotemCategory, false, core.ExclusiveEffect{Priority: 2 * FlametongueTotemPriority()})
 }
 
+// WindfuryTotemDisablesFlametongueTotem makes aura, a Windfury Totem the character benefits from (the
+// party's or the shaman's own cast), switch Flametongue Totem's benefit off while it stands. Since build
+// 70009 "Flametongue Totem no longer stacks with Windfury Totem" (Forever beta development notes, upstream
+// #677); the notes do not say which totem holds, and upstream and the players on the MythicSim Discord
+// (7 October 2026) treat it as Windfury. It bids above the totem and below a main-hand Flametongue Weapon,
+// as upstream's FlametongueTotemWindfuryTotem sits between FlametongueTotemCast and
+// FlametongueTotemMainHandImbue. Grace of Air is not in the category: it leaves Flametongue Totem alone.
+func WindfuryTotemDisablesFlametongueTotem(aura *core.Aura) {
+	aura.NewExclusiveEffect(FlametongueTotemCategory, false, core.ExclusiveEffect{Priority: 1.5 * FlametongueTotemPriority()})
+}
+
 // FlametongueTotemAttack is the damage a main-hand auto attack adds under the totem, the imbue's spell with
 // the totem's base damage: Magic fire, so it rolls the spell hit and crit tables, with no spell power
 // coefficient. It keeps the totem's own id (16389) so a report lists it apart from the
@@ -144,9 +155,10 @@ func JoinFlametongueTotem(char *core.Character, aura *core.Aura) {
 	})
 }
 
-// A Flametongue Totem another shaman keeps down for the party. It is a fire totem, so it sits in no air
-// slot and does not interact with the party's Windfury Totem or Grace of Air; the same character's own
-// cast Flametongue Totem and the party's one are the same effect and the category keeps one of them.
+// A Flametongue Totem another shaman keeps down for the party. A Windfury Totem the character benefits
+// from switches it off (WindfuryTotemDisablesFlametongueTotem); Grace of Air does not. The same
+// character's own cast Flametongue Totem and the party's one are the same effect and the category keeps
+// one of them.
 func driveFlametongueTotem(char *core.Character, _ *proto.PartyBuffs) {
 	// The trigger is registered before the permanent aura that switches it on, so that it is reset first.
 	FlametongueTotemTrigger(char)
