@@ -49,10 +49,8 @@ func (warlock *Warlock) registerHellfire() {
 					outcome = dot.Spell.OutcomeTickMagicHitAndCrit
 				}
 				dot.Spell.CalcPeriodicAoeDamage(sim, tickDamage, outcome)
-				if tickDamage > warlock.CurrentHealth() {
-					dot.Deactivate(sim)
-				}
-
+				// No stop at low health: the sim has no healer, and Life Tap already spends past 0.
+				// Stopping clipped every channel after ~18 s into one-tick recasts at full mana cost.
 				dot.Spell.DealBatchedPeriodicDamage(sim)
 				warlock.RemoveHealth(sim, tickDamage)
 			},
