@@ -5986,21 +5986,6 @@ func RegisterAllProcs() {
 	//       This can be ignored if the effect has already been implemented.
 	//       With next db run the item will be removed if implemented.
 	//
-	// Increases the critical strike chance of Lightning Bolt by 1%.
-	// https://www.wowhead.com/forever/spell=461295
-	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
-	//	Callback:           core.CallbackEmpty,
-	//	ProcMask:           core.ProcMaskUnknown,
-	//	Outcome:            core.OutcomeEmpty,
-	//	RequireDamageDealt: false
-	// }, []shared.ItemVariant{
-	//	{ItemID: 228176, ItemName: "Totem of Thunder"},
-	// })
-
-	// TODO: Manual implementation required
-	//       This can be ignored if the effect has already been implemented.
-	//       With next db run the item will be removed if implemented.
-	//
 	// Hamstring Rage cost reduced by -3.0.
 	// https://www.wowhead.com/forever/spell=459608
 	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{

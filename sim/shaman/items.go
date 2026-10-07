@@ -4,7 +4,10 @@ import (
 	"time"
 
 	"github.com/wowsims/forever/sim/core"
+	"github.com/wowsims/forever/sim/core/spelldata"
 )
+
+var totemOfThunder = spelldata.MustFind(461295)
 
 func init() {
 
@@ -32,6 +35,28 @@ func init() {
 		}))
 
 		character.ItemSwap.RegisterProc(23199, aura)
+	})
+
+	// Totem of Thunder
+	// https://www.wowhead.com/forever/item=228176/totem-of-thunder
+	//
+	// Equip: Increases the critical strike chance of Lightning Bolt by 1% (461295: A_ADD_FLAT_MODIFIER misc 7,
+	// crit chance, on class mask word 0 bit 0). Every Lightning Bolt rank carries that bit, and so does each
+	// Lightning Overload row (408439 to 408477), so the overload's second bolt takes the 1% too. Chain
+	// Lightning and its overload do not carry it.
+	core.NewItemEffect(228176, func(agent core.Agent) {
+		character := agent.GetCharacter()
+
+		aura := core.MakePermanent(character.RegisterAura(core.Aura{
+			Label:    "Totem of Thunder",
+			ActionID: core.ActionID{SpellID: totemOfThunder.ID},
+		}).AttachSpellMod(core.SpellModConfig{
+			Kind:       core.SpellMod_BonusCrit_Percent,
+			FloatValue: totemOfThunder.EffectN(1).BaseValue(),
+			ClassMask:  SpellMaskLightningBolt | SpellMaskLightningBoltOverload,
+		}))
+
+		character.ItemSwap.RegisterProc(228176, aura)
 	})
 
 	// Wushoolay's Charm of Spirits

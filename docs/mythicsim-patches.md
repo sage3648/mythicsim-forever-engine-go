@@ -2117,3 +2117,27 @@ Single item rows that move differently: Warblade of Caer Darrow and Dragon's Cal
 item patches (95, 86) changed, and two Balance rows not traced further (Shard of the Gods -2.35% against
 -3.20%, Cenarion Raiment +0.03% against -0.53%; 2 of 162 rows). Whole suite green after the goldens were
 regenerated.
+
+## 97. `shaman: Totem of Thunder adds 1% crit to Lightning Bolt`
+
+Bae asked on the MythicSim Discord (7 October 2026) why Totem of Thunder (228176, the crafted shaman
+relic) did nothing in the sim. Its equip spell 461295 reads "Increases the critical strike chance of
+Lightning Bolt by 1%": one A_ADD_FLAT_MODIFIER effect, misc 7 (crit chance), base points 1, on family 11
+class mask word 0 bit 0. Nothing implemented it; the item generator listed it as a TODO in
+`sim/common/forever/stat_bonus_procs_auto_gen.go`.
+
+`sim/shaman/items.go` registers it the way Totem of the Storm is: a permanent aura with a
+`SpellMod_BonusCrit_Percent` mod, read from the row (1), registered with `ItemSwap.RegisterProc`.
+The mask follows the client's class flags: every Lightning Bolt rank (403 to 15208) and every Lightning
+Overload Lightning Bolt row (408439 to 408477) carries bit 0, so the mod names
+`SpellMaskLightningBolt | SpellMaskLightningBoltOverload`. Chain Lightning and its overload rows carry
+bit 1 and are left out. The TODO block is removed from the generated file by hand; the generator skips
+items with an effect (`core.HasItemEffect`), so the next DB run writes the same file.
+
+`TestTotemOfThunderAddsOnePercentLightningBoltCrit` (`sim/shaman/elemental`) checks the row's mask
+against the client rows, then compares every registered spell's bonus crit with and without the relic:
+all 10 Lightning Bolt ranks and all 10 overloads gain exactly 1%, nothing else moves. It fails with the
+item effect removed. Goldens: one new AllItems row in each of `TestElemental` (120.64 DPS) and
+`TestEnhancement` (153.88 DPS); nothing else moves, since no preset equips the relic.
+
+Drop it when upstream implements Totem of Thunder.

@@ -1148,6 +1148,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestEnhancement-AllItems-TotemofThunder-228176"
+ value: {
+  dps: 153.8809
+  tps: 89.74779
+ }
+}
+dps_results: {
  key: "TestEnhancement-AllItems-TotemoftheStorm-23199"
  value: {
   dps: 154.55818
