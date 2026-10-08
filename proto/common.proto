@@ -472,6 +472,11 @@ message ConsumesSpec {
 	int32 defense_elixir_id = 24;
 	bool dragonbreath_chili = 25;
 	int32 spell_power_elixir_id = 26;
+	// A stone or oil on a hand that also carries a class imbue (a Rogue's poison, a Warlock's
+	// Firestone or Spellstone): Forever lets a temporary enchantment sit beside it (Blizzard's class
+	// deep dives, 7 and 8 October 2026). Registered like mh/ohImbue_id. Mythicsim patch 100.
+	int32 mh_temp_enchant_id = 27;
+	int32 oh_temp_enchant_id = 28;
 }
 
 enum MobType {

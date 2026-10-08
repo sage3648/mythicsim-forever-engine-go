@@ -112,6 +112,13 @@ func applyConsumeEffects(agent Agent, _ *proto.PartyBuffs) {
 	if consumables.OhImbueId != 0 {
 		registerStaticImbue(agent, consumables.OhImbueId, character.AutoAttacks.OH())
 	}
+	// A stone or oil beside a class imbue on the same hand (mythicsim patch 100).
+	if consumables.MhTempEnchantId != 0 {
+		registerStaticImbue(agent, consumables.MhTempEnchantId, character.AutoAttacks.MH())
+	}
+	if consumables.OhTempEnchantId != 0 {
+		registerStaticImbue(agent, consumables.OhTempEnchantId, character.AutoAttacks.OH())
+	}
 
 	// Scrolls
 	if consumables.ScrollAgi {
@@ -697,7 +704,7 @@ func imbueFlatWeaponDamage(imbueId int32) float64 {
 // Flat weapon damage the main-hand imbue adds, for classes that build their
 // main-hand weapon from the equipped item.
 func (character *Character) MHImbueFlatWeaponDamage() float64 {
-	return imbueFlatWeaponDamage(character.Consumables.MhImbueId)
+	return imbueFlatWeaponDamage(character.Consumables.MhImbueId) + imbueFlatWeaponDamage(character.Consumables.MhTempEnchantId)
 }
 
 func registerStaticImbue(agent Agent, imbueId int32, weapon *Weapon) {
