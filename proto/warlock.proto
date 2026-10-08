@@ -101,6 +101,15 @@ message WarlockOptions {
 	CurseOptions curse_options = 7;
 	// With Demonic Pact: the demon sacrificed before the pull, whose buff stays while `summon` is out.
 	Summon pact_sacrifice = 8;
+
+	// Forever's Firestone and Spellstone are weapon imbues, held beside a temporary enchantment such
+	// as Wizard Oil (Blizzard's Rogue and Warlock deep dive, 8 October 2026). Mythicsim patch 101.
+	enum WeaponStone {
+		NoWeaponStone = 0;
+		Firestone = 1;
+		Spellstone = 2;
+	}
+	WeaponStone weapon_stone = 9;
 }
 
 message Warlock {

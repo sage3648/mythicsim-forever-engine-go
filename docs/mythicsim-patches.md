@@ -2204,3 +2204,50 @@ damage on the hit and on each tick at 391 attack power.
 
 Drop it when a client build carries Rake's attack power coefficient (then read it from the row), or
 refit if a log at another level disagrees.
+
+Follow-up: `TestDotsReadStatsAtTheTick` (`sim/dot_rules_test.go`) listed Rake with no share; its row now
+carries `meleeAP: 0.0526`.
+
+## 100. `core: a temporary enchantment beside the weapon's imbue`
+
+Blizzard's class deep dives (Mage and Shaman, 7 October 2026; Rogue and Warlock, 8 October) let a
+temporary enchantment (Sharpening Stones, Weightstones, Wizard Oil) sit on a weapon beside a class
+imbue: a Rogue's poisons, a Shaman's weapon imbue, a Warlock's Firestone or Spellstone. The engine had
+one consumable imbue per hand (`mhImbue_id`, `ohImbue_id`), and a Rogue's poisons live there, so a
+Rogue could not carry a stone. A Shaman's imbue is a class option and already stacks.
+
+`ConsumesSpec` gains `mh_temp_enchant_id` (27) and `oh_temp_enchant_id` (28). `applyConsumeEffects`
+registers each through `registerStaticImbue`, as the imbue slots are, so a stone or oil there gives
+the same stats and flat weapon damage, and `MHImbueFlatWeaponDamage` counts it for the classes that
+rebuild the main hand. Nothing else reads the slots: a poison stays in the imbue slot and keeps its
+hand (`getPoisonProcMask`).
+
+Tests: `TestTempEnchantStacksBesideTheImbue` (`sim/core/temp_enchant_test.go`): an Elemental Sharpening
+Stone beside Wizard Oil adds 2% melee crit, Wizard Oil beside a stone 24 spell damage, an off-hand
+Dense Sharpening Stone 8 to the off hand only, and a main-hand Dense Weightstone counts in
+`MHImbueFlatWeaponDamage`. `TestPoisonsStackWithStones` (`sim/rogue/poison_stone_test.go`): Instant
+and Deadly Poison keep their hands beside an Elemental and a Dense Sharpening Stone, which add 2% crit
+and 8 off-hand damage.
+
+Goldens: none move; no suite request sets the new fields.
+
+Drop it if upstream adds the same slots (then map to theirs).
+
+## 101. `warlock: Firestone and Spellstone as weapon imbues`
+
+The same deep dive makes Firestone and Spellstone weapon imbues that stack with a temporary
+enchantment such as Wizard Oil, instead of held off-hand items. `WarlockOptions.weapon_stone`
+(`NoWeaponStone`, `Firestone`, `Spellstone`) chooses one. `registerWeaponStone`
+(`sim/warlock/weapon_stones.go`) reads the Create spell's triggered aura at its highest rank from
+client data and applies it as a permanent aura named after it: Firestone (23483) is A_MOD_DAMAGE_DONE
+21 on mask 4 (Fire) and A_MOD_SPELL_CRIT_CHANCE 2; Spellstone (1237165) is A_MOD_DAMAGE_DONE 21 on mask
+36 (Fire and Shadow) and A_MOD_CASTING_SPEED_NOT_STACK 2. The deep dive names Shadow damage only for
+the Spellstone; the client row's mask also carries Fire, and the row is what is applied.
+
+Tests: `TestWeaponStonesStackWithWizardOil` (`sim/warlock/weapon_stones_test.go`): +21 Fire damage and
++2% spell crit for the Firestone, +21 Fire and Shadow damage and x1.02 cast speed for the Spellstone,
+neither touching the other's stats, both beside Brilliant Wizard Oil's 36 spell damage.
+
+Goldens: none move; no suite request sets the option.
+
+Drop it when upstream models the stones (then compare its values with the client rows above).

@@ -96,6 +96,8 @@ func RegisterWarlock() {
 }
 
 func (warlock *Warlock) Initialize() {
+	warlock.registerWeaponStone()
+
 	// Curses and banes
 	warlock.registerCurseOfElements()
 	warlock.registerCurseOfDoom()
