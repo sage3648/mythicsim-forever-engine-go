@@ -512,8 +512,11 @@ func makeConjuredActivationSpellInternal(conjured Consumable, character *Charact
 				shouldActivate = character.MaxMana()-(character.CurrentMana()+totalRegen) >= manaGain
 			case proto.ResourceType_ResourceTypeEnergy:
 				// Thistle Tea (9512) restores a flat 100: the client row has no level scaling. Waiting for
-				// room for all of it would mean waiting for an empty bar, so up to 10 may spill.
-				shouldActivate = character.MaximumEnergy()-character.CurrentEnergy() >= config.min+config.spread-10
+				// room for all of it would mean waiting for an empty bar, so some may spill. Energy refills
+				// at 10 a second, so a bar is rarely under 10 when a 1 s global cooldown ends: with 10 allowed
+				// to spill a 100-energy Combat Rogue drank in 0.3% of fights and a Gnome's 105 in all of them.
+				// 15 lets every Rogue drink once a fight, and measured best of 10, 15, 20 and 30.
+				shouldActivate = character.MaximumEnergy()-character.CurrentEnergy() >= config.min+config.spread-ThistleTeaSpill
 			}
 		}
 		return shouldActivate
@@ -522,6 +525,9 @@ func makeConjuredActivationSpellInternal(conjured Consumable, character *Charact
 	return mcd
 
 }
+
+// The energy Thistle Tea may waste when it is used without being asked for (MythicSim patch 102).
+const ThistleTeaSpill = 15
 
 var GoblinSapperActionID = ActionID{ItemID: 10646}
 var EzThroDynamiteTwoActionID = ActionID{ItemID: 18588}
