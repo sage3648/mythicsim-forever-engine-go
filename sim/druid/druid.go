@@ -220,13 +220,15 @@ func (druid *Druid) RegisterBaselineSpells() {
 	druid.registerFormBreakingConsumes()
 }
 
-// registerFormBreakingConsumes patches ApplyEffects on potions, conjured items,
-// and engineering explosives to drop Bear/Cat form when used. These spells all
-// carry SpellFlagNoOnCastComplete, so OnCastComplete aura hooks never fire for
-// them - we must wrap ApplyEffects directly instead.
+// registerFormBreakingConsumes patches ApplyEffects on conjured items and engineering explosives to
+// drop Bear/Cat form when used. These spells all carry SpellFlagNoOnCastComplete, so OnCastComplete
+// aura hooks never fire for them - we must wrap ApplyEffects directly instead.
+//
+// Potions are not among them. The client's potion rows carry no shapeshift restriction, so a druid
+// drinks one in form and keeps the form, and the automatic use is not held back until caster form.
 func (druid *Druid) registerFormBreakingConsumes() {
 	druid.Env.RegisterPostFinalizeEffect(func() {
-		breakFlags := core.SpellFlagPotion | core.SpellFlagConjured | core.SpellFlagExplosive
+		breakFlags := core.SpellFlagConjured | core.SpellFlagExplosive
 		for _, spell := range druid.Spellbook {
 			if !spell.Flags.Matches(breakFlags) {
 				continue
@@ -238,10 +240,8 @@ func (druid *Druid) registerFormBreakingConsumes() {
 					druid.ClearForm(sim)
 				}
 			}
-			// Nobody pots out of form on a timer: left to fire on cooldown, Mighty Rage Potion
-			// dropped the bear out of form every two minutes and cut it from 410 DPS to 153.
-			// The automatic use waits for caster form; a rotation can still drink one in form on
-			// purpose, as the cat's powershifting does.
+			// Nobody uses these out of form on a timer, so the automatic use waits for caster form;
+			// a rotation can still use one in form on purpose, as the cat's powershifting does.
 			druid.AddActivationCondition(spell.ActionID, func(_ *core.Simulation, _ *core.Character) bool {
 				return !druid.InForm(Bear) && !druid.InForm(Cat)
 			})
