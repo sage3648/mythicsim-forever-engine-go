@@ -18,6 +18,7 @@ func (mage *Mage) registerFrostboltRank(frostboltRank *spelldata.Spell) {
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL | core.SpellFlagBinary,
 		ClassSpellMask: MageSpellFrostbolt,
+		MaxRange:       float64(frostboltRank.MaxRange),
 		Rank:           frostboltRank.RankNumber(),
 		MissileSpeed:   float64(frostboltRank.Speed),
 

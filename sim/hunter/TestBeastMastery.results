@@ -1311,8 +1311,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-NightElf-Weapons-Cat-bm-FullBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 412.03826
-  tps: 404.5635
+  dps: 1713.38608
+  tps: 1242.46823
  }
 }
 dps_results: {
@@ -1332,8 +1332,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-NightElf-Weapons-Cat-bm-NoBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 192.63646
-  tps: 129.23509
+  dps: 517.3482
+  tps: 454.53178
  }
 }
 dps_results: {
@@ -1353,8 +1353,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-NightElf-Weapons-Raptor-bm-FullBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 412.86123
-  tps: 411.52897
+  dps: 1707.60695
+  tps: 1242.79755
  }
 }
 dps_results: {
@@ -1374,8 +1374,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-NightElf-Weapons-Raptor-bm-NoBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 193.87118
-  tps: 129.46281
+  dps: 518.94536
+  tps: 455.24581
  }
 }
 dps_results: {
@@ -1395,8 +1395,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-Orc-Weapons-Cat-bm-FullBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 409.0903
-  tps: 402.49666
+  dps: 1709.15979
+  tps: 1237.83622
  }
 }
 dps_results: {
@@ -1416,8 +1416,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-Orc-Weapons-Cat-bm-NoBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 190.31419
-  tps: 126.64247
+  dps: 503.3882
+  tps: 439.7738
  }
 }
 dps_results: {
@@ -1437,8 +1437,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-Orc-Weapons-Raptor-bm-FullBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 410.14154
-  tps: 410.16689
+  dps: 1700.32734
+  tps: 1234.80893
  }
 }
 dps_results: {
@@ -1458,8 +1458,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-Settings-Orc-Weapons-Raptor-bm-NoBuffs-30.0yards-LongMultiTarget"
  value: {
-  dps: 189.7503
-  tps: 125.80988
+  dps: 506.05702
+  tps: 441.50248
  }
 }
 dps_results: {

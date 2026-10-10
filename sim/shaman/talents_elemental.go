@@ -221,12 +221,24 @@ func (shaman *Shaman) applyElementalAlacrity() {
 	})
 }
 
-// applyElementalReach is Forever's spell-range talent (28999, +3/6 yards). Range costs a sim nothing,
-// so it changes no number here.
+// applyElementalReach implements Elemental Reach, new in Forever: 28999 adds 3/6 yards to Lightning
+// Bolt, Chain Lightning and Lava Burst range and 8/15 to Flame Shock's (its two class masks). The first
+// mask also reaches Fire Nova, which centres on the shaman and has no range here.
 func (shaman *Shaman) applyElementalReach() {
 	if shaman.Talents.ElementalReach == 0 {
 		return
 	}
+
+	shaman.AddStaticMod(core.SpellModConfig{
+		ClassMask:  SpellMaskLightningBolt | SpellMaskChainLightning | SpellMaskLavaBurst,
+		FloatValue: spellData.ElementalReach.EffectAt(1).ValueAt(shaman.Talents.ElementalReach),
+		Kind:       core.SpellMod_Range_Flat,
+	})
+	shaman.AddStaticMod(core.SpellModConfig{
+		ClassMask:  SpellMaskFlameShock,
+		FloatValue: spellData.ElementalReach.EffectAt(2).ValueAt(shaman.Talents.ElementalReach),
+		Kind:       core.SpellMod_Range_Flat,
+	})
 }
 
 // applyElementalWarding implements Elemental Warding, new in Forever: less fire, frost and nature

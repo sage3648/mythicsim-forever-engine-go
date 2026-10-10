@@ -52,7 +52,7 @@
 	"12723": {
 		"ability": "Sweeping Strikes",
 		"file": "sim/warrior/talents_arms.go",
-		"note": "Sweeping Strikes registers under 12723: the 30 Rage cast on a 30 sec cooldown, its 20 sec aura with 5 charges (client 1.60.1.70009, 12292, as in Classic Era) and the copied hit for auto attacks and most abilities; the normalized Execute copy is 12723 tag 1 (26654 in the client).",
+		"note": "Sweeping Strikes registers under 12723: the 30 Rage cast on a 30 sec cooldown, its 20 sec aura with 5 charges (client 1.60.1.70009, 12292, as in Classic Era) and the copied hit for auto attacks and most abilities; the normalized Execute copy is 12723 tag 1 (26654 in the client). Beta logs (foreverlogs 2705-2743: Rinsy, Arthass, Noftw) put the copied hits at 7-18% of their dungeon damage, so the battle and stance-dance rotations cast it on cooldown whenever two or more targets are up.",
 		"source": "classic"
 	},
 	"12880": {

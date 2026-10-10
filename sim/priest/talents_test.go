@@ -224,6 +224,30 @@ func TestShadowformRefusesHolyNovaAndChastise(t *testing.T) {
 	}
 }
 
+// Holy Nova's party heal crits like any spell, and a crit reads the spell's DefenseType for its
+// multiplier: without one the first heal crit panicked the sim.
+func TestHolyNovaHealCanCrit(t *testing.T) {
+	holyNova := &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: spellData.HolyNova.Highest().ID}}
+	player := core.WithSpec(&proto.Player{
+		Race:          proto.Race_RaceUndead,
+		Class:         proto.Class_ClassPriest,
+		Equipment:     &proto.EquipmentSpec{},
+		Consumables:   &proto.ConsumesSpec{},
+		TalentsString: "-000001", // Holy Nova only
+		Rotation: &proto.APLRotation{Type: proto.APLRotation_TypeAPL, PriorityList: []*proto.APLListItem{
+			{Action: &proto.APLAction{Action: &proto.APLAction_CastSpell{CastSpell: &proto.APLActionCastSpell{SpellId: holyNova}}}},
+		}},
+	}, &proto.Player_DpsPriest{DpsPriest: &proto.DpsPriest{Options: &proto.DpsPriest_Options{ClassOptions: &proto.PriestOptions{}}}})
+	result := core.RunRaidSim(&proto.RaidSimRequest{
+		SimOptions: &proto.SimOptions{Iterations: 20, RandomSeed: 100},
+		Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+		Encounter:  core.MakeSingleTargetEncounter(0),
+	})
+	if result.Error != nil {
+		t.Fatal(result.Error.Message)
+	}
+}
+
 // Client 1.60.1.70205: Shadowform (15473) has no proc or cancel rule and Power Infusion (10060) no
 // form exclusion, so casting it keeps the form.
 func TestPowerInfusionKeepsShadowform(t *testing.T) {
@@ -247,5 +271,36 @@ func TestPowerInfusionKeepsShadowform(t *testing.T) {
 	priest.GetSpell(core.ActionID{SpellID: spellData.PowerInfusion.Highest().ID, Tag: priest.Index}).Cast(sim, &priest.Unit)
 	if !priest.ShadowformAura.IsActive() {
 		t.Error("Power Infusion dropped Shadowform")
+	}
+}
+
+// Shadow Reach (17322) and Holy Reach (27789) add 10/20% to the range of the spells their client
+// class masks reach; both were empty stubs, so the priest cast from as far as without them.
+func TestReachTalentsExtendRange(t *testing.T) {
+	for _, c := range []struct {
+		talents string
+		spell   int32
+		want    float64
+	}{
+		{"", spellData.MindBlast.Highest().ID, 30},
+		{"--000002", spellData.MindBlast.Highest().ID, 36}, // Shadow Reach 2/2
+		{"--000002", spellData.Smite.Highest().ID, 30},
+		{"-000000002", spellData.Smite.Highest().ID, 36}, // Holy Reach 2/2
+		{"-000000002", spellData.MindBlast.Highest().ID, 30},
+	} {
+		player := core.WithSpec(&proto.Player{
+			Race: proto.Race_RaceUndead, Class: proto.Class_ClassPriest, Equipment: &proto.EquipmentSpec{},
+			Consumables: &proto.ConsumesSpec{}, TalentsString: c.talents, Rotation: &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
+		}, &proto.Player_DpsPriest{DpsPriest: &proto.DpsPriest{Options: &proto.DpsPriest_Options{ClassOptions: &proto.PriestOptions{}}}})
+		sim := core.NewSim(&proto.RaidSimRequest{
+			SimOptions: &proto.SimOptions{RandomSeed: 100},
+			Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+			Encounter:  core.MakeSingleTargetEncounter(0),
+		}, simsignals.CreateSignals())
+		sim.Reset()
+		priest := sim.Raid.Parties[0].Players[0].(PriestAgent).GetPriest()
+		if got := priest.GetSpell(core.ActionID{SpellID: c.spell}).MaxRange; got != c.want {
+			t.Errorf("%q: spell %d reaches %.1f yd, want %.1f", c.talents, c.spell, got, c.want)
+		}
 	}
 }

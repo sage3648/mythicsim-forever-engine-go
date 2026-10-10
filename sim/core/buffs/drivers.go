@@ -243,9 +243,9 @@ func driveGraceOfAirTotem(char *core.Character, party *proto.PartyBuffs) {
 }
 
 // The party's Retribution Aura is the top rank, and its damage carries the
-// providing paladin's Holy spell power, which the party states alongside it.
-func driveRetributionAura(char *core.Character, party *proto.PartyBuffs) {
-	core.MakePermanent(RetributionAuraBuff(char, false, RetributionAuraMaxRank, party.RetributionAuraSpellPower))
+// holder's own Holy spell power.
+func driveRetributionAura(char *core.Character, _ *proto.PartyBuffs) {
+	core.MakePermanent(RetributionAuraBuff(char, false, RetributionAuraMaxRank))
 }
 
 // The blessing does nothing on its own: the paladin's Holy Light and Flash of

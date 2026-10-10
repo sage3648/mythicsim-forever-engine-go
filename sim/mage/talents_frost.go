@@ -167,13 +167,22 @@ func (mage *Mage) registerFrostChanneling() {
 	})
 }
 
-// registerArcticReach implements Arctic Reach, new in Forever.
-//
-// Not modelled: 16757 adds 10/20% to Frostbolt and Blizzard range and Frost Nova and Cone of Cold
-// radius; the sim has no range.
+// registerArcticReach implements Arctic Reach, new in Forever: 16757 adds 10/20% to Frostbolt and
+// Blizzard range and to Frost Nova and Cone of Cold radius (its two class masks). The sim has no
+// percent range mod, so the share is taken of each spell's own range here.
 func (mage *Mage) registerArcticReach() {
 	if mage.Talents.ArcticReach == 0 {
 		return
+	}
+
+	rangeShare := spellData.ArcticReach.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_RANGE)).FractionAt(mage.Talents.ArcticReach)
+	radiusShare := spellData.ArcticReach.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_RADIUS)).FractionAt(mage.Talents.ArcticReach)
+	for mask, yards := range map[int64]float64{
+		MageSpellFrostbolt:                       rangeShare * float64(spellData.Frostbolt.Highest().MaxRange),
+		MageSpellBlizzard:                        rangeShare * float64(spellData.Blizzard.Highest().MaxRange),
+		MageSpellFrostNova | MageSpellConeOfCold: radiusShare * pointBlankRadius,
+	} {
+		mage.AddStaticMod(core.SpellModConfig{ClassMask: mask, FloatValue: yards, Kind: core.SpellMod_Range_Flat})
 	}
 }
 

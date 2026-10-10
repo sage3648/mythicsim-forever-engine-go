@@ -424,7 +424,7 @@
 	"407632": {
 		"ability": "Hammer of the Righteous",
 		"file": "sim/paladin/hammer_of_the_righteous.go",
-		"note": "New in Forever, trained on the Protection line at 40. Beta client 1.60.1.70009: Holy damage 3x main hand DPS, 6 sec cooldown, 6% base mana, melee table, no spell power coefficient. Shares client cooldown category 2404 with Holy Strike. Measured: taking it before Holy Strike costs protection 6.5% DPS, so the default rotation does not.",
+		"note": "New in Forever, trained on the Protection line at 40. Beta client 1.60.1.70009: Holy damage 3x main hand DPS, 6 sec cooldown, 6% base mana, melee table, no spell power coefficient. Shares client cooldown category 2404 with Holy Strike. Hits the target and up to 3 more (damage effect ChainTargets 4), each for the full amount. Measured: ahead of Holy Strike it costs 1-5% DPS on one target but gains 2-16% on 2-5 targets, so the protection and retribution rotations cast it on 2+ targets.",
 		"source": "forever",
 		"tooltip": "6% of base mana\nInstant\n6 sec cooldown\nHammer the current target and up to 3 additional nearby targets, causing Holy damage to each equal to 3 times the damage per second of your main hand weapon."
 	},

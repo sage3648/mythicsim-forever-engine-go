@@ -54,6 +54,7 @@ func (mage *Mage) registerArcaneMissilesRank(arcaneMissilesRank *spelldata.Spell
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagChanneled | core.SpellFlagAPL,
 		ClassSpellMask: MageSpellArcaneMissilesCast,
+		MaxRange:       float64(arcaneMissilesRank.MaxRange),
 		Rank:           arcaneMissilesRank.RankNumber(),
 
 		ManaCost: core.ManaCostOptions{

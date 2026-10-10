@@ -1,6 +1,7 @@
 package core_test
 
 import (
+	"math"
 	"testing"
 	"time"
 
@@ -712,23 +713,41 @@ func TestGeneratedRetributionAuraHoldsThePaladinSlot(t *testing.T) {
 	}
 }
 
-// The party's copy cannot see the providing paladin, so the spell power the party states is folded
-// into the damage it bids and deals.
-func TestRetributionAuraCarriesThePartysSpellPower(t *testing.T) {
-	char := core.NewGeneratedBuffTestCharacter()
+// The party's copy reads the spell power of the unit it is on: beta logs show a warrior in the
+// paladin's party taking the base damage while the casters' hits carry their own spell power. The
+// party's retired spell-power field is ignored.
+func TestRetributionAuraCarriesTheHoldersSpellPower(t *testing.T) {
+	sim := setupFakeSimWithBuffs(&proto.RaidBuffs{},
+		&proto.PartyBuffs{RetributionAura: true, RetributionAuraSpellPower: 450}, &proto.IndividualBuffs{})
+	char := sim.Raid.Parties[0].Players[0].GetCharacter()
+	attacker := sim.Encounter.AllTargetUnits[0]
+	attacker.AutoAttacks.CancelAutoSwing(sim)
 
-	core.ApplyBuffEffects(generatedBuffTestAgent{char},
-		&proto.RaidBuffs{}, &proto.PartyBuffs{RetributionAura: true, RetributionAuraSpellPower: 450}, &proto.IndividualBuffs{})
-
-	if char.GetAura("Retribution Aura (External)") == nil {
+	aura := char.GetAura("Retribution Aura (External)")
+	if aura == nil {
 		t.Fatalf("no aura is labelled %q; the unit has %v", "Retribution Aura (External)", auraLabels(char))
 	}
-
-	want := buffs.RetributionAuraValue(0) + buffs.RetributionAuraSpellPowerCoefficient*450
 	category := char.ExclusiveEffectManager.GetExclusiveEffectCategory(buffs.RetributionAuraCategory)
-	if len(category.Effects()) != 1 || category.Effects()[0].Priority != want {
-		t.Errorf("the category has %d effects, first bid %v; want one bidding %v",
-			len(category.Effects()), category.Effects()[0].Priority, want)
+	if len(category.Effects()) != 1 || category.Effects()[0].Priority != buffs.RetributionAuraValue(0) {
+		t.Errorf("the category has %d effects, first bid %v; want one bidding the base %v",
+			len(category.Effects()), category.Effects()[0].Priority, buffs.RetributionAuraValue(0))
+	}
+
+	shield := char.GetSpell(core.ActionID{SpellID: 10301, Tag: 1})
+	landed := &core.SpellResult{Target: &char.Unit, Outcome: core.OutcomeHit}
+	hit := func() float64 {
+		before := shield.SpellMetrics[attacker.UnitIndex].TotalDamage
+		aura.OnSpellHitTaken(aura, sim, attacker.AutoAttacks.MHAuto(), landed)
+		sim.Step()
+		return shield.SpellMetrics[attacker.UnitIndex].TotalDamage - before
+	}
+
+	if got, want := hit(), buffs.RetributionAuraValue(0); math.Abs(got-want) > 1e-6 {
+		t.Errorf("a holder with no spell power dealt %v, want the base %v", got, want)
+	}
+	char.AddStatDynamic(sim, stats.SpellDamage, 100)
+	if got, want := hit(), buffs.RetributionAuraValue(0)+buffs.RetributionAuraSpellPowerCoefficient*100; math.Abs(got-want) > 1e-6 {
+		t.Errorf("a holder with 100 spell power dealt %v, want %v", got, want)
 	}
 }
 

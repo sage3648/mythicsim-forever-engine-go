@@ -190,3 +190,9 @@ const (
 	// (all three carry the client's chill bit, 0x100000) and Improved Blizzard's.
 	MageSpellChill = MageSpellFrostbolt | MageSpellConeOfCold | MageSpellFrostfireBolt | MageSpellImprovedBlizzard
 )
+
+// Arcane Explosion, Blast Wave, Cone of Cold and Frost Nova reach the targets within 10 yards of the
+// mage and state no cast range, so the radius is their range. Client 1.60.1.70245: Cone of Cold,
+// Blast Wave and Frost Nova state 10 yd on their area effects; Arcane Explosion's row carries no
+// radius, its Era one 10 yd.
+const pointBlankRadius = 10

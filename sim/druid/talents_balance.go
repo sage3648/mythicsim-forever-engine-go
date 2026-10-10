@@ -124,11 +124,21 @@ func (druid *Druid) applyVengeance() {
 	})
 }
 
-// The client states a bonus range, which the sim does not model.
+// Nature's Reach: 16819 adds 2/4% hit, and 10/20% to the range of every spell its class mask reaches
+// (Wrath, Starfire, Moonfire, Insect Swarm, Hurricane, Faerie Fire, Entangling Roots, Thorns). The sim's
+// range mod is flat yards, so the share is taken of each spell's own range as it registers.
 func (druid *Druid) applyNaturesReach() {
 	if druid.Talents.NaturesReach == 0 {
 		return
 	}
+
+	share := spellData.NaturesReach.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_RANGE)).FractionAt(druid.Talents.NaturesReach)
+	druid.OnSpellRegistered(func(spell *core.Spell) {
+		if spell.Matches(DruidSpellWrath | DruidSpellStarfire | DruidSpellMoonfireInitial | DruidSpellMoonfireDoT |
+			DruidSpellInsectSwarm | DruidSpellHurricane | DruidSpellFaerieFire | DruidSpellEntanglingRoots | DruidSpellThorns) {
+			spell.MaxRange *= 1 + share
+		}
+	})
 
 	hit := spellData.NaturesReach.Effect(dbcenums.A_MOD_HIT_CHANCE, 0).ValueAt(druid.Talents.NaturesReach)
 	druid.AddStat(stats.PhysicalHitPercent, hit)

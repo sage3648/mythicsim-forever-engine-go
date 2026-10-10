@@ -57,7 +57,7 @@ func ShadowResistanceAura(char *core.Character, isPlayer bool, rank PaladinAuraR
 	return newBuff(&char.Unit, paladinAuraMeta(shadowResistanceAuraMeta, rank), isPlayer, 0)
 }
 
-// Retribution Aura scales with the casting paladin's Holy spell power in Forever even though its
+// Retribution Aura scales with Holy spell power in Forever even though its
 // client row carries no coefficient (every rank and Thorns are the same: EffectBonusCoefficient 0,
 // and the damage still moves with spell power in game). The coefficient is the 1.5 s cast-time
 // floor over 3.5, the AoE divisor because the shield hits every attacker, and the 0.95 penalty for
@@ -66,23 +66,20 @@ func ShadowResistanceAura(char *core.Character, isPlayer bool, rank PaladinAuraR
 // shown mostly 17.
 const RetributionAuraSpellPowerCoefficient = 1.5 / 3.5 / 3 * 0.95
 
-// RetributionAuraBuff is the aura on the unit the shield protects. The self-cast variant reads
-// the paladin's own Holy spell power through the proc spell; the external (party-buff) variant
-// cannot see the providing paladin, so externalSpellPower stands in for it and the recipient's
-// own stats stay out of the damage.
-func RetributionAuraBuff(char *core.Character, isPlayer bool, rank PaladinAuraRank, externalSpellPower float64) *core.Aura {
+// RetributionAuraBuff is the aura on the unit the shield protects. Both copies read the Holy spell
+// power of the unit the aura is on, not the paladin's: in beta logs one paladin's party splits by
+// holder (reports 2729-2736, rank 2 10298 base 12: Mielle the paladin ~28, Whutz the warlock ~30,
+// Chaise the priest ~22, the warriors Arthass and Noftw 12 flat), and every warrior, rogue and
+// hunter holder in 40 reports sits at the base, 7 for rank 1 and 12 for rank 2.
+func RetributionAuraBuff(char *core.Character, isPlayer bool, rank PaladinAuraRank) *core.Aura {
 	m := paladinAuraMeta(retributionAuraMeta, rank)
 	label := m.label(isPlayer)
 	if char.HasAura(label) {
 		return char.GetAura(label)
 	}
 
-	damage, coefficient := rank.Value, RetributionAuraSpellPowerCoefficient
-	if !isPlayer {
-		damage, coefficient = rank.Value+RetributionAuraSpellPowerCoefficient*externalSpellPower, 0
-	}
 	aura := core.NewDamageShield(&char.Unit, label, m.actionID(isPlayer), core.NeverExpires, m.Category, m.SingleAura,
-		core.SpellSchoolHoly, damage, coefficient)
+		core.SpellSchoolHoly, rank.Value, RetributionAuraSpellPowerCoefficient)
 	core.JoinSharedCategory(aura, m.SharedCategory, isPlayer)
 	return aura
 }

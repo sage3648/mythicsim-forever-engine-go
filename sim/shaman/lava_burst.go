@@ -22,6 +22,7 @@ func (shaman *Shaman) registerLavaBurstSpell() {
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL | SpellFlagShamanSpell | SpellFlagFocusable,
 		ClassSpellMask: SpellMaskLavaBurst,
+		MaxRange:       float64(lavaBurstRank.MaxRange),
 		MissileSpeed:   float64(lavaBurstRank.Speed),
 
 		ManaCost: core.ManaCostOptions{

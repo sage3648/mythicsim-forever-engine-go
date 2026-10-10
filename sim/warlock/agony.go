@@ -22,6 +22,7 @@ func (warlock *Warlock) registerCurseOfAgony() {
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagAPL,
 		ClassSpellMask: WarlockSpellCurseOfAgony,
+		MaxRange:       float64(rank.MaxRange),
 
 		ManaCost: core.ManaCostOptions{FlatCost: int32(rank.Cost())},
 		Cast: core.CastConfig{

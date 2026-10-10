@@ -1,5 +1,215 @@
 [
 	{
+		"number": 754,
+		"title": "paladin: Hammer of the Righteous hits 4 targets, cast on 2+ targets",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/754"
+	},
+	{
+		"number": 753,
+		"title": "Wowhead Forever data changed (2026-10-08)",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/753"
+	},
+	{
+		"number": 752,
+		"title": "[DB] Update to 1.60.1.70245 with hotfixes as of 2026-10-08",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/752"
+	},
+	{
+		"number": 751,
+		"title": "Holy Nova no longer crashes the sim when its heal crits",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/751"
+	},
+	{
+		"number": 750,
+		"title": "Enhancement Flame Shock rotation casts Fire Nova",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/750"
+	},
+	{
+		"number": 749,
+		"title": "Arcane rotation casts Cone of Cold on 3+ targets in melee",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/749"
+	},
+	{
+		"number": 748,
+		"title": "Protection warrior rotation queues Cleave on 2+ targets",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/748"
+	},
+	{
+		"number": 747,
+		"title": "Frost rotation casts Cone of Cold on 3+ targets in melee, Blizzard from 4",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/747"
+	},
+	{
+		"number": 746,
+		"title": "Protection paladin judges on cooldown",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/746"
+	},
+	{
+		"number": 745,
+		"title": "Wowhead Forever data changed (2026-10-08)",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/745"
+	},
+	{
+		"number": 744,
+		"title": "Retribution rotation consecrates on 2+ targets",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/744"
+	},
+	{
+		"number": 743,
+		"title": "Volley holds the melee swing; Survival melee channels it on 2+ targets",
+		"mergedAt": "2026-10-08",
+		"url": "https://github.com/ElliotWood/Forever/pull/743"
+	},
+	{
+		"number": 742,
+		"title": "Survival melee rotation drops Explosive Trap on 2+ targets",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/742"
+	},
+	{
+		"number": 741,
+		"title": "Bear rotation swipes on 3+ targets",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/741"
+	},
+	{
+		"number": 740,
+		"title": "Warrior rotations cast Sweeping Strikes on cooldown with 2+ targets",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/740"
+	},
+	{
+		"number": 739,
+		"title": "hunter: rotations channel Volley on 3+ targets (4+ for Beast Mastery)",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/739"
+	},
+	{
+		"number": 738,
+		"title": "druid: Balance rotations channel Hurricane on 3+ targets",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/738"
+	},
+	{
+		"number": 737,
+		"title": "shaman: enhancement rotation casts Fire Nova",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/737"
+	},
+	{
+		"number": 736,
+		"title": "buffs: Retribution Aura scales with the holder's spell power, not the paladin's",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/736"
+	},
+	{
+		"number": 735,
+		"title": "warlock: Hellfire and Rain of Fire on 3+ targets; Hellfire channels at low health",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/735"
+	},
+	{
+		"number": 734,
+		"title": "hunter: Survival melee rotation (beta logs); TestSurvival runs it",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/734"
+	},
+	{
+		"number": 733,
+		"title": "druid: Nature's Reach extends Balance spell range",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/733"
+	},
+	{
+		"number": 732,
+		"title": "shaman: bolts use their client range; Elemental Reach extends it",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/732"
+	},
+	{
+		"number": 731,
+		"title": "warlock: spells use their client range; Destructive Reach extends it",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/731"
+	},
+	{
+		"number": 730,
+		"title": "Wowhead Forever data changed (2026-10-07)",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/730"
+	},
+	{
+		"number": 729,
+		"title": "priest: Shadow Reach and Holy Reach extend range",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/729"
+	},
+	{
+		"number": 728,
+		"title": "mage: spells use their client range; point-blank AoE needs 10 yd; range talents modelled",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/728"
+	},
+	{
+		"number": 727,
+		"title": "[DB] Update to 1.60.1.70245 with hotfixes as of 2026-10-07",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/727"
+	},
+	{
+		"number": 726,
+		"title": "Ice Lance spell power coefficient .143 -> .1, fitted from beta logs",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/726"
+	},
+	{
+		"number": 725,
+		"title": "mage: arcane and frost AoE on 3+ targets; point-blank AoE only within 10 yd",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/725"
+	},
+	{
+		"number": 724,
+		"title": "mage: fire rotation casts Blast Wave and Flamestrike on 3+ targets",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/724"
+	},
+	{
+		"number": 723,
+		"title": "enhancement: TestEnhancement swings a weapon instead of fighting naked",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/723"
+	},
+	{
+		"number": 722,
+		"title": "balance: TestBalance runs the Launch rotation the site picks",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/722"
+	},
+	{
+		"number": 721,
+		"title": "warrior: TestArms runs the Battle Stance rotation the site picks for it",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/721"
+	},
+	{
+		"number": 720,
+		"title": "Forever client build 1.60.1.70245",
+		"mergedAt": "2026-10-07",
+		"url": "https://github.com/ElliotWood/Forever/pull/720"
+	},
+	{
 		"number": 719,
 		"title": "priest: Power Infusion no longer drops Shadowform",
 		"mergedAt": "2026-10-07",

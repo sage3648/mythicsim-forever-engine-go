@@ -218,7 +218,7 @@ var Party = []BuffSpec{
 		Field:  "retribution_aura_spell_power",
 		Kind:   KindFlag,
 		Proto:  ProtoDouble,
-		Reason: "the Holy spell power of the paladin providing Retribution Aura, which driveRetributionAura scales the damage with; a sim input with no spell source, rendered under Other Inputs.",
+		Reason: "retired: Retribution Aura reads the spell power of the unit it is on, not the paladin's (beta logs 2729-2736), so nothing reads this; the row stays so the party fields after it keep their proto numbers.",
 	},
 	{
 		Field:          "concentration_aura",

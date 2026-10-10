@@ -61,7 +61,9 @@ func (hunter *Hunter) registerVolleySpell() {
 		},
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
+			// A channel is a non-melee cast: it holds the melee swing too, which restarts when it ends.
 			hunter.AutoAttacks.DelayRangedUntil(sim, sim.CurrentTime+rank.Duration())
+			hunter.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime+rank.Duration())
 			spell.AOEDot().Apply(sim)
 		},
 	})

@@ -161,13 +161,18 @@ func (mage *Mage) registerArcaneResilience() {
 	mage.AddStatDependency(stats.Intellect, stats.Armor, spellData.ArcaneResilience.FractionAt(mage.Talents.ArcaneResilience))
 }
 
-// registerArcaneGeometry implements Arcane Geometry, new in Forever.
-//
-// Not modelled: 11247 adds 3/6 yards to Arcane spell range; the sim has no range to extend.
+// registerArcaneGeometry implements Arcane Geometry, new in Forever: 11247 adds 3/6 yards to the
+// range of the spells its class mask reaches, of the mage's Arcane Blast and Arcane Missiles.
 func (mage *Mage) registerArcaneGeometry() {
 	if mage.Talents.ArcaneGeometry == 0 {
 		return
 	}
+
+	mage.AddStaticMod(core.SpellModConfig{
+		ClassMask:  MageSpellArcaneBlast | MageSpellArcaneMissilesCast,
+		FloatValue: spellData.ArcaneGeometry.Effect(dbcenums.A_ADD_FLAT_MODIFIER, int32(dbcenums.SPELLMOD_RANGE)).ValueAt(mage.Talents.ArcaneGeometry),
+		Kind:       core.SpellMod_Range_Flat,
+	})
 }
 
 // Every arcane spell of the mage's, not TBC's Arcane Blast and Arcane Explosion only.

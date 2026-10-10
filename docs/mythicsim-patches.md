@@ -1,9 +1,9 @@
 # MythicSim downstream patches
 
 MythicSim runs this engine from its fork (`sage3648/mythicsim-forever-engine-go`, branch
-`mythicsim/upstream-sync-20261007`). The branch is ElliotWood/Forever master, which is built on the
+`mythicsim/upstream-sync-20261010`). The branch is ElliotWood/Forever master, which is built on the
 official wowsims/forever, plus the patches below. The first base was `442076902` (Merge
-wowsims/forever master ea5412873). The current base is `5c115f1725` (2026-10-07, client 1.60.1.70235 with the 2026-10-06 hotfixes); the 2026-10-07 sync merged #677 to #719 and dropped patches 3, 76, 91, 93 and 94 and folded upstream's Flametongue Totem into patches 70 to 72 ("Upstream sync 2026-10-07, #677 to #719" at the end of this file). The base before it was `67f14b04a5` (2026-10-04, client 1.60.1.70205); the 2026-10-05 sync merged #642 to #676 and dropped patches 13, 18, 19, 20, 22, 23, 27, 30 and 31, which upstream now carries ("Upstream sync 2026-10-05, #642 to #676" at the end of this file). The base before it was `f764984d8b` (2026-10-03), merged by "Upstream sync 2026-10-03, #613 to #641", and before that `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
+wowsims/forever master ea5412873). The current base is `071e0cb439` (2026-10-10, client 1.60.1.70334); the 2026-10-10 sync merged #720 to #760, dropped patch 11 and gave patch 5 upstream's move into melee ("Upstream sync 2026-10-10, #720 to #760" at the end of this file). The base before it was `5c115f1725` (2026-10-07, client 1.60.1.70235 with the 2026-10-06 hotfixes); the 2026-10-07 sync merged #677 to #719 and dropped patches 3, 76, 91, 93 and 94 and folded upstream's Flametongue Totem into patches 70 to 72 ("Upstream sync 2026-10-07, #677 to #719" at the end of this file). The base before it was `67f14b04a5` (2026-10-04, client 1.60.1.70205); the 2026-10-05 sync merged #642 to #676 and dropped patches 13, 18, 19, 20, 22, 23, 27, 30 and 31, which upstream now carries ("Upstream sync 2026-10-05, #642 to #676" at the end of this file). The base before it was `f764984d8b` (2026-10-03), merged by "Upstream sync 2026-10-03, #613 to #641", and before that `f4b776b4f4`, and before that `ccfaacb5c3` (2026-10-02, client 1.60.1.70170 with the 2026-10-02 hotfix cache). The 2026-10-01 syncs merged 113 upstream commits and then 28 more ("Upstream sync 2026-10-01, second merge" below); the decisions are in "Upstream sync 2026-10-01". The 2026-10-02 sync merged the 12 commits #602 to #609 ("Upstream sync 2026-10-02, #602 to #609" at the end of this file): patches 50 and 61 are dropped, patch 63 is narrowed to Mystic Mushroom, and the interim 70170 regeneration is replaced by upstream's real one. The previous base was `8dc19a4241` (2026-09-27). It includes form-speed and actual spell cast-time Omen of Clarity proc corrections, life-drain weapon effects, Sword of Zeal, Argent Avenger, Fiery Weapon and Lifestealing enchants, Flurry Axe and Electrified Dagger, the 2026-09-27 client hotfix database, Stinging Viper and eight Classic weapon procs, Mage Scroll of Cryoblast, non-engineer explosives and SAF-T / EZ-Thro bombs, Deep Wounds weapon-only damage with outstanding bleed rollover, Raptor pet Savage Rend, Venomstrike procs, Defias Leather set effects, Barbaric Crossbow, Plaguefang and Wolfsbane weapon procs, the Stormshroud and Volcanic Armor proc chances, item effects below item level 50, the refreshed client database, Druid form Faerie Fire cost and timing, Hunter pet Lightning Breath scaling, Inspiration armor bonuses, the client hotfix databases, Hunter ranged scaling, Rogue Hack and Slash cooldown, Shaman Flametongue and Fire Nova fixes, and the merged Penance timing and cost fixes, Demonic Pact pre-pull sacrifice, Mana Tide Totem party restoration, Frost Mage talent fixes, and rank 4 Trueshot Aura. It also carries client 1.60.1.70009 and the earlier lower-rank spell, aura-cap, and consumable fixes.
 
 Keep the set small. Each patch exists because MythicSim needs something upstream does not do
 yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an upstream version.
@@ -14,7 +14,7 @@ yet. Drop a patch as soon as upstream covers it; do not keep ours alongside an u
 | 2 | `core: a player option to disable racials` | The race comparison page sims each character with and without its racials to show what they are worth. |
 | 3 | `rotation: Destruction casts Conflagrate for Shadow and Flame` | Dropped 2026-10-07: upstream #716 makes `destruction_conflag` the Shadow and Flame preset. |
 | 4 | `hunter: Aspect of the Beast` | Forever made Beast the melee aspect. Upstream models only Hawk, so a melee hunter has no aspect. |
-| 5 | `rotation: a melee Survival rotation` | Upstream's Survival rotation shoots from range, so Raptor Strike, Mongoose Bite and Strider Kick never fire. MythicSim ranks melee Survival. |
+| 5 | `rotation: a melee Survival rotation` | Upstream's melee Survival rotation (#734) sims 19% below ours in melee. MythicSim ranks melee Survival. |
 | 6 | `items: Iceblade Hacker and Warblade of Caer Darrow proc from their own hand` | The two hand-written weapon procs fired off both hands, so a main-hand Iceblade Hacker added its Frost damage to every off-hand swing. |
 | 7 | `data: inherited stat indices and armor` | Preserve the corrected item stats and armor. |
 | 8 | `mage: implement baseline Frostfire Bolt` | Implement the baseline spell and its hybrid rotation. |
@@ -114,7 +114,16 @@ Dropped in the 2026-10-07 sync: upstream's Shadow and Flame preset and `TestDest
 - **Tests.** `sim/hunter/survival_melee_test.go` (`TestSurvivalMelee`, 5 yards,
   `SurvivalMeleeTalents` = wowtbc.gg's 5/10/35 with the spare point in Focused Fire) and its golden
   `TestSurvivalMelee.results` (average 398.57 DPS on the suite's weapons-only gear).
-- **Drop it when** upstream ships a melee Survival rotation. Compare the two on the golden first.
+- **Upstream's rotation (2026-10-10 sync).** Upstream #734 ships its own `sv_melee.apl.json` (walks into
+  melee, Mongoose Bite, Strider Kick, Serpent Sting above 30% mana, Immolation Trap, Raptor Strike last,
+  with Explosive Trap and Volley on 2+ targets from #742 and #743) and `TestSurvival` runs it from 30
+  yards on 0/15/36. Ours keeps the file and takes upstream's first line, a move into melee when the
+  target is more than 5 yards away, so a sim that starts at range closes in. Average DPS on the merged
+  engine: `TestSurvivalMelee` (5 yards, 5/10/35) ours 396.59, upstream's 322.70, ours with the move
+  396.59; `TestSurvival` (30 yards, 0/15/36) ours 184.58 (it never closes), upstream's 290.27, ours
+  with the move 352.19. Upstream's AoE lines stay out: MythicSim's worker adds Explosive Trap and
+  Volley at 2+ targets itself.
+- **Drop it when** upstream's melee Survival rotation sims at least as high as ours on both goldens.
 
 ## 6. `items: Iceblade Hacker and Warblade of Caer Darrow proc from their own hand`
 
@@ -240,7 +249,10 @@ removing the old synthetic row. The 300-second Balance build now attributes
 Drop this patch when upstream reports actual Innervate gains without also counting
 them as ordinary regeneration, including cap losses and passive-regen threat rules.
 
-## 11. Holy Nova healing crit defense type
+## 11. Holy Nova healing crit defense type (dropped, upstream #751)
+
+Dropped in the 2026-10-10 sync: upstream #751 declares the heal's defense type from its client row
+(`heal.DefenseTypeCore()`, magic for every rank). `TestHolyNovaHealingCritAllRanks` stays as coverage and passes.
 
 Holy Nova's triggered party heal used `OutcomeHealingCrit` without declaring a
 DefenseType. Its first healing crit panicked in `CritDamageMultiplier`, failing
@@ -2251,3 +2263,40 @@ neither touching the other's stats, both beside Brilliant Wizard Oil's 36 spell 
 Goldens: none move; no suite request sets the option.
 
 Drop it when upstream models the stones (then compare its values with the client rows above).
+
+## Upstream sync 2026-10-10, #720 to #760
+
+Merged ElliotWood/Forever `071e0cb439` (69 commits, #720 to #760 plus data, changelog and arena commits)
+into the live pin `66837240ec` (patches 1 to 102). Client data is now 1.60.1.70334 (#760), with the
+2026-10-08 hotfixes (#752) and Wowhead data through 2026-10-10.
+
+Behaviour adopted: client spell ranges and the range talents for Mage, Warlock, Priest, Shaman and
+Balance (#728, #729, #731, #732, #733); point-blank AoE needs 10 yards (#725, #728); multi-target lines in
+the Fire, Arcane and Frost (#724, #725, #747, #749), Warlock (#735), Balance (#738), Hunter Volley (#739,
+#743), Warrior Sweeping Strikes and Protection Cleave (#740, #748), Bear Swipe (#741), Retribution
+Consecration (#744), Protection paladin Hammer of the Righteous (#754) and Enhancement Fire Nova (#737,
+#750) rotations; Ice Lance coefficient 0.1 (#726); Retribution Aura scales with the holder's spell power
+(#736); Protection paladin judges on cooldown (#746); the suites run the rotations the site picks (#721,
+#722, #723).
+
+Patches upstream now carries, dropped here:
+
+| Patch | Upstream | Notes |
+|---|---|---|
+| 11 Holy Nova healing crit | #751 | Same defense type; our regression test passes on upstream's code. |
+
+Kept against upstream:
+
+- **5 melee Survival.** See patch 5: ours plus upstream's move into melee.
+
+Conflicts: `db.json` and `leftover_db.json` by `forever-merge-db.py` (seven new upstream items in
+`db.json`, Tabard of the Scarlet Crusade in `leftover_db.json`; Revelosh's Gloves, which upstream turned
+into a fixed rare without armor, keeps our 38 armor), then `sync_db_binary`. `presets.ts` takes
+upstream's `Survival (melee)` label.
+
+Goldens: each regenerated suite moves with upstream's own goldens over the same range (Balance +9.3%,
+Arms +16.3% against upstream's +16.6%, Protection paladin +12.7%, Enhancement +106.7% against +106.4%,
+Frost +47.6%), except where a patch meets a new upstream line: Bear multi-target moves 7% past upstream
+because our Swipe attack power share (client 70170) now counts once #741 swipes on 3+ targets; Marksmanship, Beast
+Mastery, Affliction and Destruction multi-target rows differ from upstream by up to 5% where patch 90's
+shot timing meets #739's Volley; `TestSurvival` follows patch 5. Every other test passes.

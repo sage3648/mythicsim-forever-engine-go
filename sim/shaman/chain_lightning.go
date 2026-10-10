@@ -42,6 +42,7 @@ func (shaman *Shaman) newChainLightningSpell(config *spelldata.Spell, rank int32
 	}
 	spellConfig := shaman.newElectricSpellConfig(shamConfig)
 	if !isElementalOverload {
+		spellConfig.MaxRange = float64(config.MaxRange)
 		spellConfig.Cast.CD = core.Cooldown{
 			Timer:    sharedCDTimer,
 			Duration: max(config.Cooldown(), config.CategoryCooldown()),
