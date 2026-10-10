@@ -2300,3 +2300,53 @@ Frost +47.6%), except where a patch meets a new upstream line: Bear multi-target
 because our Swipe attack power share (client 70170) now counts once #741 swipes on 3+ targets; Marksmanship, Beast
 Mastery, Affliction and Destruction multi-target rows differ from upstream by up to 5% where patch 90's
 shot timing meets #739's Volley; `TestSurvival` follows patch 5. Every other test passes.
+
+## Upstream sync 2026-10-11, #761 to #763
+
+Merged `ElliotWood/Forever` master `f7598154eb` (#761, #762, #763) into the live pin `8361dcca54`
+(patches 1 to 102). Client data moves from 1.60.1.70245 to 1.60.1.70338 with the 2026-10-10 hotfixes.
+The previous sync's pin comment said client 70334, but #757 and #760 only changed
+`forever_client_build.txt`; the spell store was last regenerated at 70245 (#752). This is the first pin
+that simulates the 70291 class changes: Penance (bolt coefficient 0.285 to 0.19, rank 3 bolt 180 to 71 at
+level 60, rank 4 131 to 92, higher mana costs), low-rank rescaling (Smite ranks 1 to 4, Frostbolt rank 1
+0.5 to 0.2 a level), Thorns 22 to 18, Retribution Aura 30 to 20, and Predatory Instincts renamed Natural
+Instinct (#762).
+
+Conflicts: `talents_feral_combat.go` keeps our `applyImprovedShiftingPower` call and takes upstream's
+`applyNaturalInstinct`. `db.json` and `leftover_db.json` by `forever-merge-db.py` (new upstream items and
+the Expose Prey icon; planner armor re-applied to 18 and 19 items), then `sync_db_binary`.
+
+`tools/spelldata/describe_test.go` pins Frostbolt rank 1 and a heal from the client store; both follow
+70338 (ppl 0.5 to 0.2 and 0.9 to 0.3).
+
+Goldens move with upstream's own over the same range: Smite -12.1% (upstream -13.7%; upstream's Smite APL
+also moves to Penance rank 4), Bear -2.7%, Protection paladin -1.6%, Protection warrior -1.6%, Elemental
++1.2% (upstream +1.15%), Survival +0.9% against +0.2% (patch 5's melee rotation meets the Immolation Trap
+rename). Every other test passes.
+
+## 103. `druid: Howling Idol takes 1 second off Shifting Power's cooldown`
+
+Item 272427 carries buff 1291059, "Reduces the cooldown of your Shifting Power ability by 1 sec.":
+`A_ADD_FLAT_MODIFIER`, `SPELLMOD_COOLDOWN`, -1000 ms, class mask word 1 `0x80000000`, which is Shifting
+Power's. The generated proc table only had it as a commented "manual implementation required" block, so
+the idol did nothing (reported by Hameru on the MythicSim Discord).
+
+`sim/druid/items.go` registers it as a flat cooldown mod on `DruidSpellShiftingPower`, so it stacks with
+Improved Shifting Power. Test: `TestHowlingIdolShortensShiftingPower` (`sim/druid/feralcat`), 16 s
+without the idol and 15 s with it. Goldens: new `AllItems-HowlingIdol-272427` rows in Balance, Bear and
+Cat.
+
+Drop it when the generator emits the effect.
+
+## 104. `paladin: Hammer of Wrath and Holy Wrath hold the swing like a Shaman bolt`
+
+Both used `StopMeleeUntil`, which pushes a swing due mid-cast to a full swing after the cast. The Forever
+rule measured on the beta for Shaman bolts (patch 17, #681, #684) is `HoldMeleeForCast`: a swing due
+mid-cast lands as the cast completes, and a cast that completes first restarts the timer. Both now hold
+the swing on a hard cast only, so an instant Hammer of Wrath (Instrument of Law) leaves the timer alone,
+as before. Raised by Redfall on the MythicSim Discord (spell casts and the swing timer).
+
+Goldens: none move (Retribution and Protection paladin read the same with and without it).
+
+Paladin heals (`flash_of_light.go`, `holy_light.go`, `lights_vigil.go`) still have no swing hook. No
+preset heals while meleeing; add the same hold if one does.
