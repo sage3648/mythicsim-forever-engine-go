@@ -7531,8 +7531,8 @@ func RegisterAllProcs() {
 	//       This can be ignored if the effect has already been implemented.
 	//       With next db run the item will be removed if implemented.
 	//
-	// Sear certain enchanted targets with blazing light causing it to take additional damage from holy attacks
-	// and spells
+	// Sear certain enchanted targets with blazing light causing them to take additional damage from Holy attacks
+	// and spells.
 	// https://www.wowhead.com/forever/spell=1282482
 	// unsupported: states no rate; effect 1 lands on implicit target 38
 	// trigger 1282482 (0%, core.CallbackEmpty, core.ProcMaskUnknown)
@@ -8128,6 +8128,36 @@ func RegisterAllProcs() {
 	//       This can be ignored if the effect has already been implemented.
 	//       With next db run the item will be removed if implemented.
 	//
+	// When struck in combat, drain 2 mana from the attacker.
+	// https://www.wowhead.com/forever/spell=1292706
+	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
+	//	Callback:           core.CallbackEmpty,
+	//	ProcMask:           core.ProcMaskUnknown,
+	//	Outcome:            core.OutcomeEmpty,
+	//	RequireDamageDealt: false
+	// }, []shared.ItemVariant{
+	//	{ItemID: 273041, ItemName: "Slitherwrap Girdle"},
+	// })
+
+	// TODO: Manual implementation required
+	//       This can be ignored if the effect has already been implemented.
+	//       With next db run the item will be removed if implemented.
+	//
+	// When damaged, has a chance to reduce threat level on all enemies by a small amount for 10s.
+	// https://www.wowhead.com/forever/spell=12685
+	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
+	//	Callback:           core.CallbackEmpty,
+	//	ProcMask:           core.ProcMaskUnknown,
+	//	Outcome:            core.OutcomeEmpty,
+	//	RequireDamageDealt: false
+	// }, []shared.ItemVariant{
+	//	{ItemID: 273044, ItemName: "Violet Sorcerer's Robes"},
+	// })
+
+	// TODO: Manual implementation required
+	//       This can be ignored if the effect has already been implemented.
+	//       With next db run the item will be removed if implemented.
+	//
 	// Swim speed increased by 33%.
 	// https://www.wowhead.com/forever/spell=1291749
 	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
@@ -8601,7 +8631,7 @@ func RegisterAllProcs() {
 	//       This can be ignored if the effect has already been implemented.
 	//       With next db run the item will be removed if implemented.
 	//
-	// Diseases target for 25 Nature damage every 1.0 sec for 7s. Deals 2 times as much damage to Aquatic enemies.
+	// Diseases target for 24 Nature damage every 1.0 sec for 7s. Deals 2 times as much damage to Aquatic enemies.
 	// https://www.wowhead.com/forever/spell=1295744
 	// shared.NewProcStatBonusEffectWithVariants(shared.ProcStatBonusEffect{
 	//	Callback:           core.CallbackEmpty,
@@ -9142,7 +9172,7 @@ func RegisterAllProcs() {
 			{ItemID: 9458, ItemName: "Thermaplugg's Central Core"},
 		})
 
-	// Spells and attacks against Swine deal 8 Nature damage.
+	// Spells and attacks against Swine deal 2 Nature damage.
 	// https://www.wowhead.com/forever/spell=1293782
 	// trigger 1293783 (every time, core.CallbackOnSpellHitDealt, core.ProcMaskMeleeMHAuto | core.ProcMaskMeleeOHAuto | core.ProcMaskMeleeMHSpecial | core.ProcMaskMeleeOHSpecial | core.ProcMaskRangedAuto | core.ProcMaskRangedSpecial | core.ProcMaskSpellDamage) -> buff 1293782
 	shared.NewSpellDataDamageProc(shared.SpellDataProc{TriggerSpellID: 1293783, BuffSpellID: 1293782},
@@ -9297,7 +9327,15 @@ func RegisterAllProcs() {
 			{ItemID: 273003, ItemName: "Searing Dagger"},
 		})
 
-	// Spells and attacks against Murlocs deal 8 Shadow damage.
+	// When damaged, has a chance to grant you 1080 armor for 12s.
+	// https://www.wowhead.com/forever/spell=1293345
+	// trigger 1293342 (33%, core.CallbackOnSpellHitTaken | core.CallbackOnPeriodicDamageTaken, core.ProcMaskMeleeMHAuto | core.ProcMaskMeleeOHAuto | core.ProcMaskMeleeMHSpecial | core.ProcMaskMeleeOHSpecial | core.ProcMaskRangedAuto | core.ProcMaskRangedSpecial | core.ProcMaskSpellDamage) -> buff 1293345
+	shared.NewSpellDataProc(shared.SpellDataProc{TriggerSpellID: 1293342, BuffSpellID: 1293345},
+		[]shared.ItemVariant{
+			{ItemID: 273046, ItemName: "Guardian's Dualblade"},
+		})
+
+	// Spells and attacks deal 2 Shadow damage. Deals 4 times as much damage to Murlocs.
 	// https://www.wowhead.com/forever/spell=1292675
 	// trigger 1292674 (every time, core.CallbackOnSpellHitDealt, core.ProcMaskMeleeMHAuto | core.ProcMaskMeleeOHAuto | core.ProcMaskMeleeMHSpecial | core.ProcMaskMeleeOHSpecial | core.ProcMaskRangedAuto | core.ProcMaskRangedSpecial | core.ProcMaskSpellDamage) -> buff 1292675
 	shared.NewSpellDataDamageProc(shared.SpellDataProc{TriggerSpellID: 1292674, BuffSpellID: 1292675},
@@ -9369,6 +9407,8 @@ func RegisterAllProcs() {
 	// https://www.wowhead.com/forever/spell=13496
 	// Not simulated: Girdle of the Blindwatcher: "Stealth Detection 05" (1292149) - ignored aura type 17
 	// https://www.wowhead.com/forever/spell=1292149
+	// Not simulated: Medal of Courage: "Resist Fear 02" (1324578) - ignored aura type 117
+	// https://www.wowhead.com/forever/spell=1324578
 	// Not simulated: Mask of Thero-shan: "Stealth 06" (17746) - ignored aura type 154
 	// https://www.wowhead.com/forever/spell=17746
 	// Not simulated: Nightscape Boots: "Stealth 06" (17746) - ignored aura type 154

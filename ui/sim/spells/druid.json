@@ -137,28 +137,28 @@
 		"file": "sim/druid/wrath.go",
 		"note": "Client 70009 raised Wrath by about half over 69893, still well under Classic's from rank 3 up (rank 8 248-277 -> 92-102, 62-69 in 69893), with a third less mana (rank 8 180 -> 120) and no downranking penalty (ranks 1-3 .123/.231/.443 -> .429/.486/.571). Cast times are Classic's; #450 registers every rank.",
 		"source": "forever",
-		"tooltip": "20 Mana\n1.7 sec cast\nCauses 24 to 28 Nature damage to the target."
+		"tooltip": "20 Mana\n1.7 sec cast\nCauses 21 to 24 Nature damage to the target."
 	},
 	"5178": {
 		"ability": "Wrath",
 		"file": "sim/druid/wrath.go",
 		"note": "Client 70009 raised Wrath by about half over 69893, still well under Classic's from rank 3 up (rank 8 248-277 -> 92-102, 62-69 in 69893), with a third less mana (rank 8 180 -> 120) and no downranking penalty (ranks 1-3 .123/.231/.443 -> .429/.486/.571). Cast times are Classic's; #450 registers every rank.",
 		"source": "forever",
-		"tooltip": "40 Mana\n2 sec cast\nCauses 31 to 37 Nature damage to the target."
+		"tooltip": "40 Mana\n2 sec cast\nCauses 31 to 36 Nature damage to the target."
 	},
 	"5179": {
 		"ability": "Wrath",
 		"file": "sim/druid/wrath.go",
 		"note": "Client 70009 raised Wrath by about half over 69893, still well under Classic's from rank 3 up (rank 8 248-277 -> 92-102, 62-69 in 69893), with a third less mana (rank 8 180 -> 120) and no downranking penalty (ranks 1-3 .123/.231/.443 -> .429/.486/.571). Cast times are Classic's; #450 registers every rank.",
 		"source": "forever",
-		"tooltip": "50 Mana\n2 sec cast\nCauses 40 to 46 Nature damage to the target."
+		"tooltip": "50 Mana\n2 sec cast\nCauses 38 to 43 Nature damage to the target."
 	},
 	"5180": {
 		"ability": "Wrath",
 		"file": "sim/druid/wrath.go",
 		"note": "Client 70009 raised Wrath by about half over 69893, still well under Classic's from rank 3 up (rank 8 248-277 -> 92-102, 62-69 in 69893), with a third less mana (rank 8 180 -> 120) and no downranking penalty (ranks 1-3 .123/.231/.443 -> .429/.486/.571). Cast times are Classic's; #450 registers every rank.",
 		"source": "forever",
-		"tooltip": "70 Mana\n2 sec cast\nCauses 47 to 53 Nature damage to the target."
+		"tooltip": "70 Mana\n2 sec cast\nCauses 46 to 52 Nature damage to the target."
 	},
 	"5229": {
 		"ability": "Enrage",

@@ -33,7 +33,7 @@ func (druid *Druid) registerFeralCombatTalents() {
 
 	// Tier 5
 	druid.applyImprovedShiftingPower()
-	druid.applyPredatoryInstincts()
+	druid.applyNaturalInstinct()
 	// Leader of the Pack implemented in druid.go
 
 	// Tier 6
@@ -64,18 +64,20 @@ func (druid *Druid) applyThickHide() {
 	druid.AddStat(stats.Armor, armor)
 }
 
-// Predatory Instincts: the client states it as extra critical strike damage on every ability the
+// Natural Instinct (Predatory Instincts before client 1.60.1.70291): the client states it as extra critical strike damage on every ability the
 // druid uses, which for a feral is its melee attacks.
-func (druid *Druid) applyPredatoryInstincts() {
-	if druid.Talents.PredatoryInstincts == 0 {
+func (druid *Druid) applyNaturalInstinct() {
+	if druid.Talents.NaturalInstinct == 0 {
 		return
 	}
 
+	// Client 1.60.1.70291 renamed the talent spell 1223242 Natural Instinct and gave it a second
+	// effect, spell healing from Intellect, which no damage sim reads (#758).
 	druid.AddStaticMod(core.SpellModConfig{
 		ClassMask:  DruidSpellsAll,
 		School:     core.SpellSchoolPhysical,
 		Kind:       core.SpellMod_CritMultiplier_Flat,
-		FloatValue: spellData.PredatoryInstincts.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_CRIT_DAMAGE_BONUS)).FractionAt(druid.Talents.PredatoryInstincts),
+		FloatValue: spellData.NaturalInstinct.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_CRIT_DAMAGE_BONUS)).FractionAt(druid.Talents.NaturalInstinct),
 	})
 }
 

@@ -21,6 +21,13 @@ import (
 // multiplier, a proc chance from a beta tooltip, a measured coefficient). Those are listed in
 // tooltipAllowed with the numbers alone, so a changed number on the same row still fails.
 var tooltipAllowed = map[int32][]float64{
+	// Client 1.60.1.70291 cut the low ranks' gain per level to fractions (#758). The tooltip rounds the gain,
+	// the store truncates it, so these rows read one point apart; beta logs should settle which the server does.
+	585:     {14},                                     // Smite rank 1
+	591:     {26},                                     // Smite rank 2
+	686:     {16},                                     // Shadow Bolt rank 1
+	5143:    {25},                                     // Arcane Missiles rank 2
+	5145:    {49},                                     // Arcane Missiles rank 4
 	10301:   {13.6},                                   // Retribution Aura: spell power share measured in game (#385)
 	14893:   {25},                                     // Inspiration: Classic's 25%, the client buff says 8% (assumed row)
 	17794:   {20},                                     // Improved Shadow Bolt: 4% a point, 20% at five

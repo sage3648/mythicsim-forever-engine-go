@@ -74,7 +74,7 @@
 		"file": "sim/priest/penance.go",
 		"note": "Beta client 1.60.1.70205: rank 3, learned at 50. 270 mana, 180 a bolt (1240730) at .285, the same 12 sec cooldown as rank 4 (Category 2414). Its bolt is larger than rank 4's 131 for less mana, so the Smite rotations cast this rank; Wowhead Forever (dataEnv 16) prints the same numbers. Forever has no downranking penalty, the coefficient is .285 at every rank.",
 		"source": "forever",
-		"tooltip": "270 Mana\nChanneled\n12 sec cooldown\nLaunches a volley of holy light at the target, causing 180 Holy damage to an enemy, or 482 healing to an ally, instantly and every 1 sec for 2 sec."
+		"tooltip": "270 Mana\nChanneled\n12 sec cooldown\nLaunches a volley of holy light at the target, causing 72 Holy damage to an enemy, or 279 healing to an ally, instantly and every 1 sec for 2 sec."
 	},
 	"1277328": {
 		"ability": "Dark Sacrifice",
@@ -102,7 +102,7 @@
 		"file": "sim/priest/penance.go",
 		"note": "Beta client 1.60.1.70009: rank 4, learned at 60 (ranks 1-3: 402174, 1240720, 1240721 at 30, 40, 50). 355 mana, 12 sec cooldown shared by every rank (Category 2414), 131 a bolt (1316993) at .285. The client's rank 3 bolt is 180, larger than rank 4's, so every rank is registered and the Smite rotations cast rank 3 (1240721). #464 lands the bolts on cast and at 1 and 2 sec, as the channel 1316994 states (2000 ms, a 1000 ms period that ticks on application), and #461 lets Improved Healing discount it; the healing half (1316991, 673) is not simulated, no spec heals with it.",
 		"source": "forever",
-		"tooltip": "355 Mana\nChanneled\n12 sec cooldown\nLaunches a volley of holy light at the target, causing 131 Holy damage to an enemy, or 673 healing to an ally, instantly and every 1 sec for 2 sec."
+		"tooltip": "385 Mana\nChanneled\n12 sec cooldown\nLaunches a volley of holy light at the target, causing 92 Holy damage to an enemy, or 425 healing to an ally, instantly and every 1 sec for 2 sec."
 	},
 	"14751": {
 		"ability": "Inner Focus",
@@ -402,7 +402,7 @@
 		"file": "sim/priest/smite.go",
 		"note": "Beta client 1.60.1.70009: rank 8 384-429 -> 166-186, lower from rank 3 up, and no downranking penalty (ranks 1-3 .123/.271/.554 -> .429/.571/.714). Casts and costs are Classic's. Every rank is registered, and #449's smite_lowrank rotation drops to rank 2 when mana runs low.",
 		"source": "forever",
-		"tooltip": "20 Mana\n1.5 sec cast\nSmite an enemy for 15 to 19 Holy damage."
+		"tooltip": "20 Mana\n1.5 sec cast\nSmite an enemy for 14 to 18 Holy damage."
 	},
 	"589": {
 		"ability": "Shadow Word: Pain",
@@ -416,7 +416,7 @@
 		"file": "sim/priest/smite.go",
 		"note": "Beta client 1.60.1.70009: rank 8 384-429 -> 166-186, lower from rank 3 up, and no downranking penalty (ranks 1-3 .123/.271/.554 -> .429/.571/.714). Casts and costs are Classic's. Every rank is registered, and #449's smite_lowrank rotation drops to rank 2 when mana runs low.",
 		"source": "forever",
-		"tooltip": "30 Mana\n2 sec cast\nSmite an enemy for 28 to 34 Holy damage.",
+		"tooltip": "30 Mana\n2 sec cast\nSmite an enemy for 26 to 31 Holy damage.",
 		"measured": {
 			"date": "2026-09-19",
 			"how": "the client's own damage meter, levelling sessions on the beta",
@@ -442,7 +442,7 @@
 		"file": "sim/priest/smite.go",
 		"note": "Beta client 1.60.1.70009: rank 8 384-429 -> 166-186, lower from rank 3 up, and no downranking penalty (ranks 1-3 .123/.271/.554 -> .429/.571/.714). Casts and costs are Classic's. Every rank is registered, and #449's smite_lowrank rotation drops to rank 2 when mana runs low.",
 		"source": "forever",
-		"tooltip": "60 Mana\n2.5 sec cast\nSmite an enemy for 47 to 53 Holy damage."
+		"tooltip": "60 Mana\n2.5 sec cast\nSmite an enemy for 44 to 51 Holy damage."
 	},
 	"6060": {
 		"ability": "Smite",
@@ -511,7 +511,7 @@
 		"file": "sim/priest/smite.go",
 		"note": "Beta client 1.60.1.70009: rank 8 384-429 -> 166-186, lower from rank 3 up, and no downranking penalty (ranks 1-3 .123/.271/.554 -> .429/.571/.714). Casts and costs are Classic's. Every rank is registered, and #449's smite_lowrank rotation drops to rank 2 when mana runs low.",
 		"source": "forever",
-		"tooltip": "95 Mana\n2.5 sec cast\nSmite an enemy for 59 to 69 Holy damage."
+		"tooltip": "95 Mana\n2.5 sec cast\nSmite an enemy for 59 to 68 Holy damage."
 	},
 	"992": {
 		"ability": "Shadow Word: Pain",

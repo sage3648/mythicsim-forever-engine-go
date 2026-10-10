@@ -26,8 +26,8 @@ func TestEffectLines(t *testing.T) {
 			name:    "school damage that rolls and scales",
 			id:      116,
 			effect:  2,
-			human:   "19.894737–22.105263 frost damage to the enemy (at level 60, +0.407 spell power)",
-			literal: "E_SCHOOL_DAMAGE base=19 ppl=0.5 variance=0.10526316 sp=0.407 target=[6,0]",
+			human:   "18–20 frost damage to the enemy (at level 60, +0.407 spell power)",
+			literal: "E_SCHOOL_DAMAGE base=19 ppl=0.2 variance=0.10526316 sp=0.407 target=[6,0]",
 		},
 		{
 			name:    "normalised weapon damage over an area",
@@ -90,8 +90,8 @@ func TestEffectLines(t *testing.T) {
 			name:    "a heal that rolls and scales",
 			id:      2050,
 			effect:  1,
-			human:   "46.901962–57.098038 healing to the friendly target (at level 60, +0.429 spell power)",
-			literal: "E_HEAL base=51 ppl=0.9 variance=0.19607843 sp=0.429 amplitude=1 target=[21,0]",
+			human:   "46–56 healing to the friendly target (at level 60, +0.429 spell power)",
+			literal: "E_HEAL base=51 ppl=0.3 variance=0.19607843 sp=0.429 amplitude=1 target=[21,0]",
 		},
 		{
 			name:    "rage off the client's 0-1000 bar",

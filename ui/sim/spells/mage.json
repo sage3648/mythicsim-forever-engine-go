@@ -129,7 +129,7 @@
 		"file": "sim/mage/frostbolt.go",
 		"note": "Beta client 1.60.1.70009: lower damage from rank 3 up (rank 11 515-555 -> 457-493) and the low ranks lost their downranking penalty (rank 1 coefficient .163 -> .407). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "25 Mana\n1.5 sec cast\nLaunches a bolt of frost at the enemy, causing 20 to 22 Frost damage and slowing movement speed by 40%."
+		"tooltip": "25 Mana\n1.5 sec cast\nLaunches a bolt of frost at the enemy, causing 19 to 21  Frost damage and slowing movement speed by 40% for 5 sec."
 	},
 	"12042": {
 		"ability": "Arcane Power",
@@ -211,7 +211,7 @@
 		"file": "sim/mage/fireball.go",
 		"note": "Beta client 1.60.1.70009: lower damage at every rank from 2 up (rank 12 596-760 -> 425-541, dot 76 -> 60) and no downranking penalty (rank 1 coefficient .123 -> .429). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "30 Mana\n1.5 sec cast\nHurls a fiery ball that causes 16 to 24 Fire damage and an additional 2 Fire damage over 4 sec."
+		"tooltip": "30 Mana\n1.5 sec cast\nHurls a fiery ball that causes 15 to 23 Fire damage and an additional 2 Fire damage over 4 sec."
 	},
 	"143": {
 		"ability": "Fireball",
@@ -245,7 +245,7 @@
 		"file": "sim/mage/frostbolt.go",
 		"note": "Beta client 1.60.1.70009: lower damage from rank 3 up (rank 11 515-555 -> 457-493) and the low ranks lost their downranking penalty (rank 1 coefficient .163 -> .407). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "35 Mana\n1.8 sec cast\nLaunches a bolt of frost at the enemy, causing 33 to 37 Frost damage and slowing movement speed by 40%.",
+		"tooltip": "35 Mana\n1.8 sec cast\nLaunches a bolt of frost at the enemy, causing 28 to 32  Frost damage and slowing movement speed by 40% for 6 sec.",
 		"measured": {
 			"date": "2026-09-19",
 			"how": "the client's own damage meter, levelling sessions on the beta",
@@ -325,7 +325,7 @@
 		"file": "sim/mage/fireball.go",
 		"note": "Beta client 1.60.1.70009: lower damage at every rank from 2 up (rank 12 596-760 -> 425-541, dot 76 -> 60) and no downranking penalty (rank 1 coefficient .123 -> .429). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "95 Mana\n3 sec cast\nHurls a fiery ball that causes 66 to 90 Fire damage and an additional 12 Fire damage over 8 sec."
+		"tooltip": "95 Mana\n3 sec cast\nHurls a fiery ball that causes 68 to 93 Fire damage and an additional 12 Fire damage over 8 sec."
 	},
 	"400625": {
 		"ability": "Heating Up",
@@ -379,21 +379,21 @@
 		"file": "sim/mage/arcane_missiles.go",
 		"note": "Beta client 1.60.1.70009, from the missile spells each rank triggers: less damage per missile (rank 8 230 -> 209) but a .286 coefficient per missile at every rank, up from .24. #448 registers every rank, each with its own missile.",
 		"source": "forever",
-		"tooltip": "140 Mana\nChanneled\nLaunches Arcane Missiles at the enemy, causing 32 Arcane damage each second for 4 sec."
+		"tooltip": "140 Mana\nChanneled\nLaunches Arcane Missiles at the enemy, causing 35 Arcane damage each second for 4 sec."
 	},
 	"5145": {
 		"ability": "Arcane Missiles",
 		"file": "sim/mage/arcane_missiles.go",
 		"note": "Beta client 1.60.1.70009, from the missile spells each rank triggers: less damage per missile (rank 8 230 -> 209) but a .286 coefficient per missile at every rank, up from .24. #448 registers every rank, each with its own missile.",
 		"source": "forever",
-		"tooltip": "235 Mana\nChanneled\nLaunches Arcane Missiles at the enemy, causing 46 Arcane damage each second for 5 sec."
+		"tooltip": "235 Mana\nChanneled\nLaunches Arcane Missiles at the enemy, causing 49 Arcane damage each second for 5 sec."
 	},
 	"7322": {
 		"ability": "Frostbolt",
 		"file": "sim/mage/frostbolt.go",
 		"note": "Beta client 1.60.1.70009: lower damage from rank 3 up (rank 11 515-555 -> 457-493) and the low ranks lost their downranking penalty (rank 1 coefficient .163 -> .407). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "65 Mana\n2.6 sec cast\nLaunches a bolt of frost at the enemy, causing 61 to 67 Frost damage and slowing movement speed by 40%."
+		"tooltip": "65 Mana\n2.6 sec cast\nLaunches a bolt of frost at the enemy, causing 70 to 77 Frost damage and slowing movement speed by 40%."
 	},
 	"837": {
 		"ability": "Frostbolt",
@@ -407,7 +407,7 @@
 		"file": "sim/mage/fireball.go",
 		"note": "Beta client 1.60.1.70009: lower damage at every rank from 2 up (rank 12 596-760 -> 425-541, dot 76 -> 60) and no downranking penalty (rank 1 coefficient .123 -> .429). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "140 Mana\n3.5 sec cast\nHurls a fiery ball that causes 97 to 131 Fire damage and an additional 16 Fire damage over 8 sec."
+		"tooltip": "140 Mana\n3.5 sec cast\nHurls a fiery ball that causes 108 to 143 Fire damage and an additional 16 Fire damage over 8 sec."
 	},
 	"8401": {
 		"ability": "Fireball",
@@ -428,7 +428,7 @@
 		"file": "sim/mage/frostbolt.go",
 		"note": "Beta client 1.60.1.70009: lower damage from rank 3 up (rank 11 515-555 -> 457-493) and the low ranks lost their downranking penalty (rank 1 coefficient .163 -> .407). Cast times and costs are Classic's. #448 registers every rank, so a rotation can drop to a cheaper one.",
 		"source": "forever",
-		"tooltip": "100 Mana\n3 sec cast\nLaunches a bolt of frost at the enemy, causing 96 to 106 Frost damage and slowing movement speed by 40%."
+		"tooltip": "100 Mana\n3 sec cast\nLaunches a bolt of frost at the enemy, causing 104 to 114  Frost damage and slowing movement speed by 40% for 7 sec."
 	},
 	"8407": {
 		"ability": "Frostbolt",

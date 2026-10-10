@@ -4104,7 +4104,7 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 	[
 		268484, // Moonsilver Blade
 		[
-			"Sear certain enchanted targets with blazing light causing it to take additional damage from holy attacks and spells", // 1282482 - https://www.wowhead.com/forever/spell=1282482
+			"Sear certain enchanted targets with blazing light causing them to take additional damage from Holy attacks and spells.", // 1282482 - https://www.wowhead.com/forever/spell=1282482
 		]
 	],
 	[
@@ -4361,6 +4361,18 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 		]
 	],
 	[
+		273041, // Slitherwrap Girdle
+		[
+			"When struck in combat, drain 2 mana from the attacker.", // 1292706 - https://www.wowhead.com/forever/spell=1292706
+		]
+	],
+	[
+		273044, // Violet Sorcerer's Robes
+		[
+			"When damaged, has a chance to reduce threat level on all enemies by a small amount for 10s.", // 12685 - https://www.wowhead.com/forever/spell=12685
+		]
+	],
+	[
 		273084, // Cloak of Hermitic Bliss
 		[
 			"Swim speed increased by 33%.", // 1291749 - https://www.wowhead.com/forever/spell=1291749
@@ -4586,7 +4598,7 @@ export const MISSING_ITEM_EFFECTS = new Map<number, string[]>([
 	[
 		274963, // Rot-Covered Harpoon
 		[
-			"Diseases target for 25 Nature damage every 1.0 sec for 7s. Deals 2 times as much damage to Aquatic enemies.", // 1295744 - https://www.wowhead.com/forever/spell=1295744
+			"Diseases target for 24 Nature damage every 1.0 sec for 7s. Deals 2 times as much damage to Aquatic enemies.", // 1295744 - https://www.wowhead.com/forever/spell=1295744
 		]
 	],
 	[

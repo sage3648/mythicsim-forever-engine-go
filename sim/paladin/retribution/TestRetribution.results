@@ -276,8 +276,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 393.82941
-  tps: 238.11739
+  dps: 390.05458
+  tps: 236.00348
  }
 }
 dps_results: {
@@ -643,6 +643,13 @@ dps_results: {
  value: {
   dps: 390.34583
   tps: 236.154
+ }
+}
+dps_results: {
+ key: "TestRetribution-AllItems-Guardian'sDualblade-273046"
+ value: {
+  dps: 390.13114
+  tps: 236.03377
  }
 }
 dps_results: {

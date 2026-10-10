@@ -18,21 +18,21 @@
 		"file": "sim/shaman/lightning_bolt.go",
 		"note": "Rank 2. Beta client 1.60.1.70009 (sim/core/spelldata), damage scaled to level 60 by the client's per-level points. Spell power coefficient 0.571; Classic Era had 0.314, a 3 sec cast from rank 4 up and about twice the damage at the upper ranks.",
 		"source": "forever",
-		"tooltip": "30 Mana\n30 yd range\n2 sec cast\nCasts a bolt of lightning at the target for 29 to 33 Nature damage."
+		"tooltip": "30 Mana\n30 yd range\n2 sec cast\nCasts a bolt of lightning at the target for 26 to 29 Nature damage."
 	},
 	"548": {
 		"ability": "Lightning Bolt",
 		"file": "sim/shaman/lightning_bolt.go",
 		"note": "Rank 3. Beta client 1.60.1.70009 (sim/core/spelldata), damage scaled to level 60 by the client's per-level points; build 70009 raised its base points from 35 to 45 (#441). Spell power coefficient 0.714; Classic Era had 0.554, a 3 sec cast from rank 4 up and about twice the damage at the upper ranks.",
 		"source": "forever",
-		"tooltip": "45 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 44 to 52 Nature damage."
+		"tooltip": "45 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 43 to 50 Nature damage."
 	},
 	"915": {
 		"ability": "Lightning Bolt",
 		"file": "sim/shaman/lightning_bolt.go",
 		"note": "Rank 4. Beta client 1.60.1.70009 (sim/core/spelldata), damage scaled to level 60 by the client's per-level points; build 70009 raised its base points from 50 to 56 (#441). Spell power coefficient 0.714; Classic Era had 0.857, a 3 sec cast from rank 4 up and about twice the damage at the upper ranks.",
 		"source": "forever",
-		"tooltip": "60 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 55 to 63 Nature damage."
+		"tooltip": "60 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 59 to 67 Nature damage."
 	},
 	"930": {
 		"ability": "Chain Lightning",
@@ -46,7 +46,7 @@
 		"file": "sim/shaman/lightning_bolt.go",
 		"note": "Rank 5. Beta client 1.60.1.70009 (sim/core/spelldata), damage scaled to level 60 by the client's per-level points. Spell power coefficient 0.714; Classic Era had 0.857, a 3 sec cast from rank 4 up and about twice the damage at the upper ranks.",
 		"source": "forever",
-		"tooltip": "85 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 70 to 80 Nature damage."
+		"tooltip": "85 Mana\n30 yd range\n2.5 sec cast\nCasts a bolt of lightning at the target for 79 to 90 Nature damage."
 	},
 	"2860": {
 		"ability": "Chain Lightning",
@@ -274,7 +274,7 @@
 		"file": "sim/shaman/shields.go",
 		"note": "Beta client 1.60.1.70009 408510: no mana cost, 15 sec cooldown, 3 charges, 3.5 sec proc recovery, 2% of maximum mana per globe (408511).",
 		"source": "forever",
-		"tooltip": "Instant\n15 sec cooldown\nThe caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every 3.5 sec. Lasts 10 min. Only one Elemental Shield can be active on the Shaman at any one time."
+		"tooltip": "Instant\nThe caster is surrounded by 3 globes of water. When a spell, melee, or ranged attack hits the caster or when one of the caster's healing spells gets a critical result, 2% of maximum mana is restored to the caster, expending one water globe. Only one globe will activate every few seconds. Lasts 10 min. Only one Elemental Shield can be active on the Shaman at any one time."
 	},
 	"425336": {
 		"ability": "Rage of the Farseer",

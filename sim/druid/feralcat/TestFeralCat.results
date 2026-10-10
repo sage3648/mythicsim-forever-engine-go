@@ -241,8 +241,8 @@ dps_results: {
 dps_results: {
  key: "TestFeralCat-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 272.08703
-  tps: 153.83859
+  dps: 263.58141
+  tps: 149.6113
  }
 }
 dps_results: {
@@ -600,6 +600,13 @@ dps_results: {
  value: {
   dps: 260.74621
   tps: 148.20221
+ }
+}
+dps_results: {
+ key: "TestFeralCat-AllItems-HowlingIdol-272427"
+ value: {
+  dps: 267.75135
+  tps: 154.33978
  }
 }
 dps_results: {

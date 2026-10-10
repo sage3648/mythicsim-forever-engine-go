@@ -4,7 +4,7 @@
 		"file": "sim/warlock/shadowbolt.go",
 		"note": "Forever roughly halved the damage and removed the low rank coefficient penalty. Every rank is registered since #447, so a low-rank rotation can cast it. Values from the beta client 1.60.1.70009.",
 		"source": "forever",
-		"tooltip": "110 Mana\n3 sec cast\nSends a shadowy bolt at the enemy, causing 56 to 64 Shadow damage."
+		"tooltip": "110 Mana\n3 sec cast\nSends a shadowy bolt at the enemy, causing 58 to 66 Shadow damage."
 	},
 	"1106": {
 		"ability": "Shadow Bolt",
@@ -293,7 +293,7 @@
 		"file": "sim/warlock/shadowbolt.go",
 		"note": "Forever roughly halved the damage and removed the low rank coefficient penalty. Every rank is registered since #447, so a low-rank rotation can cast it. Values from the beta client 1.60.1.70009.",
 		"source": "forever",
-		"tooltip": "40 Mana\n2.2 sec cast\nSends a shadowy bolt at the enemy, causing 25 to 31 Shadow damage.",
+		"tooltip": "40 Mana\n2.2 sec cast\nSends a shadowy bolt at the enemy, causing 22 to 27 Shadow damage.",
 		"measured": {
 			"date": "2026-09-19",
 			"how": "the client's own damage meter, levelling sessions on the beta",
@@ -306,7 +306,7 @@
 		"file": "sim/warlock/shadowbolt.go",
 		"note": "Forever roughly halved the damage and removed the low rank coefficient penalty. Every rank is registered since #447, so a low-rank rotation can cast it. Values from the beta client 1.60.1.70009.",
 		"source": "forever",
-		"tooltip": "70 Mana\n2.8 sec cast\nSends a shadowy bolt at the enemy, causing 41 to 47 Shadow damage."
+		"tooltip": "70 Mana\n2.8 sec cast\nSends a shadowy bolt at the enemy, causing 40 to 46 Shadow damage."
 	},
 	"7641": {
 		"ability": "Shadow Bolt",

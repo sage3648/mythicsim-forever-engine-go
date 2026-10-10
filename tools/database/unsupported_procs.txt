@@ -109,3 +109,6 @@
 1318323 states no rate
 1321560 ProcTypeMask bit 34; no callback in the proc mask
 1321587 states no rate
+1324298 states no rate
+1324318 states no rate
+1324323 states no rate

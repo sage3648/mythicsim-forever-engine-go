@@ -317,8 +317,8 @@ dps_results: {
 dps_results: {
  key: "TestFury-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 326.31309
-  tps: 209.30012
+  dps: 320.16478
+  tps: 205.85707
  }
 }
 dps_results: {
@@ -702,6 +702,13 @@ dps_results: {
 }
 dps_results: {
  key: "TestFury-AllItems-GreenDragonMail"
+ value: {
+  dps: 318.11534
+  tps: 204.70938
+ }
+}
+dps_results: {
+ key: "TestFury-AllItems-Guardian'sDualblade-273046"
  value: {
   dps: 318.11534
   tps: 204.70938

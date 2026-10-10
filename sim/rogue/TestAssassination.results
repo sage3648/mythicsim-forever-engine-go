@@ -191,8 +191,8 @@ dps_results: {
 dps_results: {
  key: "TestAssassination-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 343.38481
-  tps: 170.66225
+  dps: 334.55617
+  tps: 166.27441
  }
 }
 dps_results: {

@@ -275,8 +275,8 @@ dps_results: {
 dps_results: {
  key: "TestBeastMastery-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 410.72823
-  tps: 223.73501
+  dps: 407.33418
+  tps: 221.35917
  }
 }
 dps_results: {
@@ -669,6 +669,13 @@ dps_results: {
  value: {
   dps: 415.72414
   tps: 226.75923
+ }
+}
+dps_results: {
+ key: "TestBeastMastery-AllItems-Guardian'sDualblade-273046"
+ value: {
+  dps: 406.22806
+  tps: 220.58488
  }
 }
 dps_results: {

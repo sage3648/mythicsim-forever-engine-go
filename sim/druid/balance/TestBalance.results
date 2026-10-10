@@ -184,8 +184,8 @@ dps_results: {
 dps_results: {
  key: "TestBalance-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 193.69068
-  tps: 102.06277
+  dps: 191.14247
+  tps: 100.27902
  }
 }
 dps_results: {
@@ -547,6 +547,13 @@ dps_results: {
 }
 dps_results: {
  key: "TestBalance-AllItems-HibernationCrystal-20636"
+ value: {
+  dps: 186.69889
+  tps: 97.79218
+ }
+}
+dps_results: {
+ key: "TestBalance-AllItems-HowlingIdol-272427"
  value: {
   dps: 186.69889
   tps: 97.79218

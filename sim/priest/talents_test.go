@@ -45,8 +45,8 @@ func TestImprovedHealingDiscountsPenance(t *testing.T) {
 	}
 }
 
-// The Smite rotations cast the Penance rank whose bolt is largest: rank 3 in client 1.60.1.70205
-// (180 against rank 4's 131, same coefficient, less mana). A client update that reorders the bolts
+// The Smite rotations cast the Penance rank whose bolt is largest: rank 4 since client 1.60.1.70291 (92
+// against rank 3's 72; in 1.60.1.70205 it was rank 3, 180 against 131). A client update that reorders the bolts
 // fails here, and the rotations' Penance id wants changing with it.
 func TestSmiteRotationsCastTheLargestPenanceRank(t *testing.T) {
 	var best *spelldata.Spell

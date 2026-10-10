@@ -639,8 +639,8 @@ func TestGeneratedThornsStrikesBackAtAMeleeHit(t *testing.T) {
 	char := sim.Raid.Parties[0].Players[0].GetCharacter()
 	attacker := sim.Encounter.AllTargetUnits[0]
 
-	if buffs.ThornsValue(0) != 22 {
-		t.Errorf("Thorns is worth %v, want the client's 22", buffs.ThornsValue(0))
+	if buffs.ThornsValue(0) != 18 {
+		t.Errorf("Thorns is worth %v, want the client's 18", buffs.ThornsValue(0))
 	}
 
 	aura := char.GetAura("Thorns (External)")
@@ -666,8 +666,8 @@ func TestGeneratedThornsStrikesBackAtAMeleeHit(t *testing.T) {
 	if got := shield.SpellMetrics[attacker.UnitIndex].Casts; got != 1 {
 		t.Errorf("a melee hit taken cast the shield %d times, want once", got)
 	}
-	if got := shield.SpellMetrics[attacker.UnitIndex].TotalDamage; got != 22 {
-		t.Errorf("the shield dealt %v damage, want the client's 22", got)
+	if got := shield.SpellMetrics[attacker.UnitIndex].TotalDamage; got != 18 {
+		t.Errorf("the shield dealt %v damage, want the client's 18", got)
 	}
 
 	caster := sim.Raid.Parties[0].Players[0].(*core.FakeAgent)
@@ -690,13 +690,13 @@ func TestGeneratedRetributionAuraHoldsThePaladinSlot(t *testing.T) {
 	if external == nil {
 		t.Fatalf("no aura is labelled %q; the unit has %v", "Retribution Aura (External)", auraLabels(char))
 	}
-	if buffs.RetributionAuraValue(0) != 30 {
-		t.Errorf("the aura is worth %v holy damage, want the client's 30", buffs.RetributionAuraValue(0))
+	if buffs.RetributionAuraValue(0) != 20 {
+		t.Errorf("the aura is worth %v holy damage, want the client's 20", buffs.RetributionAuraValue(0))
 	}
 
 	category := char.ExclusiveEffectManager.GetExclusiveEffectCategory(buffs.RetributionAuraCategory)
-	if !category.SingleAura || len(category.Effects()) != 1 || category.Effects()[0].Priority != 30 {
-		t.Errorf("the category is single-aura %v with %d effects, first bid %v; want one bidding 30",
+	if !category.SingleAura || len(category.Effects()) != 1 || category.Effects()[0].Priority != 20 {
+		t.Errorf("the category is single-aura %v with %d effects, first bid %v; want one bidding 20",
 			category.SingleAura, len(category.Effects()), category.Effects()[0].Priority)
 	}
 	if shared := char.ExclusiveEffectManager.GetExclusiveEffectCategory(buffs.PaladinAuraCategory); len(shared.Effects()) != 0 {

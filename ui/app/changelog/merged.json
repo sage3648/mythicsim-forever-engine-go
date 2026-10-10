@@ -1,5 +1,41 @@
 [
 	{
+		"number": 762,
+		"title": "Update DB: read client 70291+'s new armor aura, follow two renames (#758)",
+		"mergedAt": "2026-10-10",
+		"url": "https://github.com/ElliotWood/Forever/pull/762"
+	},
+	{
+		"number": 761,
+		"title": "Forever client build 1.60.1.70338",
+		"mergedAt": "2026-10-10",
+		"url": "https://github.com/ElliotWood/Forever/pull/761"
+	},
+	{
+		"number": 760,
+		"title": "Forever client build 1.60.1.70334",
+		"mergedAt": "2026-10-10",
+		"url": "https://github.com/ElliotWood/Forever/pull/760"
+	},
+	{
+		"number": 759,
+		"title": "Wowhead Forever data changed (2026-10-10)",
+		"mergedAt": "2026-10-10",
+		"url": "https://github.com/ElliotWood/Forever/pull/759"
+	},
+	{
+		"number": 757,
+		"title": "Forever client build 1.60.1.70291",
+		"mergedAt": "2026-10-09",
+		"url": "https://github.com/ElliotWood/Forever/pull/757"
+	},
+	{
+		"number": 756,
+		"title": "Wowhead Forever data changed (2026-10-09)",
+		"mergedAt": "2026-10-09",
+		"url": "https://github.com/ElliotWood/Forever/pull/756"
+	},
+	{
 		"number": 754,
 		"title": "paladin: Hammer of the Righteous hits 4 targets, cast on 2+ targets",
 		"mergedAt": "2026-10-08",

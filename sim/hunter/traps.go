@@ -87,7 +87,7 @@ func (hunter *Hunter) registerExplosiveTrapSpell() {
 
 func (hunter *Hunter) registerImmolationTrapSpell() {
 	rank := spellData.ImmolationTrap.Highest()
-	effect := spellData.ImmolationTrapEffect.Rank(rank.RankNumber())
+	effect := spellData.ImmolationTrapTriggered.Rank(rank.RankNumber())
 	tick := effect.PeriodicEffect()
 
 	hunter.ImmolationTrap = hunter.RegisterSpell(core.SpellConfig{

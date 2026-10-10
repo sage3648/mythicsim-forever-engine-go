@@ -191,8 +191,8 @@ dps_results: {
 dps_results: {
  key: "TestSubtlety-AllItems-CursedMurlocEye-273840"
  value: {
-  dps: 301.03519
-  tps: 149.61449
+  dps: 292.95294
+  tps: 145.59761
  }
 }
 dps_results: {
