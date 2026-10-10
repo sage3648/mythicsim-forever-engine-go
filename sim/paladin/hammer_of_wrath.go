@@ -40,10 +40,11 @@ func (paladin *Paladin) registerHammerOfWrath(_ int32, rank *spelldata.Spell) {
 				Duration: cooldown(rank),
 			},
 			ModifyCast: func(sim *core.Simulation, spell *core.Spell, cast *core.Cast) {
-				// Only a cast pauses the swing; once Instrument of Law makes it instant, stopping
-				// "until now" would restart the whole swing timer.
+				// Only a hard cast holds the swing (HoldMeleeForCast, the Forever rule the Shaman bolts
+				// follow): a swing due mid-cast lands as the cast completes. Once Instrument of Law makes
+				// it instant, the swing timer is left alone.
 				if castTime := paladin.ApplyCastSpeedForSpell(cast.CastTime, spell); castTime > 0 {
-					paladin.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime+castTime)
+					paladin.AutoAttacks.HoldMeleeForCast(sim, sim.CurrentTime+castTime)
 				}
 			},
 		},
