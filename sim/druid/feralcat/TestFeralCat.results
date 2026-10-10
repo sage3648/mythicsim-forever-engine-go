@@ -603,6 +603,13 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestFeralCat-AllItems-HowlingIdol-272427"
+ value: {
+  dps: 267.75135
+  tps: 154.33978
+ }
+}
+dps_results: {
  key: "TestFeralCat-AllItems-IdolofBrutality-23198"
  value: {
   dps: 260.74621

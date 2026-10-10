@@ -1,6 +1,8 @@
 package druid
 
 import (
+	"time"
+
 	"github.com/wowsims/forever/sim/core"
 )
 
@@ -63,5 +65,14 @@ func init() {
 				druid.WolfsheadEnrageRage -= 5
 			},
 		}))
+	})
+
+	// Howling Idol (272427): "Reduces the cooldown of your Shifting Power ability by 1 sec" (spell 1291059).
+	core.NewItemEffect(272427, func(agent core.Agent) {
+		agent.GetCharacter().AddStaticMod(core.SpellModConfig{
+			ClassMask: DruidSpellShiftingPower,
+			Kind:      core.SpellMod_Cooldown_Flat,
+			TimeValue: -time.Second,
+		})
 	})
 }

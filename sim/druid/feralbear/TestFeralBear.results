@@ -673,6 +673,14 @@ dps_results: {
  }
 }
 dps_results: {
+ key: "TestFeralBear-AllItems-HowlingIdol-272427"
+ value: {
+  dps: 172.14924
+  tps: 442.0607
+  dtps: 1626.56518
+ }
+}
+dps_results: {
  key: "TestFeralBear-AllItems-IdolofBrutality-23198"
  value: {
   dps: 187.31652
