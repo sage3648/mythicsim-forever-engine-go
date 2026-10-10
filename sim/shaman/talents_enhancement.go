@@ -162,9 +162,13 @@ func (shaman *Shaman) applyThunderingStrikes() {
 		return
 	}
 
+	// The talent is a weapon-attack crit (spell 16255's tooltip in assets/db_inputs/wowhead_spell_tooltips.csv:
+	// "with your weapon attacks"), so the static mod is limited to melee; unfiltered, it also raised every
+	// spell's crit.
 	shaman.AddStaticMod(core.SpellModConfig{
 		Kind:       core.SpellMod_BonusCrit_Percent,
 		FloatValue: spellData.ThunderingStrikes.ValueAt(shaman.Talents.ThunderingStrikes),
+		ProcMask:   core.ProcMaskMelee,
 	})
 }
 
