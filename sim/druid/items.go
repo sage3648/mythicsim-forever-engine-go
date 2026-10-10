@@ -1,6 +1,8 @@
 package druid
 
 import (
+	"time"
+
 	"github.com/wowsims/forever/sim/core"
 )
 
@@ -44,6 +46,19 @@ func init() {
 			ClassMask: DruidSpellMaul | DruidSpellSwipe | DruidSpellPrimalBite,
 			Kind:      core.SpellMod_PowerCost_Flat,
 			IntValue:  -2,
+		})
+	})
+
+	// Howling Idol
+	// https://www.wowhead.com/forever/item=272427/howling-idol
+	//
+	// "Reduces the cooldown of your Shifting Power ability by 1 sec." (1291059: A_ADD_FLAT_MODIFIER,
+	// SPELLMOD_COOLDOWN, -1000 ms on Shifting Power's class mask). Stacks with Improved Shifting Power.
+	core.NewItemEffect(272427, func(agent core.Agent) {
+		agent.GetCharacter().AddStaticMod(core.SpellModConfig{
+			ClassMask: DruidSpellShiftingPower,
+			Kind:      core.SpellMod_Cooldown_Flat,
+			TimeValue: -time.Second,
 		})
 	})
 
