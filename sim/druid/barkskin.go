@@ -36,11 +36,9 @@ func (druid *Druid) registerBarkskin() {
 			},
 		},
 
+		// An instant: it leaves the melee swing alone.
 		ApplyEffects: func(sim *core.Simulation, _ *core.Unit, _ *core.Spell) {
 			barkskinAura.Activate(sim)
-			if sim.CurrentTime > 0 {
-				druid.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime)
-			}
 		},
 
 		RelatedSelfBuff: barkskinAura,
