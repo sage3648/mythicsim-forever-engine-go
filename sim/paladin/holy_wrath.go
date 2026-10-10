@@ -37,10 +37,6 @@ func (paladin *Paladin) registerHolyWrath(_ int32, rank *spelldata.Spell) {
 				Timer:    paladin.sharedTimer(&paladin.holyWrathTimer),
 				Duration: cooldown(rank),
 			},
-			ModifyCast: func(sim *core.Simulation, spell *core.Spell, cast *core.Cast) {
-				castTime := paladin.ApplyCastSpeedForSpell(cast.CastTime, spell)
-				paladin.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime+castTime)
-			},
 		},
 
 		DamageMultiplier: 1,

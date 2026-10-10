@@ -953,7 +953,9 @@ const heldSwingLag = time.Nanosecond
 // HoldMeleeForCast is a hard cast against the melee swing timer in Forever: a swing that comes due
 // while the cast is going waits for it and lands as it completes, and a cast that completes first
 // resets the timer as if a swing had just landed. A swing landing now, such as one the previous
-// cast held, still lands. Instant casts should not call it.
+// cast held, still lands. A swing already set later than that (an explicit pause, such as a boss
+// stopping its melee for a cast) stays where it is, since a cast never moves a swing earlier.
+// makeCastFunc calls it when a hard cast starts; instant casts never reach it.
 func (aa *AutoAttacks) HoldMeleeForCast(sim *Simulation, castEnd time.Duration) {
 	if !aa.AutoSwingMelee { // if not auto swinging, don't auto restart.
 		return
@@ -966,7 +968,7 @@ func (aa *AutoAttacks) HoldMeleeForCast(sim *Simulation, castEnd time.Duration) 
 		case wa.swingAt <= castEnd:
 			wa.swingAt = castEnd + heldSwingLag
 		default:
-			wa.swingAt = castEnd + wa.curSwingDuration
+			wa.swingAt = max(wa.swingAt, castEnd+wa.curSwingDuration)
 		}
 		sim.rescheduleWeaponAttack(wa.swingAt)
 	}

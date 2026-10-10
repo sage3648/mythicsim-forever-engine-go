@@ -33,11 +33,9 @@ func (warrior *Warrior) registerSlam() {
 				Duration: cooldownOf(slamRank),
 			},
 			IgnoreHaste: true,
-			ModifyCast: func(sim *core.Simulation, spell *core.Spell, cast *core.Cast) {
-				if cast.CastTime > 0 && warrior.Talents.ImprovedSlam == 0 {
-					warrior.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime+cast.CastTime)
-				}
-			},
+			// docs/forever_rules.md: Slam no longer resets the swing timer. Being a hard cast, it
+			// would otherwise hold the swing like the rest.
+			LeavesMeleeSwing: true,
 		},
 
 		DamageMultiplier: 1,

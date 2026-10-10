@@ -39,13 +39,6 @@ func (paladin *Paladin) registerHammerOfWrath(_ int32, rank *spelldata.Spell) {
 				Timer:    paladin.sharedTimer(&paladin.hammerOfWrathTimer),
 				Duration: cooldown(rank),
 			},
-			ModifyCast: func(sim *core.Simulation, spell *core.Spell, cast *core.Cast) {
-				// Only a cast pauses the swing; once Instrument of Law makes it instant, stopping
-				// "until now" would restart the whole swing timer.
-				if castTime := paladin.ApplyCastSpeedForSpell(cast.CastTime, spell); castTime > 0 {
-					paladin.AutoAttacks.StopMeleeUntil(sim, sim.CurrentTime+castTime)
-				}
-			},
 		},
 
 		DamageMultiplier: 1,

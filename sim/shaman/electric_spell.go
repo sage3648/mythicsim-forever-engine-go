@@ -52,7 +52,6 @@ func (shaman *Shaman) newElectricSpellConfig(config ShamSpellConfig) core.SpellC
 				CastTime: config.BaseCastTime,
 				GCD:      core.GCDDefault,
 			},
-			ModifyCast: shaman.holdMeleeForCast,
 		},
 
 		DamageMultiplier: 1,
@@ -66,7 +65,6 @@ func (shaman *Shaman) newElectricSpellConfig(config ShamSpellConfig) core.SpellC
 		spell.Cast.DefaultCast.CastTime = 0
 		spell.Cast.DefaultCast.GCD = 0
 		spell.Cast.DefaultCast.Cost = 0
-		spell.Cast.ModifyCast = nil
 		spell.MetricSplits = 0
 		spell.ThreatMultiplier = 0
 	}

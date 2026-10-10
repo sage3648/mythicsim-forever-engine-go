@@ -49,6 +49,11 @@ type CastConfig struct {
 	// Automatically set if GCD and cast times are all 0, e.g. for empty casts.
 	IgnoreHaste bool
 
+	// The cast leaves the melee swing timer alone. Every other hard cast holds it (see
+	// AutoAttacks.HoldMeleeForCast). Slam sets it: docs/forever_rules.md has Slam never reset the
+	// swing timer.
+	LeavesMeleeSwing bool
+
 	CD       Cooldown
 	SharedCD Cooldown
 
@@ -209,6 +214,12 @@ func (spell *Spell) makeCastFunc(config CastConfig) CastSuccessFunc {
 			if sim.Log != nil && !spell.Flags.Matches(SpellFlagNoLogs) {
 				spell.Unit.Log(sim, "Casting %s (Cost = %0.03f, Cast Time = %s, GCD = %s, Effective Time = %s)",
 					spell.ActionID, max(0, spell.CurCast.Cost), spell.CurCast.CastTime, max(0, spell.CurCast.GCDTime()), spell.CurCast.EffectiveTime())
+			}
+
+			// Once the cast has started (every check above has passed), it holds the melee swing
+			// until it completes, with the hasted cast time it will complete at.
+			if !config.LeavesMeleeSwing {
+				spell.Unit.AutoAttacks.HoldMeleeForCast(sim, sim.CurrentTime+spell.CurCast.CastTime)
 			}
 
 			spell.Unit.Hardcast = Hardcast{

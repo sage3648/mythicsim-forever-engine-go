@@ -32,7 +32,6 @@ func (shaman *Shaman) registerLavaBurstSpell() {
 				GCD:      lavaBurstRank.GCD(),
 				CastTime: lavaBurstRank.CastTime(),
 			},
-			ModifyCast: shaman.holdMeleeForCast,
 			CD: core.Cooldown{
 				Timer:    shaman.NewTimer(),
 				Duration: max(lavaBurstRank.Cooldown(), lavaBurstRank.CategoryCooldown()),
