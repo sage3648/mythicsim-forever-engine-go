@@ -144,13 +144,19 @@ func (mage *Mage) registerIgnite() {
 	})
 }
 
-// registerFlameThrowing implements Flame Throwing, new in Forever.
-//
-// Not modelled: 11100 adds 3/6 yards to Fire spell range; the sim has no range to extend.
+// registerFlameThrowing implements Flame Throwing, new in Forever: 11100 adds 3/6 yards to the range
+// of the spells its class mask reaches, every targeted Fire spell of the mage's (not Blast Wave).
 func (mage *Mage) registerFlameThrowing() {
 	if mage.Talents.FlameThrowing == 0 {
 		return
 	}
+
+	mage.AddStaticMod(core.SpellModConfig{
+		ClassMask: MageSpellFireBlast | MageSpellFireball | MageSpellFlamestrike | MageSpellFrostfireBolt |
+			MageSpellPyroblast | MageSpellScorch,
+		FloatValue: spellData.FlameThrowing.Effect(dbcenums.A_ADD_FLAT_MODIFIER, int32(dbcenums.SPELLMOD_RANGE)).ValueAt(mage.Talents.FlameThrowing),
+		Kind:       core.SpellMod_Range_Flat,
+	})
 }
 
 // registerImpact implements Impact, new in Forever.

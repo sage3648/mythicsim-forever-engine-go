@@ -1334,8 +1334,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Dwarf-Weapon-DefaultTalents-Default-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 625.16006
-  tps: 701.23841
+  dps: 829.95054
+  tps: 959.82925
  }
 }
 dps_results: {
@@ -1355,8 +1355,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Dwarf-Weapon-DefaultTalents-Default-default-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 137.37164
-  tps: 228.89731
+  dps: 177.8139
+  tps: 196.72149
  }
 }
 dps_results: {
@@ -1376,8 +1376,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Dwarf-Weapon-Retribution 9/0/42-Default-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 598.81993
-  tps: 686.29972
+  dps: 825.83299
+  tps: 960.42453
  }
 }
 dps_results: {
@@ -1397,8 +1397,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Dwarf-Weapon-Retribution 9/0/42-Default-default-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 127.98813
-  tps: 194.16828
+  dps: 169.10252
+  tps: 167.1709
  }
 }
 dps_results: {
@@ -1418,8 +1418,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Human-Weapon-DefaultTalents-Default-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 627.06562
-  tps: 702.23005
+  dps: 830.95589
+  tps: 960.25976
  }
 }
 dps_results: {
@@ -1439,8 +1439,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Human-Weapon-DefaultTalents-Default-default-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 139.59937
-  tps: 235.86468
+  dps: 175.11982
+  tps: 188.57734
  }
 }
 dps_results: {
@@ -1460,8 +1460,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Human-Weapon-Retribution 9/0/42-Default-default-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 599.76209
-  tps: 686.82732
+  dps: 826.48112
+  tps: 960.29582
  }
 }
 dps_results: {
@@ -1481,8 +1481,8 @@ dps_results: {
 dps_results: {
  key: "TestRetribution-Settings-Human-Weapon-Retribution 9/0/42-Default-default-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 133.53802
-  tps: 208.97856
+  dps: 175.34887
+  tps: 183.05687
  }
 }
 dps_results: {

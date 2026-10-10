@@ -954,8 +954,8 @@ dps_results: {
 dps_results: {
  key: "TestFire-Settings-Gnome-Naked-MageArmor-fire-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 190.79589
-  tps: 401.42355
+  dps: 2833.76387
+  tps: 3189.53865
  }
 }
 dps_results: {
@@ -975,8 +975,8 @@ dps_results: {
 dps_results: {
  key: "TestFire-Settings-Gnome-Naked-MageArmor-fire-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 86.88971
-  tps: 192.61386
+  dps: 540.68639
+  tps: 610.57807
  }
 }
 dps_results: {
@@ -996,8 +996,8 @@ dps_results: {
 dps_results: {
  key: "TestFire-Settings-Troll-Naked-MageArmor-fire-FullBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 188.06497
-  tps: 401.67985
+  dps: 2465.33873
+  tps: 2798.24784
  }
 }
 dps_results: {
@@ -1017,8 +1017,8 @@ dps_results: {
 dps_results: {
  key: "TestFire-Settings-Troll-Naked-MageArmor-fire-NoBuffs-0.0yards-LongMultiTarget"
  value: {
-  dps: 83.08351
-  tps: 185.9246
+  dps: 529.18575
+  tps: 604.39111
  }
 }
 dps_results: {

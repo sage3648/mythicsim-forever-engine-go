@@ -208,3 +208,39 @@ func TestLifeTapAddsNoThreat(t *testing.T) {
 		t.Errorf("an ordinary 100 mana gain added %.1f threat, want 50", got)
 	}
 }
+
+// Destructive Reach (17917) adds 10/20% to the range of the warlock spells its client class mask
+// reaches, Affliction ones included but not Curse of Recklessness; it was an empty stub and the
+// spells carried no range, so a warlock cast from any distance.
+func TestDestructiveReachExtendsRange(t *testing.T) {
+	for _, c := range []struct {
+		talents string
+		spell   int32
+		want    float64
+	}{
+		{"", spellData.ShadowBolt.Highest().ID, 30},
+		{"", spellData.DrainLife.Highest().ID, 20},
+		{"--2", spellData.ShadowBolt.Highest().ID, 36},
+		{"--2", spellData.Corruption.Highest().ID, 36},
+		{"--2", spellData.DrainLife.Highest().ID, 24},
+		{"--1", spellData.Immolate.Highest().ID, 33},
+		{"--2", spellData.CurseOfRecklessness.Highest().ID, 30},
+	} {
+		player := core.WithSpec(&proto.Player{
+			Race: proto.Race_RaceOrc, Class: proto.Class_ClassWarlock, Equipment: &proto.EquipmentSpec{},
+			Consumables: &proto.ConsumesSpec{}, TalentsString: c.talents, Rotation: &proto.APLRotation{Type: proto.APLRotation_TypeAPL},
+		}, &proto.Player_Warlock{Warlock: &proto.Warlock{Options: &proto.Warlock_Options{ClassOptions: &proto.WarlockOptions{
+			Summon: proto.WarlockOptions_NoSummon,
+		}}}})
+		sim := core.NewSim(&proto.RaidSimRequest{
+			SimOptions: &proto.SimOptions{RandomSeed: 100},
+			Raid:       core.SinglePlayerRaidProto(player, &proto.PartyBuffs{}, &proto.RaidBuffs{}, &proto.Debuffs{}),
+			Encounter:  core.MakeSingleTargetEncounter(0),
+		}, simsignals.CreateSignals())
+		sim.Reset()
+		warlock := sim.Raid.Parties[0].Players[0].(WarlockAgent).GetWarlock()
+		if got := warlock.GetSpell(core.ActionID{SpellID: c.spell}).MaxRange; math.Abs(got-c.want) > 1e-9 {
+			t.Errorf("%q: spell %d reaches %.1f yd, want %.1f", c.talents, c.spell, got, c.want)
+		}
+	}
+}

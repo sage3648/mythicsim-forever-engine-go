@@ -4890,11 +4890,11 @@ var generatedSpells = []Spell{
 			{ID: 688039, SpellID: 8910, Type: dbcenums.E_APPLY_AURA, Aura: dbcenums.A_PERIODIC_HEAL, BasePoints: 71, SpellLevel: 40, MaxLevel: 45, SPCoef: 0.20000000298023224, PvpMult: 1, PeriodMs: 3000, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{21, 0}},
 		},
 		Powers: []Power{{Cost: 195}}},
-	{ID: 8913, Name: "Sacred Cleansing", School: 2, Attr: [17]uint32{15: 0x2000}, SpellLevel: 60, ProcChance: 101, ProcChanceSource: ProcChanceAlways,
+	{ID: 8913, Name: "Sacred Cleansing", School: 2, Attr: [17]uint32{15: 0x2000}, SpellLevel: 60,
 		Effects: []Effect{
-			{ID: 686181, SpellID: 8913, Type: dbcenums.E_DISPEL, BasePoints: 1000000, SpellLevel: 60, PvpMult: 1, RadiusMax: 30, Misc: 8, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{22, 7}},
+			{ID: 686181, SpellID: 8913, Type: dbcenums.E_DISPEL, BasePoints: 1000000, SpellLevel: 60, PvpMult: 1, Misc: 8, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{22, 7}},
 			{ID: 686182, SpellID: 8913, Index: 1, Type: dbcenums.E_DUMMY, SpellLevel: 60, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{18, 0}},
-			{ID: 686183, SpellID: 8913, Index: 2, Type: dbcenums.E_THREAT, BasePoints: 1, SpellLevel: 60, PvpMult: 1, RadiusMax: 30, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{22, 7}},
+			{ID: 686183, SpellID: 8913, Index: 2, Type: dbcenums.E_THREAT, BasePoints: 1, SpellLevel: 60, PvpMult: 1, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{22, 7}},
 		}},
 	{ID: 8914, Name: "Thorns", Rank: "Rank 4", School: 8, Attr: [17]uint32{0: 0x10000, 2: 0x80000, 8: 0x1000, 15: 0x2000}, SpellLevel: 34, BaseLevel: 34, DurationMs: 600000, MaxRange: 30, GCDMs: 1500, StartRecoveryCategory: 133, DefenseType: 1, DispelType: 1, PreventionType: 1, ClassFlags: core.ClassFlags{Family: 7, Mask: [4]uint32{0: 256}}, InterruptFlags: 8, StanceMask: 0x40000002, Labels: []int16{21},
 		Effects: []Effect{
@@ -32218,10 +32218,6 @@ var generatedSpells = []Spell{
 	{ID: 1295272, Name: "Parachute-Priest Pager", School: 1, Speed: 10, SpellLevel: 60, MaxRange: 100, RefIDs: []int32{1295661}, ProcHint: core.ProcHintHeals,
 		Effects: []Effect{
 			{ID: 1317204, SpellID: 1295272, Type: dbcenums.E_TRIGGER_MISSILE, SpellLevel: 60, PvpMult: 1, RadiusMax: 8, TriggerID: 1295661, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{72, 87}},
-		}},
-	{ID: 1295313, Name: "Booty Bay Bruiser Buckshot", School: 1, Speed: 30, Attr: [17]uint32{0: 0x40000, 3: 0x30000, 4: 0x800000, 10: 0x4, 11: 0x800}, SpellLevel: 60, CastTimeMs: 3000, MinRange: 10, MaxRange: 40, CooldownMs: 600000, GCDMs: 1500, StartRecoveryCategory: 133, PreventionType: 2, InterruptFlags: 47,
-		Effects: []Effect{
-			{ID: 1317277, SpellID: 1295313, Type: dbcenums.E_KNOCK_BACK, BasePoints: 50, SpellLevel: 60, PvpMult: 1, Misc: 400, ChainAmp: 1, Target: [2]dbcenums.ImplicitTarget{25, 0}},
 		}},
 	{ID: 1295633, Name: "Everlook Delivery Bot", School: 4, Speed: 10, Attr: [17]uint32{2: 0x20000004, 15: 0x2000}, SpellLevel: 60, MaxRange: 100, DefenseType: 1,
 		Effects: []Effect{

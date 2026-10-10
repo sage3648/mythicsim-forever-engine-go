@@ -102,13 +102,25 @@ func (priest *Priest) applyImprovedShadowWordPain() {
 	})
 }
 
-// applyShadowReach implements Shadow Reach.
-//
-// TODO: To be implemented. It is range only (17322), which a single-target sim never reads.
+// applyShadowReach implements Shadow Reach: 17322 adds 10/20% to the range of the spells its class
+// mask reaches, of the priest's the five targeted Shadow spells.
 func (priest *Priest) applyShadowReach() {
 	if priest.Talents.ShadowReach == 0 {
 		return
 	}
+
+	priest.extendRange(PriestSpellDevouringPlague|PriestSpellMindBlast|PriestSpellMindFlay|PriestSpellShadowWordDeath|PriestSpellShadowWordPain,
+		spellData.ShadowReach.Effect(dbcenums.A_ADD_PCT_MODIFIER, int32(dbcenums.SPELLMOD_RANGE)).FractionAt(priest.Talents.ShadowReach))
+}
+
+// extendRange is a percent range modifier: the sim's range mod is flat yards, so the share is taken of
+// each spell's own range as it registers. A spell with no range (0) keeps none.
+func (priest *Priest) extendRange(mask int64, share float64) {
+	priest.OnSpellRegistered(func(spell *core.Spell) {
+		if spell.Matches(mask) {
+			spell.MaxRange *= 1 + share
+		}
+	})
 }
 
 func (priest *Priest) applyImprovedMindBlast() {

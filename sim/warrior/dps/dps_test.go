@@ -27,10 +27,13 @@ func TestFury(t *testing.T) {
 	}))
 }
 
+// Arms runs dps_battle, the rotation the site's Auto picks for 5/5 Bloodthrill on a two-hander
+// (#641): the Berserker rotations never Rend or Overpower, so Bloodthrill, Improved Rend and
+// Improved Overpower went untested.
 func TestArms(t *testing.T) {
-	core.RunTestSuite(t, t.Name(), core.FullCharacterTestSuiteGenerator([]core.CharacterSuiteConfig{
-		warriorSuite(TwoHandGear, ArmsTalents, nil),
-	}))
+	arms := warriorSuite(TwoHandGear, ArmsTalents, nil)
+	arms.Rotation = core.GetAplRotation("../../../ui/specs/warrior/dps/apls", "dps_battle")
+	core.RunTestSuite(t, t.Name(), core.FullCharacterTestSuiteGenerator([]core.CharacterSuiteConfig{arms}))
 }
 
 // Weapons and nothing else. The generated item database does not carry the Forever gear our sim

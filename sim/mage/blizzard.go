@@ -68,6 +68,7 @@ func (mage *Mage) registerBlizzardSpell() {
 		ProcMask:       core.ProcMaskSpellDamage,
 		Flags:          core.SpellFlagChanneled | core.SpellFlagAPL,
 		ClassSpellMask: MageSpellBlizzard,
+		MaxRange:       float64(blizzardRank.MaxRange),
 		ManaCost: core.ManaCostOptions{
 			FlatCost: int32(blizzardRank.Cost()),
 		},

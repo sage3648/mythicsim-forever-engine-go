@@ -572,3 +572,32 @@ func TestArcaneMissilesKeepTheArcaneBlastStacks(t *testing.T) {
 		}
 	}
 }
+
+// Mage spells reach as far as their client rows state, and the point-blank ones only the targets
+// within their 10 yd radius; Arcane Geometry, Flame Throwing and Arctic Reach extend them. They used
+// to cast at any distance, so the three talents did nothing.
+func TestSpellRangesFollowTheClient(t *testing.T) {
+	for _, c := range []struct {
+		talents string
+		spell   int32
+		want    float64
+	}{
+		{"", spellData.Frostbolt.Highest().ID, 30},
+		{"", spellData.FireBlast.Highest().ID, 20},
+		{"", spellData.ConeOfCold.Highest().ID, 10},
+		{ArcaneTalents, spellData.ArcaneBlast.Highest().ID, 36},  // Arcane Geometry 2/2: +6 yd
+		{FireTalents, spellData.FireBlast.Highest().ID, 26},      // Flame Throwing 2/2: +6 yd
+		{"--000000000002", spellData.Blizzard.Highest().ID, 36},  // Arctic Reach 2/2: +20% range
+		{"--000000000002", spellData.FrostNova.Highest().ID, 12}, // and radius
+	} {
+		sim, mage := newThreeTargetMage(c.talents)
+		spell := mage.GetSpell(core.ActionID{SpellID: c.spell})
+		if spell.MaxRange != c.want {
+			t.Errorf("%q: %s reaches %.1f yd, want %.1f", c.talents, spell.ActionID, spell.MaxRange, c.want)
+		}
+		mage.DistanceFromTarget = c.want + 1
+		if spell.CanCast(sim, mage.CurrentTarget) {
+			t.Errorf("%q: %s casts from %.1f yd", c.talents, spell.ActionID, mage.DistanceFromTarget)
+		}
+	}
+}

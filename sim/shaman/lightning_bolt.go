@@ -37,6 +37,9 @@ func (shaman *Shaman) newLightningBoltSpellConfig(config *spelldata.Spell, rank 
 
 	spellConfig.ClassSpellMask = core.TernaryInt64(isElementalOverload, SpellMaskLightningBoltOverload, SpellMaskLightningBolt)
 	spellConfig.MissileSpeed = 20
+	if !isElementalOverload {
+		spellConfig.MaxRange = float64(config.MaxRange)
+	}
 
 	spellConfig.ApplyEffects = func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 		baseDamage := damage.Roll(sim, core.CharacterLevel)

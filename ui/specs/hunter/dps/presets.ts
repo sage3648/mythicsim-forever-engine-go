@@ -21,7 +21,7 @@ import P1BisGear from './gear_sets/p1.bis.gear.json';
 export const BeastMasteryRotation = PresetUtils.makePresetAPLRotation('Beast Mastery', BeastMasteryAPL);
 export const MarksmanshipRotation = PresetUtils.makePresetAPLRotation('Marksmanship', MarksmanshipAPL);
 export const SurvivalRotation = PresetUtils.makePresetAPLRotation('Survival', SurvivalAPL);
-export const SurvivalMeleeRotation = PresetUtils.makePresetAPLRotation('Survival (Melee)', SurvivalMeleeAPL);
+export const SurvivalMeleeRotation = PresetUtils.makePresetAPLRotation('Survival (melee)', SurvivalMeleeAPL);
 export const DefaultRotation = MarksmanshipRotation;
 
 // Defaults below are what master's ui/hunter (the Forever site before the switch) opens with: its
