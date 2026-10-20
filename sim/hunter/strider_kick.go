@@ -12,6 +12,23 @@ import (
 // Set it false for the kick without the speed.
 var StriderKickSpeedsUp = true
 
+// StrikesKeepSlowWeaponSpeed (MythicSim patch 187): Strider Kick and Mongoose Bite take the main hand's real speed
+// when it is slower than the normalized one, so a slow weapon keeps its speed and a fast one is lifted to the
+// normalized value (the higher of the two). Two sets of Forever logs: a 2.8 and a 1.7 one-hander on the same mobs
+// (warcraftlogs wT6F3K4LMWBgzbfP, 30 non-crit Strider Kicks: the 2.8 fits its real speed, the 1.7 the normalized
+// 2.4), and a 3.8 and a 2.9 two-hander (Par9kghHbAVYptwm: Strider Kick lands 19.7 above the 3.8's white hits and
+// 19.3 above the 2.9's; at 3.3 for both the 3.8 would sit about 23 lower). False restores the normalized speed.
+var StrikesKeepSlowWeaponSpeed = true
+
+// strikeWeaponDamage is the weapon part of Strider Kick and Mongoose Bite.
+func (hunter *Hunter) strikeWeaponDamage(sim *core.Simulation, attackPower float64) float64 {
+	mh := hunter.AutoAttacks.MH()
+	if StrikesKeepSlowWeaponSpeed && mh.SwingSpeed > mh.NormalizedSwingSpeed {
+		return mh.CalculateWeaponDamage(sim, attackPower)
+	}
+	return mh.CalculateNormalizedWeaponDamage(sim, attackPower)
+}
+
 // Strider Kick from the beta client (1317257): 100% normalized melee weapon damage, 8 sec cooldown,
 // 5.81% of base mana.
 func (hunter *Hunter) registerStriderKickSpell() {
@@ -57,7 +74,7 @@ func (hunter *Hunter) registerStriderKickSpell() {
 		BonusCoefficient: 1,
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
-			damage := hunter.AutoAttacks.MH().CalculateNormalizedWeaponDamage(sim, spell.MeleeAttackPower(target))
+			damage := hunter.strikeWeaponDamage(sim, spell.MeleeAttackPower(target))
 			spell.CalcAndDealDamage(sim, target, damage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
 			if speed != nil {
 				speed.Activate(sim)

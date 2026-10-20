@@ -5314,3 +5314,46 @@ times the stance in both, so patch 151's switch (flat threat only in Defensive S
 Not taken from upstream's threat set: Shield Slam (upstream 0, untested; ours keeps 508 until a level 40 capture),
 Hamstring and Shield Bash (upstream 0; neither is in a MythicSim rotation that ranks threat), Battle Shout (ours
 reads the client's E_THREAT effect).
+
+## 187. `hunter: Strider Kick and Mongoose Bite keep a slow weapon's real speed (Arc's logs)`
+
+Sources: two Forever logs with two main-hand weapons each (one hunter, the same attack power within each log),
+non-crit hits before armor (unmitigated).
+
+- Warcraft Logs wT6F3K4LMWBgzbfP: 14 fights on Scarlet Sentries at level 30, a 2.8 one-hander (5 fights) and a
+  1.7 one-hander (5 fights), told apart by Raptor Strike and white damage; melee attack power fitted from them
+  (AP/14 about 25.9). Strider Kick:
+
+  | Weapon | Kicks | Mean | At normalized 2.4 | At real speed | Fitted speed |
+  | --- | --- | --- | --- | --- | --- |
+  | 2.8 one-hander | 16 | 138.4 +/- 3.1 | 126.2 (3.9 SE off) | 136.5 (0.6 SE) | 2.87 |
+  | 1.7 one-hander | 14 | 105.6 +/- 1.5 | 101.7 (2.7 SE) | 83.5 (15 SE) | 2.55 |
+
+  Mongoose Bite shows the same gap (166.8 over 6 bites against 135.7 over 11: 31, the kicks' 33).
+- Warcraft Logs Par9kghHbAVYptwm: a 3.8 two-hander in fights 9 and 41 (main-hand swings 3.70 s apart) and a 2.9
+  one in 25 fights (2.87-2.88 s). Kick minus the same weapon's white hit takes the weapon's base damage out:
+  (speed - real speed) x AP/14 plus the kick's flat part.
+
+  | Weapon | Kicks | Whites | Kick minus white |
+  | --- | --- | --- | --- |
+  | 3.8 two-hander | 7 | 8 | 19.7 +/- 5.9 |
+  | 2.9 two-hander | 169 | 263 | 19.3 +/- 1.1 |
+
+  At the normalized 3.3 for both, the 3.8's difference would sit 0.9 x AP/14 below the 2.9's (about 23 at the
+  other log's AP/14 of 26); they are equal (about 4 SE from the normalized rule).
+
+So the speed is the higher of the weapon's real and normalized speed: the 1.7 is lifted to its normalized 2.4,
+the 2.8 and the 3.8 keep their own. Open: the 2.9's difference fits its real speed as well (a 3.3 floor puts it
+about 10 higher, 1.8 SE), so a two-hander's floor may sit under 3.3; this keeps the normalized speed as the
+floor, which the one-hander test supports. A fast two-hander in a dedicated log would settle it.
+
+- `StrikesKeepSlowWeaponSpeed` (sim/hunter/strider_kick.go, default true): Strider Kick and Mongoose Bite take the
+  main hand's real speed when it is slower than the normalized one. Only these two; no other class's instant
+  attacks change. False restores the normalized speed.
+- Test: `TestStrikesKeepSlowWeaponSpeed` (sim/hunter/strike_weapon_speed_test.go): a 3.8 two-hander keeps 3.8, a
+  1.7 one-hander takes 2.4, and with the switch off both take the normalized speed.
+- Goldens: TestSurvival +1.91% on average (0.86% to 2.41%), TestSurvivalMelee +1.67% (0.75% to 2.24%); nothing
+  else moves. The tier list's Survival weave request (ranking sim 1d006e69, Arcanite Reaper 3.8) goes from 1,088
+  to 1,108 in `wowsimcli`.
+
+Downstream: the Rust engine's Strider Kick and Mongoose Bite need the same higher-of-the-two speed.

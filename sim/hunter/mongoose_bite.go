@@ -65,7 +65,7 @@ func (hunter *Hunter) registerMongooseBiteSpell() {
 			hunter.DefensiveState.Deactivate(sim)
 			// Forever: normalized melee weapon damage plus a smaller flat amount, where Classic
 			// dealt the flat amount alone.
-			damage := baseDamage + hunter.AutoAttacks.MH().CalculateNormalizedWeaponDamage(sim, spell.MeleeAttackPower(target))
+			damage := baseDamage + hunter.strikeWeaponDamage(sim, spell.MeleeAttackPower(target))
 			result := spell.CalcAndDealDamage(sim, target, damage, spell.OutcomeMeleeWeaponSpecialHitAndCrit)
 
 			if hunter.LaceratingStrikes != nil && result.Landed() {
