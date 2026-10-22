@@ -202,6 +202,9 @@ var windfuryImbue = spellData.WindfuryWeaponTriggered.Highest()
 // Rank 6's proc dummy. Since the 70170 hotfixes the triggered ladder also lists the Flametongue Attack
 // damage spells (10444, 29469, 29470), so Highest() would be the attack rather than the dummy.
 var flametongueImbue = spellData.FlametongueWeaponTriggered.ByID(16344)
+
+// The damage logs as Flametongue Attack, whose row carries the spell power coefficient (0.1).
+var flametongueAttack = spellData.FlametongueWeaponTriggered.ByID(10444)
 var frostbrandImbue = spellData.FrostbrandWeaponTriggered.Highest()
 var rockbiterImbue = spellData.RockbiterWeaponTriggered.Highest()
 
@@ -227,7 +230,7 @@ func (shaman *Shaman) newFlametongueImbueSpell(weapon *core.Item) *core.Spell {
 		Flags:            core.SpellFlagPassiveSpell | core.SpellFlagProc | SpellFlagShamanSpell,
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
-		BonusCoefficient: 0.10000000149,
+		BonusCoefficient: flametongueAttack.DamageEffect().Coeff(),
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			if weapon.SwingSpeed != 0 {

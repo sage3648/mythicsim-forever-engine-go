@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/wowsims/forever/sim/core"
+	"github.com/wowsims/forever/sim/core/spelldata"
 )
 
 // One rank of Holy Shock: the spell the paladin casts, and the damage and heal it triggers. The
@@ -27,10 +28,16 @@ var HolyShockRanks = []holyShockRank{
 	{rank: 4, spellID: 20930, cost: 325, damageID: 25902, damage: [2]float64{334, 362}, healID: 25903, heal: 320},
 }
 
+// Holy Shock's spell power coefficients, the rank 1 damage and heal rows' (0.429). The client gives
+// every rank the same 0.429; the higher ranks' rows are not in the spell store, so rank 1 stands for them.
+var (
+	holyShockDamageCoefficient = spelldata.MustFind(1311604).DamageEffect().Coeff()
+	holyShockHealCoefficient   = spelldata.MustFind(1311605).HealEffect().Coeff()
+)
+
 const (
-	holyShockCoefficient = 0.429
-	holyShockCooldown    = time.Second * 10
-	holyShockRange       = 20
+	holyShockCooldown = time.Second * 10
+	holyShockRange    = 20
 )
 
 // Holy Shock (talent)
@@ -73,7 +80,7 @@ func (paladin *Paladin) registerHolyShockRank(rank holyShockRank) {
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
-		BonusCoefficient: holyShockCoefficient,
+		BonusCoefficient: holyShockDamageCoefficient,
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			if vigil := paladin.activeLightsVigil(target); vigil != nil {
@@ -108,7 +115,7 @@ func (paladin *Paladin) registerHolyShockRank(rank holyShockRank) {
 
 		DamageMultiplier: 1,
 		ThreatMultiplier: 1,
-		BonusCoefficient: holyShockCoefficient,
+		BonusCoefficient: holyShockHealCoefficient,
 
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			spell.CalcAndDealHealing(sim, target, rank.heal, spell.OutcomeHealingCrit)
