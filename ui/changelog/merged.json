@@ -1,32 +1,38 @@
 [
 	{
+		"number": 43,
+		"title": "Mark the Go engine as legacy; contributions go to the Rust engine",
+		"mergedAt": "2026-11-01",
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/43"
+	},
+	{
 		"number": 17,
 		"title": "Rewrite README for the MythicSim fork",
 		"mergedAt": "2026-10-01",
-		"url": "https://github.com/sage3648/mythicsim-forever-engine/pull/17"
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/17"
 	},
 	{
 		"number": 4,
 		"title": "Import missing Forever leveling gear",
 		"mergedAt": "2026-09-23",
-		"url": "https://github.com/sage3648/mythicsim-forever-engine/pull/4"
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/4"
 	},
 	{
 		"number": 3,
 		"title": "Refresh Forever upstream and preserve Seal of Fury compatibility",
 		"mergedAt": "2026-09-23",
-		"url": "https://github.com/sage3648/mythicsim-forever-engine/pull/3"
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/3"
 	},
 	{
 		"number": 2,
 		"title": "Refresh Forever beta engine while preserving Seal of Fury",
 		"mergedAt": "2026-09-22",
-		"url": "https://github.com/sage3648/mythicsim-forever-engine/pull/2"
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/2"
 	},
 	{
 		"number": 1,
 		"title": "Implement Seal of Fury for Forever Protection Paladin",
 		"mergedAt": "2026-09-21",
-		"url": "https://github.com/sage3648/mythicsim-forever-engine/pull/1"
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/1"
 	}
 ]
