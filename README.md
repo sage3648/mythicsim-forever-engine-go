@@ -1,6 +1,8 @@
-# WoW Forever Simulator
+# WoW Forever Simulator (legacy Go engine)
 
-The simulation engine behind [MythicSim](https://mythicsim.com/wow-forever), kept as an open fork of the WoW Forever sim. It models every class and spec for World of Warcraft: Forever, with the beta client data as the source of truth.
+> **This is the legacy Go engine. MythicSim's Forever sims run on the Rust engine, [sage3648/mythicsim-forever-engine](https://github.com/sage3648/mythicsim-forever-engine), and that is where contributions go.** Since 27 October 2026 every Forever sim on [MythicSim](https://mythicsim.com/wow-forever) runs in Rust, and since 21 October new Forever work (client updates, hotfixes, rotations, fixes) lands there only. This fork no longer takes patches: it stays public as the reference the Rust engine was ported from and still reproduces at its pin.
+
+The simulation engine MythicSim ran on until October 2026, kept as an open fork of the WoW Forever sim. It models every class and spec for World of Warcraft: Forever, with the beta client data as the source of truth.
 
 
 ## How it fits together
