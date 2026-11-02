@@ -1,8 +1,11 @@
-# WoW Forever Simulator (legacy Go engine)
+# WoW Forever Simulator (deprecated Go engine)
 
-> **This is the legacy Go engine. MythicSim's Forever sims run on the Rust engine, [sage3648/mythicsim-forever-engine](https://github.com/sage3648/mythicsim-forever-engine), and that is where contributions go.** Since 27 October 2026 every Forever sim on [MythicSim](https://mythicsim.com/wow-forever) runs in Rust, and since 21 October new Forever work (client updates, hotfixes, rotations, fixes) lands there only. This fork no longer takes patches: it stays public as the reference the Rust engine was ported from and still reproduces at its pin.
+> [!WARNING]
+> **Deprecated.** This Go engine is no longer maintained and takes no new patches, issues or pull requests. Use the Rust engine instead: **[sage3648/mythicsim-forever-engine](https://github.com/sage3648/mythicsim-forever-engine)**.
+>
+> Since 27 October 2026 every Forever sim on [MythicSim](https://mythicsim.com/wow-forever) runs in Rust, and since 21 October new Forever work (client updates, hotfixes, rotations, fixes) lands there only. This fork stays public as the reference the Rust engine was ported from and still reproduces at its pin.
 
-The simulation engine MythicSim ran on until October 2026, kept as an open fork of the WoW Forever sim. It models every class and spec for World of Warcraft: Forever, with the beta client data as the source of truth.
+The simulation engine MythicSim ran on until 27 October 2026, kept as an open fork of the WoW Forever sim. It models every class and spec for World of Warcraft: Forever, with the beta client data as the source of truth.
 
 
 ## How it fits together
@@ -17,7 +20,7 @@ flowchart LR
     B --> A
 ```
 
-MythicSim runs this engine as a separate `wowsimcli` process. You can also build and run it yourself, see below.
+Until 27 October 2026, MythicSim ran this engine as a separate `wowsimcli` process. It now runs the Rust engine in its place. You can still build and run this one yourself, see below.
 
 ## Running it locally
 
@@ -25,17 +28,13 @@ You need Go, protobuf and Node. The `makefile` has the build, test and UI target
 
 ## Contributing
 
-1. Fork the repo and branch off the most recently updated `mythicsim/*` branch.
-2. Make the change and add a test where you can.
-3. Open a PR and say where the numbers come from (client data, a log, a spell tooltip).
+This repo no longer takes contributions. Open fixes, mechanics changes and new data against the Rust engine, [sage3648/mythicsim-forever-engine](https://github.com/sage3648/mythicsim-forever-engine), and say where the numbers come from (client data, a log, a spell tooltip).
 
-Docs worth reading first:
+Background docs from the Go era:
 
 - [Forever rule changes](docs/forever_rules.md)
 - [Where upstream is heading](docs/upstream_alignment.md)
 - [Fork notes and talent data pipeline](docs/fork-notes.md)
-
-We keep our patch set small. Anything upstream already covers gets dropped from here, and fixes we make go back upstream where they fit.
 
 ## Credits and license
 
