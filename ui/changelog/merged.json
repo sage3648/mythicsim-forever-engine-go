@@ -1,5 +1,11 @@
 [
 	{
+		"number": 44,
+		"title": "Mark the Go engine deprecated, point to the Rust engine",
+		"mergedAt": "2026-11-02",
+		"url": "https://github.com/sage3648/mythicsim-forever-engine-go/pull/44"
+	},
+	{
 		"number": 43,
 		"title": "Mark the Go engine as legacy; contributions go to the Rust engine",
 		"mergedAt": "2026-11-01",
